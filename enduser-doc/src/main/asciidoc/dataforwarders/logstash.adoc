@@ -1,0 +1,119 @@
+= Logstash
+
+Logstash is a tool for collecting, analyzing, formatting and redistributing streams of strings (logs for example) via configuration files and plugins.
+
+The differents settings of logstash are defined in configuration files.
+
+A Logstash pipeline has two required elements, <<Logstash inputs,inputs>> and <<Logstash outputs,outputs>>, and one optional element, <<Logstash filters,filters>>.
+
+The input plugins consume data from a source, the filter plugins modify the data as you specify, and the output plugins write the data to a destination.
+
+== How to configure Logstash
+
+In order to add application logs for non-dockerized applications, logstash must be installed and configured on the host where our application is running.
+
+For dockerized applications please refer to <<Using event stack in rancher>>.
+
+
+=== Logstash inputs
+
+One of the things that makes logstash great is its ability to source logs and events from various sources.
+
+There are a large panel of different inputs.Refer to link:https://www.elastic.co/guide/en/logstash/current/input-plugins.html[link] for more information.
+
+By using these inputs you can import data from multiple sources and manipulate them however you want and eventually send them to other systems for storage and processing.
+
+Inputs are the starting point of any configuration.
+
+In our case , we will use Files as input.
+
+We can use multiple different files, so it’s important to tag them(by adding a type)  in order to manipulate them later in filters and outputs.
+(See Example below)
+
+```ruby
+input {
+    file {
+        path => “/path/to/apache/logs/access.log”
+        type => “apache-access”
+        start_position => “beginining”
+    }
+}
+```
+In our example,the input section tells Logstash to pull logs from the Apache access log and specify the type of those events as apache-access.
+
+Setting the type is important, as it will be used to selectively apply filters and outputs later on in the event’s lifetime.
+
+It’s also used to organize the events when it’s eventually pushed to Elasticsearch.
+
+=== Logstash filters
+
+Filters are intermediary processing devices in the Logstash pipeline.
+
+You can combine filters with conditionals to perform an action on an event if it meets certain criteria.
+
+Some useful filters include:
+
+** grok:  allows you to parse server log files and easily extract the data you need using keywords.
+
+On the documentation of logstash you will find a page dedicated to this filter and its synthax.link:https://www.elastic.co/guide/en/logstash/current/plugins-filters-grok.html[link].
+
+** mutate: perform general transformations on event fields. You can rename, remove, replace, and modify fields in your events.
+
+** drop: drop an event completely, for example, debug events.
+
+** clone: make a copy of an event, possibly adding or removing fields.
+
+** geoip: add information about geographical location of IP addresses
+
+(See Example below)
+
+```ruby
+filter {
+  grok {
+    match => {
+      "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:log-level} \[%{DATA:class}\]:%{GREEDYDATA:message}"}
+    }
+  }
+
+ mutate{
+   add_field => {
+      "retention" => "month"
+    }
+  }
+ }
+```
+In the example,the grok filter have to break down the log line into the following fields: timestamp, log level, class, and then the rest of the message.
+
+This will try to match the incoming log to the given pattern.
+
+The mutate filter will add the field retention to the log message
+
+=== Logstash outputs
+Outputs are the final phase of the Logstash pipeline.
+
+An event can pass through multiple outputs, but once all output processing is complete, the event has finished its execution.
+
+As with the inputs, Logstash comes with a number of outputs that enable you to push your events to various locations, services, and technologies.
+
+Logstash events can come from multiple sources, so as with filters, it’s important to do checks on whether or not an event should be processed by a particular output.
+
+(See Example below)
+
+```ruby
+input {
+ kafka {
+  bootstrap_servers => "SERVICE_KAFKA_ENDPOINT:9092"
+   topic_id => "SERVICE_KAFKA_EVENT_TOPIC"
+   codec => "json"
+ }
+}
+```
+The output will be the monitoring platform Kafka endpoint. We have to specify the host and the topic.
+
+== Using event stack in rancher
+
+TBD
+
+== Official documentation
+
+see https://www.elastic.co/guide/en/logstash/6.0/index.html

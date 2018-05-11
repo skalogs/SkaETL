@@ -1,0 +1,13 @@
+= Kafka
+
+== What's that ?
+
+link:https://kafka.apache.org/[Kafka] is a replicated distributed system that stores messages in fault-tolerant way
+
+
+== Why do we use it ?
+
+We use Kafka as a buffer between your events/metrics and the storage systems.
+
+This allows these systems to be upgraded and maintained without losing data currently in transit.
+

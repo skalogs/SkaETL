@@ -1,0 +1,77 @@
+package io.skalogs.skaetl.rules.codegeneration.filters;
+
+import io.skalogs.skaetl.rules.RuleFilterLexer;
+import io.skalogs.skaetl.rules.RuleFilterParser;
+import io.skalogs.skaetl.rules.codegeneration.RuleToJava;
+import io.skalogs.skaetl.rules.codegeneration.SyntaxErrorListener;
+import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
+import io.skalogs.skaetl.rules.codegeneration.exceptions.TemplatingException;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.atn.PredictionMode;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.stereotype.Component;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static io.skalogs.skaetl.rules.codegeneration.RuleToJava.nullSafePredicate;
+
+@Component
+public class RuleFilterToJava {
+
+    public RuleCode convert(String name, String dsl) {
+        checkNotNull(name);
+        checkNotNull(dsl);
+        RuleFilterVisitorImpl ruleFilterVisitor = new RuleFilterVisitorImpl();
+        ruleFilterVisitor.visit(parser(dsl).parse());
+        try {
+            return templating(name, dsl, ruleFilterVisitor);
+        } catch (Exception e) {
+            throw new TemplatingException(e);
+        }
+    }
+
+
+    private RuleCode templating(String name, String dsl, RuleFilterVisitorImpl ruleFilterVisitor) {
+        String camelCaseName = RuleToJava.toCamelCase(name);
+        String ruleClassName = StringUtils.replace(camelCaseName, "\"", "") + "Filter";
+        String packageName = "io.skalogs.skaetl.rules.generated";
+        String javaCode = "package " + packageName + ";\n" +
+                "\n" +
+                "import java.util.concurrent.*;\n" +
+                "import static java.util.concurrent.TimeUnit.*;\n" +
+                "\n" +
+                "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                "import javax.annotation.Generated;\n" +
+                "import com.fasterxml.jackson.databind.JsonNode;\n" +
+                "import io.skalogs.skaetl.rules.filters.GenericFilter;\n" +
+                "\n" +
+                "/*\n" +
+                dsl + "\n" +
+                "*/\n" +
+                "@Generated(\"etlFilter\")\n" +
+                "public class " + ruleClassName + " extends GenericFilter {\n" +
+                "    @Override\n" +
+                "    protected boolean doFilter(JsonNode jsonValue) {\n" +
+                "        return " + nullSafePredicate(ruleFilterVisitor.getFilter()) + ";\n" +
+                "    }\n" +
+                "}";
+
+        return new RuleCode(ruleClassName, dsl, packageName + "." + ruleClassName, javaCode);
+    }
+
+    public static RuleFilterParser parser(String dsl) {
+        SyntaxErrorListener syntaxErrorListener = new SyntaxErrorListener(dsl);
+
+        RuleFilterLexer lexer = new RuleFilterLexer(new ANTLRInputStream(dsl));
+        lexer.removeErrorListeners();
+        lexer.addErrorListener(syntaxErrorListener);
+
+        RuleFilterParser parser = new RuleFilterParser(new CommonTokenStream(lexer));
+        parser.getInterpreter().setPredictionMode(PredictionMode.LL_EXACT_AMBIG_DETECTION);
+        parser.removeErrorListeners();
+        parser.addErrorListener(syntaxErrorListener);
+
+        return parser;
+    }
+
+}

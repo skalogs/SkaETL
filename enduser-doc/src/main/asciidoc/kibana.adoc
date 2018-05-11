@@ -1,0 +1,28 @@
+= Kibana
+
+== What's that ?
+
+Enable you to query your events from Elasticsearch graphically.
+
+== Login
+
+image:kibana/login.png[]
+
+== Discover
+
+Let's start with your first query in Discover part of Kibana.
+
+image:kibana/discover.png[]
+
+Now we can expand a row and add some filters
+image:kibana/discover-row.png[]
+
+It's time to save this to make it accessible to my teammates.
+image:kibana/discover-query.png[]
+
+You can access it later by loading the query
+image:kibana/discover-load-query.png[]
+
+== Visualize
+
+== Dashboard

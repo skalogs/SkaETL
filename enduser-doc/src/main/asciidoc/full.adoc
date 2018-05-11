@@ -1,0 +1,19 @@
+= Monitoring Platform Documentation
+
+include::index.adoc[]
+
+include::elasticsearch.adoc[]
+
+include::kibana.adoc[]
+
+include::kafka.adoc[]
+
+include::developpers/events.adoc[]
+
+include::event-specifications.adoc[]
+
+include::developpers/metrics.adoc[]
+
+include::dataforwarder.adoc[]
+
+include::dataforwarders/logstash.adoc[]

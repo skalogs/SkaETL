@@ -1,0 +1,5 @@
+= Elasticsearch
+
+== What's that ?
+
+link:https://www.elastic.co/[Elasticsearch] enables you to search and analyze your data in real time.

@@ -1,0 +1,29 @@
+package io.skalogs.skaetl.domain;
+
+public enum TypeValidation {
+    FORMAT_JSON,
+    MANDATORY_FIELD,
+    BLACK_LIST_FIELD,
+    MAX_FIELD,
+    MAX_MESSAGE_SIZE,
+    ADD_FIELD,
+    DELETE_FIELD,
+    RENAME_FIELD,
+    FORMAT_DATE,
+    FORMAT_BOOLEAN,
+    FORMAT_GEOPOINT,
+    FORMAT_DOUBLE,
+    FORMAT_LONG,
+    FORMAT_IP,
+    FIELD_EXIST,
+    LOOKUP_LIST,
+    LOOKUP_EXTERNAL,
+    HASH,
+    ADD_GEO_LOCALISATION,
+    CAPITALIZE,
+    UNCAPITALIZE,
+    UPPER_CASE,
+    LOWER_CASE,
+    SWAP_CASE,
+    TRIM;
+}

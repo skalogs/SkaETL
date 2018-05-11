@@ -1,0 +1,62 @@
+{
+  "idProcess": "101",
+  "name": "testcheatcode",
+  "timestamp": "",
+  "processInput": {
+    "host": "localhost",
+    "port": "9092",
+    "topicInput": "processtopic",
+    "id": "string"
+  },
+  "processParser": {
+  },
+  "processValidation": [
+
+  ],
+  "processTransformation": [
+
+  ],
+  "processFilter": [
+
+  ],
+  "processOutput": {
+    "parameterOutput": {
+      "topicOut": "",
+      "elasticsearchRetentionLevel": "day"
+    },
+    "typeOutput": "ELASTICSEARCH",
+    "id": "10111"
+  }
+}
+
+{
+  "timestamp": "",
+  "idProcess": "1d31445e-cf26-4c0a-a078-36ba01f16b18",
+  "name": "myref",
+  "referentialKey": "IP",
+  "listAssociatedKeys": [
+    "src_ip","dest_ip"
+  ],
+  "listIdProcessConsumer": [
+    "101"
+  ],
+  "listMetadata": [
+    "os_server"
+  ]
+}
+
+{
+  "timestamp": "",
+  "idProcess": "10003",
+  "name": "myref2",
+  "referentialKey": "DB_IP",
+  "listAssociatedKeys": [
+    "database_ip"
+  ],
+  "listIdProcessConsumer": [
+    "101"
+  ],
+  "listMetadata": [
+    "type_database","os_server"
+  ]
+}

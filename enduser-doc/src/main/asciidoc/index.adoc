@@ -1,0 +1,53 @@
+= Monitoring Platform End User Documentation
+
+Welcome in the **SERVICE_PROJECT_NAME** Monitoring Platform !
+
+== Use case
+
+You send us events and you'll be able to search them at scale.
+
+== Events
+
+An event is a json format based message that respects a <<event-specifications.adoc#,specific format>>.
+
+This json message is sent to a <<kafka.adoc#,kafka>> queue.
+
+Most of the times we use either <<dataforwarder.adoc#logstash,logstash>> or <<dataforwarder.adoc#filebeat,filebeat>> to gather events and ship them to <<kafka.adoc#,kafka>>.
+
+Our ETL components components polls this queue and store the event into <<elasticsearch.adoc#,elasticsearch>>.
+
+You can use <<kibana.adoc#,kibana>> to search through your events.
+
+You can use <<elasticsearch.adoc#,elasticsearch>> API to search through your events programmatically.
+
+== Metrics
+
+Metrics are exposed in Prometheus format.
+
+== Developers entry points
+* <<developpers/events.adoc#,Configuring Events>>
+* <<developpers/metrics.adoc#,Exposing metrics>>
+
+
+== Client Information and Links
+
+=== Web Interfaces
+* <<kibana.adoc#,kibana>> : SERVICE_KIBANA_ENDPOINT
+
+=== Data Forwarders
+* <<dataforwarder.adoc#logstash,logstash>> - Log Parser and Forwarder
+* <<dataforwarder.adoc#filebeat,filebeat>> - Lightweight Log Forwarder
+
+==== Kafka Information - Data Gateway and Pipeline
+* kafka brokers : SERVICE_KAFKA_ENDPOINT:9092
+* Event topic name : `SERVICE_KAFKA_EVENT_TOPIC`
+
+=== Additional Information
+* https://www.elastic.co/[Elastic Stack]
+
+== Client APIs
+
+* elasticsearch-api : SERVICE_ELASTICSEARCH_ENDPOINT
+
+== Support
+Need help ? Contact us at SERVICE_SUPPORT_EMAIL

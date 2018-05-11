@@ -1,0 +1,25 @@
+language: java
+
+sudo: true
+
+services:
+  - docker
+
+cache:
+  directories:
+    - $HOME/.m2
+    - /home/travis/build/skalogs/skaetl/skaetl-frontend/node_modules
+jdk:
+  - oraclejdk8
+os:
+  - linux
+
+install:
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dasciidoctor.skip -Ddockerfile.skip -Dskip.npm -B -V
+
+script:
+  - mvn verify -B
+
+after_success:
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - mvn dockerfile:push

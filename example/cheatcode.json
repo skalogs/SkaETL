@@ -1,0 +1,31 @@
+{
+  "idProcess": "100",
+  "idContainer": "101",
+  "name": "testcheatcode",
+  "statusProcess": "ENABLE",
+  "timestamp": "",
+  "processInput": {
+    "host": "localhost",
+    "port": "9092",
+    "topicInput": "processtopic",
+    "id": "string"
+  },
+  "processParser": {
+  },
+  "processValidation": [
+  ],
+  "processTransformation": [
+  ],
+  "processFilter": [
+  ],
+  "processMetric": [
+  ],
+  "processOutput": {
+    "topicOut": "string",
+    "typeOutput": "ELASTICSEARCH",
+    "elasticsearchOutput": {
+      "retentionLevel": "week"
+    },
+    "id": "string"
+  }
+}

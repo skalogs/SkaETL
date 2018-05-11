@@ -1,0 +1,21 @@
+= Data Forwarder
+
+== Logstash
+
+=== What's that ?
+
+Logstash is a tool for collecting, analyzing, formatting and redistributing streams of strings (logs for example) via configuration files and plugins.
+
+The differents settings  of logstash are defined in configuration files.
+
+A Logstash pipeline has two required elements, <<dataforwarders/logstash.adoc#Logstash inputs,inputs>> and <<dataforwarders/logstash.adoc#Logstash outputs,outputs>>, and one optional element, <<dataforwarders/logstash.adoc#Logstash filters,filters>>.
+
+The input plugins consume data from a source, the filter plugins modify the data as you specify, and the output plugins write the data to a destination.
+
+To configure logstash please refer to <<dataforwarders/logstash.adoc#,logstash>>
+
+== Filebeat
+
+== Packetbeat
+
+== Metricbeat

@@ -1,0 +1,481 @@
+= Metrics Guide for developers
+
+== Introduction
+
+In order to expose metrics in the monitoring platform you need to :
+
+* Add <<Dependencies,prometheus client dependencies>>
+* <<Exposing metrics,Register your own metrics>>
+* <<For Rancher based applications, Add labels>> in your Dockerfile or docker-compose.yml (Optional for rancher based environment)
+* Install metrics stack from the catalog (Optional for rancher based environment)
+
+== Dependencies
+
+Add the following dependencies in your pom.xml :
+
+```xml
+<dependency>
+    <groupId>io.prometheus</groupId>
+    <artifactId>simpleclient</artifactId>
+    <version>0.1.0</version>
+</dependency>
+<dependency>
+    <groupId>io.prometheus</groupId>
+    <artifactId>simpleclient_httpserver</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
+=== For Spring Boot based application
+If you use spring boot, you should also add :
+```xml
+<dependency>
+    <groupId>com.moelholm</groupId>
+    <artifactId>prometheus-spring-boot-starter</artifactId>
+    <version>1.0.1</version>
+</dependency>
+```
+
+This is Spring Boot Starter module for activating a Prometheus endpoint in Spring Boot applications.
+
+The default Spring Boot Actuator endpoint - designed for Prometheus is : http://localhost:8080/prometheus
+
+The path can be configured with the following property :
+```
+endpoints.prometheus.path      = /prometheus
+```
+
+If you curl that you will get something like:
+
+```
+# HELP heap_used heap_used
+# TYPE heap_used gauge
+```
+Exactly how Prometheus likes it.
+
+== For Rancher based applications
+
+In order to help us to know on which port and path to track your own metrics we need need you to put labels within your
+containers or docker-compose.yml.
+
+We will only track containers/services with `com.prometheus.monitoring` label set to true.
+By default we will collect metrics using port `8083` and with the path `_metrics` but this can be configured explicitly
+by setting `com.prometheus.port` and `com.prometheus.metricspath` labels.
+
+Example in a Dockerfile
+
+```
+FROM ...
+
+LABEL com.prometheus.monitoring='true'
+LABEL com.prometheus.port='8080'
+LABEL com.prometheus.metricspath='/prometheus'
+```
+
+Example in a docker-compose.yml
+```
+FROM ...
+version: '2'
+services:
+  importer:
+    labels:
+      com.prometheus.monitoring: 'true'
+      com.prometheus.port: '8080'
+      com.prometheus.metricspath: '/prometheus'
+    image: YOURIMAGE:VERSION
+```
+
+
+== Exposing metrics
+
+You can now expose different kind of metrics :
+
+  * <<Counter>> : a cumulative metric that represents a single numerical value that only ever goes up (requests served, tasks completed, errors occurred, etc).
+  * <<Gauge>> : a metric that represents a single numerical value that can arbitrarily go up and down ( temperatures or current memory usage, but also "counts" that can go up and down).
+  * <<Histogram>> : samples observations (usually things like request durations or response sizes) and counts them in configurable buckets. It also provides a sum of all observed values.
+  * <<Summary>> : samples observations (usually things like request durations and response sizes). While it also provides a total count of observations and a sum of all observed values, it calculates configurable quantiles over a sliding time window.
+
+See https://prometheus.io/docs/concepts/metric_types/[Official Documentation] to get more details on the different types and http://prometheus.io/docs/practices/instrumentation/#counter-vs.-gauge,-summary-vs.-histogram[Instrumentation Best Practices].
+
+We strongly recommend to follow https://prometheus.io/docs/practices/naming/[Prometheus Naming Conventions] regarding naming.
+
+=== Counter
+
+Counters go up, and reset when the process restarts.
+
+
+```java
+import io.prometheus.client.Counter;
+class YourClass {
+  static final Counter requests = Counter.build()
+     .name("requests_total").help("Total requests.").register();
+
+  void processRequest() {
+    requests.inc();
+    // Your code here.
+  }
+}
+```
+
+=== Gauge
+
+Gauges can go up and down.
+
+```java
+class YourClass {
+  static final Gauge inprogressRequests = Gauge.build()
+     .name("inprogress_requests").help("Inprogress requests.").register();
+
+  void processRequest() {
+    inprogressRequest.inc();
+    // Your code here.
+    inprogressRequest.dec();
+  }
+}
+```
+
+There are utilities for common use cases:
+
+```java
+gauge.setToCurrentTime(); // Set to current unixtime.
+```
+
+As an advanced use case, a `Gauge` can also take its value from a callback by using the `setChild()` method.
+Keep in mind that the default `inc()`, `dec()` and `set()` methods on Gauge take care of thread safety, so
+when using this approach ensure the value you are reporting accounts for concurrency.
+
+
+=== Summary
+
+Summaries track the size and number of events.
+
+```java
+class YourClass {
+  static final Summary receivedBytes = Summary.build()
+     .name("requests_size_bytes").help("Request size in bytes.").register();
+  static final Summary requestLatency = Summary.build()
+     .name("requests_latency_seconds").help("Request latency in seconds.").register();
+
+  void processRequest(Request req) {
+    Summary.Timer requestTimer = requestLatency.startTimer();
+    try {
+      // Your code here.
+    } finally {
+      receivedBytes.observe(req.size());
+      requestTimer.observeDuration();
+    }
+  }
+}
+```
+
+There are utilities for timing code and support for https://prometheus.io/docs/practices/histograms/#quantiles[quantiles].
+Essentially quantiles aren't aggregatable and add some client overhead for the calculation.
+
+```java
+class YourClass {
+  static final Summary requestLatency = Summary.build()
+    .quantile(0.5, 0.05)   // Add 50th percentile (= median) with 5% tolerated error
+    .quantile(0.9, 0.01)   // Add 90th percentile with 1% tolerated error
+    .name("requests_latency_seconds").help("Request latency in seconds.").register();
+
+  void processRequest(Request req) {
+    requestLatency.timer(new Runnable() {
+      public abstract void run() {
+        // Your code here.
+      }
+    });
+
+
+    // Or the Java 8 lambda equivalent
+    requestLatency.timer(() -> {
+      // Your code here.
+    });
+  }
+}
+```
+
+=== Histogram
+
+Histograms track the size and number of events in buckets.
+This allows for aggregatable calculation of quantiles.
+
+```java
+class YourClass {
+  static final Histogram requestLatency = Histogram.build()
+     .name("requests_latency_seconds").help("Request latency in seconds.").register();
+
+  void processRequest(Request req) {
+    Histogram.Timer requestTimer = requestLatency.startTimer();
+    try {
+      // Your code here.
+    } finally {
+      requestTimer.observeDuration();
+    }
+  }
+}
+```
+
+The default buckets are intended to cover a typical web/rpc request from milliseconds to seconds.
+They can be overridden with the `buckets()` method on the `Histogram.Builder` class.
+
+There are utilities for timing code:
+
+```java
+class YourClass {
+  static final Histogram requestLatency = Histogram.build()
+     .name("requests_latency_seconds").help("Request latency in seconds.").register();
+
+  void processRequest(Request req) {
+    requestLatency.timer(new Runnable() {
+      public abstract void run() {
+        // Your code here.
+      }
+    });
+
+
+    // Or the Java 8 lambda equivalent
+    requestLatency.time(() -> {
+      // Your code here.
+    });
+  }
+}
+```
+
+=== Labels
+
+All metrics can have labels, allowing grouping of related time series.
+
+See the best practices on http://prometheus.io/docs/practices/naming/[naming]
+and http://prometheus.io/docs/practices/instrumentation/#use-labels[labels].
+
+Taking a counter as an example:
+
+```java
+class YourClass {
+  static final Counter requests = Counter.build()
+     .name("my_library_requests_total").help("Total requests.")
+     .labelNames("method").register();
+
+  void processGetRequest() {
+    requests.labels("get").inc();
+    // Your code here.
+  }
+}
+```
+
+=== Registering Metrics
+
+The best way to register a metric is via a `static final` class variable as is common with loggers.
+
+```java
+static final Counter requests = Counter.build()
+   .name("my_library_requests_total").help("Total requests.").labelNames("path").register();
+```
+
+Using the default registry with variables that are `static` is ideal since registering a metric with the same name
+is not allowed and the default registry is also itself static. You can think of registering a metric, more like
+registering a definition (as in the `TYPE` and `HELP` sections). The metric 'definition' internally holds the samples
+that are reported and pulled out by Prometheus. Here is an example of registering a metric that has no labels.
+
+```java
+class YourClass {
+  static final Gauge activeTransactions = Gauge.build()
+     .name("my_library_transactions_active")
+     .help("Active transactions.")
+     .register();
+
+  void processThatCalculates(String key) {
+    activeTransactions.inc();
+    try {
+        // Perform work.
+    } finally{
+        activeTransactions.dec();
+    }
+  }
+}
+```
+
+To create timeseries with labels, include `labelNames()` with the builder. The `labels()` method looks up or creates
+the corresponding labelled timeseries. You might also consider storing the labelled timeseries as an instance variable if it is
+appropriate. It is thread safe and can be used multiple times, which can help performance.
+
+
+```java
+class YourClass {
+  static final Counter calculationsCounter = Counter.build()
+     .name("my_library_calculations_total").help("Total calls.")
+     .labelNames("key").register();
+
+  void processThatCalculates(String key) {
+    calculationsCounter.labels(key).inc();
+    // Run calculations.
+  }
+}
+```
+
+
+== Included Collectors
+
+The Java client includes collectors for garbage collection, memory pools, JMX, classloading, and thread counts.
+These can be added individually or just use the `DefaultExports` to conveniently register them.
+
+```java
+DefaultExports.initialize();
+```
+
+=== Caches
+
+To register the Guava cache collector, be certain to add `recordStats()` when building
+the cache and adding it to the registered collector.
+
+```java
+CacheMetricsCollector cacheMetrics = new CacheMetricsCollector().register();
+
+Cache<String, String> cache = CacheBuilder.newBuilder().recordStats().build();
+cacheMetrics.addCache("myCacheLabel", cache);
+```
+
+The Caffeine equivalent is nearly identical. Again, be certain to call `recordStats()`
+ when building the cache so that metrics are collected.
+
+```java
+CacheMetricsCollector cacheMetrics = new CacheMetricsCollector().register();
+
+Cache<String, String> cache = Caffeine.newBuilder().recordStats().build();
+cacheMetrics.addCache("myCacheLabel", cache);
+```
+
+=== Hibernate
+
+There is a collector for Hibernate which allows to collect metrics from one or more
+`SessionFactory` instances.
+
+If you want to collect metrics from a single `SessionFactory`, you can register
+the collector like this:
+
+```java
+new HibernateStatisticsCollector(sessionFactory, "myapp").register();
+```
+
+In some situations you may want to collect metrics from multiple factories. In this
+case just call `add()` on the collector for each of them.
+
+```java
+new HibernateStatisticsCollector()
+    .add(sessionFactory1, "myapp1")
+    .add(sessionFactory2, "myapp2")
+    .register();
+```
+
+If you are using Hibernate in a JPA environment and only have access to the `EntityManager`
+or `EntityManagerFactory`, you can use this code to access the underlying `SessionFactory`:
+
+```java
+SessionFactory sessionFactory = entityManagerFactory.unwrap(SessionFactory.class);
+```
+=== Jetty
+
+There is a collector for recording various Jetty server metrics. You can do it by  registering the collector like this:
+
+```java
+// Configure StatisticsHandler.
+StatisticsHandler stats = new StatisticsHandler();
+stats.setHandler(server.getHandler());
+server.setHandler(stats);
+// Register collector.
+new JettyStatisticsCollector(stats).register();
+
+```
+
+Also, you can collect `QueuedThreadPool` metrics. If there is a single `QueuedThreadPool`
+to keep track of, use the following:
+
+```java
+new QueuedThreadPoolStatisticsCollector(queuedThreadPool, "myapp").register();
+```
+
+If you want to collect multiple `QueuedThreadPool` metrics, also you can achieve it like this:
+
+```java
+new QueuedThreadPoolStatisticsCollector()
+    .add(queuedThreadPool1, "myapp1")
+    .add(queuedThreadPool2, "myapp2")
+    .register();
+```
+
+=== Servlet Filter
+
+There is a servlet filter available for measuring the duration taken by servlet
+requests. The `metric-name` init parameter is required, and is the name of the
+metric prometheus will expose for the timing metrics. Help text via the `help`
+init parameter is not required, although it is highly recommended.  The number
+of buckets is overridable, and can be configured by passing a comma-separated
+string of doubles as the `buckets` init parameter. The granularity of path
+measuring is also configurable, via the `path-components` init parameter. By
+default, the servlet filter will record each path differently, but by setting an
+integer here, you can tell the filter to only record up to the Nth slashes. That
+is, all requests with greater than N "/" characters in the servlet URI path will
+be measured in the same bucket and you will lose that granularity.
+
+The code below is an example of the XML configuration for the filter. You will
+need to place this (replace your own values) code in your
+`webapp/WEB-INF/web.xml` file.
+
+```xml
+<filter>
+  <filter-name>prometheusFilter</filter-name>
+  <filter-class>net.cccnext.ssp.portal.spring.filter.PrometheusMetricsFilter</filter-class>
+  <init-param>
+    <param-name>metric-name</param-name>
+    <param-value>webapp_metrics_filter</param-value>
+  </init-param>
+  <init-param>
+    <param-name>help</param-name>
+    <param-value>This is the help for your metrics filter</param-value>
+  </init-param>
+  <init-param>
+    <param-name>buckets</param-name>
+    <param-value>0.005,0.01,0.025,0.05,0.075,0.1,0.25,0.5,0.75,1,2.5,5,7.5,10</param-value>
+  </init-param>
+  <!-- Optionally override path components; anything less than 1 (1 is the default)
+       means full granularity -->
+  <init-param>
+    <param-name>path-components</param-name>
+    <param-value>1</param-value>
+  </init-param>
+</filter>
+
+<!-- You will most likely want this to be the first filter in the chain
+(therefore the first <filter-mapping> in the web.xml file), so that you can get
+the most accurate measurement of latency. -->
+<filter-mapping>
+  <filter-name>prometheusFilter</filter-name>
+  <url-pattern>/*</url-pattern>
+</filter-mapping>
+```
+
+Additionally, you can instantiate your servlet filter directly in Java code. To
+do this, you just need to call the non-empty constructor. The first parameter,
+the metric name, is required. The second, help, is optional but highly
+recommended. The last two (path-components, and buckets) are optional and will
+default sensibly if omitted.
+
+=== Spring AOP
+
+There is a Spring AOP collector that allows you to annotate methods that you
+would like to instrument with a <<Summary>>, but without going through
+the process of manually instaniating and registering your metrics classes. To
+use the metrics annotations, simply add `simpleclient_spring_web` as a
+dependency, annotate a configuration class with `@EnablePrometheusTiming`, then
+annotate your Spring components as such:
+
+```java
+@Controller
+public class MyController {
+  @RequestMapping("/")
+  @PrometheusTimeMethod(name = "my_controller_path_duration_seconds", help = "Some helpful info here")
+  public Object handleMain() {
+    // Do something
+  }
+}
+```

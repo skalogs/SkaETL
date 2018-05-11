@@ -1,0 +1,53 @@
+= Event Format
+
+== Required fields
+
+The fields listed below __must be added to each event/document__ in order for it to be integrated.  Events missing these fields will be rejected.
+
+* `@timestamp`: must be an ISO 8601 link:http://en.wikipedia.org/wiki/ISO_8601[datetime]
+* `project`: Name of your project
+* `type`: Event/Document Type, often based on the log/application generating the event.
+** For ex.: apache_logs, tomcat_logs...).
+** Value may only used the following characters: `[a-zA-Z0-9_-]`
+* `retention`: Defines the data retention for the events
+** week
+** month
+** quarter
+** year
+
+== Index names
+
+Index names are the concatenation of
+
+* cluster name
+* `project`
+* `type`
+* `retention`
+* date `YYYY-MM-dd`
+
+example :
+
+    cluster-type-007-2015-12-30
+
+
+== Field Mappings
+
+__Field names must only use these characters__: `[a-zA-Z0-9_@-]` and have less than 256 characters
+
+The following suffixes must be used if you with to change the field link:https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html[data type].
+
+* String standardised (lowercase) with tokenizer link:https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-uaxurlemail-tokenizer.html[uax_url_email] of type  with `_ue`
+** good for mail/username and url in search and graph using terms
+* String standardised (lowercase) with tokenizer link:https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pathhierarchy-tokenizer.html[path_hierarchy] with `_path`
+** good for search in path and url (split only on / char).
+* ip must be suffixed with `_ip`
+* geo_point must be suffixed with `_gp`
+* geo_shape must be suffixed with `_gs`
+* Not Analyzed string - must be suffixed with `_na`
+** link:https://www.elastic.co/guide/en/elasticsearch/guide/current/analysis-intro.html[More information about analyzers.]
+
+== Log Events
+
+__Event/Document size is currently limited to 500Ko max.__
+
+Log events must be sent using the global format to the kafka topic event.

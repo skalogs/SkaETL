@@ -1,0 +1,43 @@
+version: '2'
+services:
+  zookeeper:
+    image: "zookeeper:3.4"
+    ports:
+    - "2181:2181"
+  kafka:
+    image: "ches/kafka"
+    links:
+    - zookeeper
+    environment:
+      - KAFKA_ADVERTISED_HOST_NAME=127.0.0.1
+      - ZOOKEEPER_IP=zookeeper
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+    ports:
+      - "9092:9092"
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch-platinum:6.0.1
+    environment:
+      - ELASTIC_PASSWORD=changeme
+    ports:
+    - "9200:9200"
+    - "9300:9300"
+  kibana:
+    image: docker.elastic.co/kibana/kibana:6.0.1
+    ports:
+    - "5600:5601"
+  #packetbeat:
+  #  image: docker.elastic.co/beats/packetbeat:6.0.1
+  #  cap_add:
+  #  - NET_ADMIN
+  #  network_mode: host
+  #  volumes:
+  #  - ./config/packetbeat.yml:/usr/share/packetbeat/packetbeat.yml
+  #metricbeat:
+  #  image: docker.elastic.co/beats/metricbeat:6.0.1
+  #  network_mode: host
+  #  volumes:
+  #  - ./config/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+  #  - /proc:/hostfs/proc:ro
+  #  - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+  #  - /:/hostfs:ro
+
