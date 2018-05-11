@@ -1,6 +1,6 @@
 # SkaETL
 
-Skalogs ETL
+SkaLogs ETL
 
 ## How-Tos
 
