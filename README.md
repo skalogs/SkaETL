@@ -1,27 +1,43 @@
 # SkaETL
 
-SkaLogs ETL
-
+SkaLogs ETL is a unique real time ETL designed for and dedicated to Logs and Events.
+ 
 [![Build Status](https://travis-ci.com/skalogs/SkaETL.svg?branch=master)](https://travis-ci.com/skalogs/SkaETL)
 
-## How-Tos
+Core features :
 
-#### How to add a new transformation for the process consumers
+ * Centralized Logstash Configuration
+ * Ingestion Pipeline handling through guided workflow
+ * Build data referential on the fly based on events processed by SkaETL
+ * Build metrics on the fly  
+ 
+SkaETL parses and enhance data from Kafka topics to any output :
+* Kafka (enhanced topics)
+* Elasticsearch
+* Email
+* Slack
+* more to come...
 
-**Core**
-- Add the transformation type in `io.skalogs.skaetl.domain.TypeValidation.java` file
+## Requirements
 
-**BackEnd**
-- Add a new Maven dependency in `pom.xml` file (Optional)
--
-
-**FrontEnd**
-- Add the transformation type in `add/Transformation.vue`
-- Modify the `actionView` method in `add/Transformation.vue`
-- Add the transformation type in `edit/Transformation.vue`
+* Java >= 1.8 
+* Kafka 1.0.0
 
 
-**ProcessImporterImpl**
-- Create the new Transformator implementation in `io.skalogs.skaetl.service` package
-- Add the new transformator in `io.skalogs.skaetl.service.GenericTransformator.java.init()`
+## Building the Source
 
+SkaETL is built using [Apache Maven](http://maven.apache.org/).
+
+Build the full project and run tests: 
+```sh
+$ mvn clean install
+```
+
+Build without tests: 
+```sh
+$ mvn clean install -DskipTests
+```
+
+## License
+
+SkaETL is released under Apache License 2.0.
