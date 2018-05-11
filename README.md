@@ -2,6 +2,8 @@
 
 SkaLogs ETL
 
+[![Build Status](https://travis-ci.com/skalogs/SkaETL.svg?branch=master)](https://travis-ci.com/skalogs/SkaETL)
+
 ## How-Tos
 
 #### How to add a new transformation for the process consumers
