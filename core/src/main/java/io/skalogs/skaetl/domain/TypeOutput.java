@@ -6,5 +6,6 @@ public enum TypeOutput {
     SYSTEM_OUT,
     ELASTICSEARCH,
     EMAIL,
-    SLACK
+    SLACK,
+    SNMP
 }
