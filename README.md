@@ -11,7 +11,7 @@ Core features :
  * Build data referential on the fly based on events processed by SkaETL
  * Build metrics on the fly  
  
-SkaETL parses and enhance data from Kafka topics to any output :
+SkaETL parses and enhances data from Kafka topics to any output :
 * Kafka (enhanced topics)
 * Elasticsearch
 * Email
