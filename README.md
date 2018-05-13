@@ -10,6 +10,13 @@ Core features :
  * Ingestion Pipeline handling through guided workflow
  * Build data referential on the fly based on events processed by SkaETL
  * Build metrics on the fly
+ 
+ SkaETL parses and enhances data from Kafka topics to any output :
+ * Kafka (enhanced topics)
+ * Elasticsearch
+ * Email
+ * Slack
+ * more to come...
 
 Detailed features :
 
@@ -29,13 +36,7 @@ Detailed features :
  * Monitoring - Alerts: Real-time monitoring, alerts and notifications based on events and thresholds
  * Visualization: dashboard to monitor in real-time all your ingestion processes, metrics, referentials, kafka live stream
  * Output: Kafka, ES, email, Slack, more to come...
- 
-SkaETL parses and enhances data from Kafka topics to any output :
-* Kafka (enhanced topics)
-* Elasticsearch
-* Email
-* Slack
-* more to come...
+
 
 ## Requirements
 
