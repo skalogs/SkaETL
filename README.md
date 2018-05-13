@@ -12,10 +12,10 @@ Core features :
  * Build metrics on the fly
  
  SkaETL parses and enhances data from Kafka topics to any output :
+ 
  * Kafka (enhanced topics)
  * Elasticsearch
- * Email
- * Slack
+ * Notfications : email, Slack
  * more to come...
 
 Detailed features :
