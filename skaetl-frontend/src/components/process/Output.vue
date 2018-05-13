@@ -85,7 +85,7 @@
     },
     data: function () {
       return {
-        typeOut: ["KAFKA","SYSTEM_OUT","ELASTICSEARCH","EMAIL","SLACK"],
+        typeOut: ["KAFKA","SYSTEM_OUT","ELASTICSEARCH","EMAIL","SLACK","SNMP"],
         typeRetention: ["week","month","quarter","year"],
         currentProcessOutput: {"typeOutput": "ELASTICSEARCH",
                                "parameterOutput": {"topicOut": "output-topic",
@@ -114,6 +114,9 @@
       },
       viewEmail() {
         return this.currentProcessOutput.typeOutput == "EMAIL";
+      },
+      viewSnmp() {
+        return this.currentProcessOutput.typeOutput == "SNMP";
       }
     }
   }
