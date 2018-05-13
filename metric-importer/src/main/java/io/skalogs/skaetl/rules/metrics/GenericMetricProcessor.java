@@ -11,6 +11,7 @@ import io.skalogs.skaetl.rules.metrics.domain.MetricResult;
 import io.skalogs.skaetl.rules.metrics.processor.MetricsElasticsearchProcessor;
 import io.skalogs.skaetl.rules.metrics.processor.MetricsEmailProcessor;
 import io.skalogs.skaetl.rules.metrics.processor.MetricsSlackProcessor;
+import io.skalogs.skaetl.rules.metrics.processor.MetricsSnmpProcessor;
 import io.skalogs.skaetl.rules.metrics.serdes.MetricsSerdes;
 import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;
 import io.skalogs.skaetl.serdes.GenericSerdes;
@@ -160,6 +161,9 @@ public abstract class GenericMetricProcessor {
                     break;
                 case SLACK:
                     toSlack(result, processOutput.getParameterOutput());
+                    break;
+                case SNMP:
+                    toSnmp(result, processOutput.getParameterOutput());
             }
         }
 
@@ -186,6 +190,11 @@ public abstract class GenericMetricProcessor {
 
     protected void toSystemOut(KStream<Keys, MetricResult> result) {
         AbstractProcessor abstractProcessor = applicationContext.getBean(LoggingProcessor.class);
+        result.process(() -> abstractProcessor);
+    }
+
+    private void toSnmp(KStream<Keys, MetricResult> result, ParameterOutput parameterOutput) {
+        AbstractProcessor abstractProcessor = applicationContext.getBean(MetricsSnmpProcessor.class);
         result.process(() -> abstractProcessor);
     }
 
