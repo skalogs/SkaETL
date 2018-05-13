@@ -26,10 +26,12 @@ public class SnmpService {
 
     public void init() {
 
+        log.info("here");
+
         try {
             targetAddress = GenericAddress.parse("udp:" + snmpConfiguration.getIpAddress() + "/" + snmpConfiguration.getPort());
             TransportMapping<?> transport = new DefaultUdpTransportMapping();
-            Snmp snmp = new Snmp(transport);
+            snmp = new Snmp(transport);
             USM usm = new USM(SecurityProtocols.getInstance()
                     .addDefaultProtocols(), new OctetString(
                     MPv3.createLocalEngineID()), 0);
