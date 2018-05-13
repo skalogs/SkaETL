@@ -15,10 +15,10 @@ Detailed features :
 
  * REAL TIME: real-time streaming, transformation, analysis, standardization, calculations and visualization of all your        ingested and processed data
  * GUIDED WORKFLOWS:
-   ** "consumer processes" (data ingestion pipelines) to guide you through transformation, normalization, analysis - avoiding      the tedious task of transforming different types of Logs via Logstash
-   ** Optional metrics computations via simple functions or complex customized functions via SkaLogs Language
-   ** Optional alerts and notifications
-   ** Referentials creation for further reuse
+   * "consumer processes" (data ingestion pipelines) to guide you through transformation, normalization, analysis - avoiding      the tedious task of transforming different types of Logs via Logstash
+   * Optional metrics computations via simple functions or complex customized functions via SkaLogs Language
+   * Optional alerts and notifications
+   * Referentials creation for further reuse
  * LOGSTASH CONFIGURATION GENERATOR:  on the fly Logstash configuration generator
  * PARSING: grok, nitro, cef, with simulation tool
  * ERROR RETRY MECHANISM: automated mechanism for re-processing data ingestion errors
