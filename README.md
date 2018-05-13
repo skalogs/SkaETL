@@ -11,7 +11,7 @@ Core features :
  * Build data referential on the fly based on events processed by SkaETL
  * Build metrics on the fly
 
-Detailed Features :
+Detailed features :
 
  * REAL TIME: real-time streaming, transformation, analysis, standardization, calculations and visualization of all your        ingested and processed data
  * GUIDED WORKFLOWS:
@@ -28,7 +28,7 @@ Detailed Features :
  * SKALOGS LANGUAGE: Complex queries, event correlations (SIEM) and calculations, with an easy-to-use SQL-like language
  * MONITORING - ALERTS: Real-time monitoring, alerts and notifications based on events and thresholds
  * VISUALIZATION: dashboard to monitor in real-time all your ingestion processes, metrics, referentials, kafka live stream
- * OTPUT: Kafka, ES, email, Slack, more to come...
+ * OUTPUT: Kafka, ES, email, Slack, more to come...
  
 SkaETL parses and enhances data from Kafka topics to any output :
 * Kafka (enhanced topics)
