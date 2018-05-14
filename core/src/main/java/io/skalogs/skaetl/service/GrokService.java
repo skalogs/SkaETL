@@ -26,7 +26,7 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class GrokService {
 
-    private GrokCompiler grokInstance;
+    private final GrokCompiler grokInstance = GrokCompiler.newInstance();
     private final GrokRepository grokRepository;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -36,7 +36,6 @@ public class GrokService {
 
     @PostConstruct
     public void setup() {
-        grokInstance = GrokCompiler.newInstance();
         loadAll();
     }
 
