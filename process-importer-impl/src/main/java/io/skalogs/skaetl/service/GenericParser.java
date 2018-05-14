@@ -24,7 +24,6 @@ public class GenericParser {
     private final CEFParser cefParser;
     private final NitroParser nitroParser;
     private final CSVParser csvParser;
-    private final static String BLANK ="";
     private final Producer<String, String> failParserProducer;
 
     public GenericParser(GrokParser grokParser, CEFParser cefParser, NitroParser nitroParser, CSVParser csvParser,KafkaConfiguration kafkaConfiguration) {

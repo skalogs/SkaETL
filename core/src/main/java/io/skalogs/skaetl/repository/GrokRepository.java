@@ -17,14 +17,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class GrokRepository extends AbstractKafkaRepository<GrokData> {
 
-    private final Producer<String, String> producerGrok;
-
     public GrokRepository(KafkaAdminService kafkaAdminService, KafkaConfiguration kafkaConfiguration) {
         super("grok-referential",
                 Serdes.serdeFrom(new GenericSerializer<>(), new GenericDeserializer<>(GrokData.class)),
                 grokRawData -> grokRawData.getKey(),
                 kafkaAdminService,
                 kafkaConfiguration);
-        this.producerGrok = KafkaUtils.kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, StringSerializer.class);
     }
 }
