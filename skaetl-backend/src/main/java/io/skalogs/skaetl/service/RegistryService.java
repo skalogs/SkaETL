@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -107,21 +108,6 @@ public class RegistryService {
         triggerAction(consumerState, "deactivate", StatusProcess.DISABLE, StatusProcess.DISABLE);
     }
 
-    public void register(ProcessDefinition processDefinition, WorkerType workerType, StatusProcess statusProcess) {
-        ConsumerState consumerState = new ConsumerState(processDefinition, workerType, statusProcess);
-        consumerStateRepository.save(consumerState);
-    }
-
-    public void updateStatus(String idProcess, StatusProcess statusProcess) {
-        ConsumerState consumerState = consumerStateRepository.findByKey(idProcess);
-        consumerStateRepository.save(consumerState.withStatusProcess(statusProcess));
-    }
-
-    public void updateProcessDefinition(ProcessDefinition processDefinition) {
-        ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
-        consumerStateRepository.save(consumerState.withProcessDefinition(processDefinition));
-    }
-
     public void createOrUpdateProcessDefinition(ProcessDefinition processDefinition, WorkerType workerType, StatusProcess statusProcess) {
         ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
         if (consumerState == null) {
@@ -132,11 +118,23 @@ public class RegistryService {
         }
     }
 
+    public void rescale(ProcessDefinition processDefinition, int scale) {
+        ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
+        if (consumerState.getStatusProcess() == StatusProcess.ENABLE) {
+            deactivate(processDefinition);
+            consumerState = assignConsumerToWorkers(consumerState.withNbInstance(scale));
+            triggerAction(consumerState, "activate", StatusProcess.ENABLE, StatusProcess.ERROR);
+        } else {
+            assignConsumerToWorkers(consumerState.withNbInstance(scale));
+        }
+    }
+
     // Internal apis
-    private RegistryWorker getWorkerAvailable(WorkerType workerType) throws Exception {
+    private RegistryWorker getWorkerAvailable(WorkerType workerType, Set<String> alreadyAssignedWorkers) throws Exception{
         return workerRepository.findAll().stream()
                 .filter(e -> e.getWorkerType() == workerType)
                 .filter(e -> e.getStatus() == StatusWorker.OK)
+                .filter(e -> !alreadyAssignedWorkers.contains(e.getFQDN()))
                 .findFirst().orElseThrow(() -> new Exception("No Worker Available"));
     }
 
@@ -169,7 +167,8 @@ public class RegistryService {
         try {
             int nbWorkerToAssign = consumerState.getNbInstance() - consumerState.getRegistryWorkers().size();
             for (int i = 0; i < nbWorkerToAssign; i++) {
-                consumerState.getRegistryWorkers().add(getWorkerAvailable(consumerState.getWorkerType()).getFQDN());
+                RegistryWorker workerAvailable = getWorkerAvailable(consumerState.getWorkerType(), consumerState.getRegistryWorkers());
+                consumerState.getRegistryWorkers().add(workerAvailable.getFQDN());
             }
 
         } catch (Exception e) {

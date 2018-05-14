@@ -13,6 +13,7 @@ public class ProcessConstants {
     public static final String SYSOUT_PROCESS = "sysoutprocess";
     public static final String EMAIL_PROCESS = "emailprocess";
     public static final String SLACK_PROCESS = "slackprocess";
+    public static final String SNMP_PROCESS = "snmpprocess";
     public static final String TOPIC_TREAT_PROCESS = "treatprocess";
     public static final String TOPIC_PARSED_PROCESS = "parsedprocess";
     public static final String ERROR_PARSING = "ERROR_PARSING";

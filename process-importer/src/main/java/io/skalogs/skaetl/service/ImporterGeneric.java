@@ -29,19 +29,21 @@ public class ImporterGeneric extends AbstractGenericImporter {
     private final KafkaAdminService kafkaAdminService;
     private final ApplicationContext applicationContext;
     private final EmailService emailService;
+    private final SnmpService snmpService;
 
     @PostConstruct
     public void init() {
         sendToRegistry("addService");
     }
 
-    public ImporterGeneric(ESErrorRetryWriter esErrorRetryWriter, GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, RuleFilterExecutor ruleFilterExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService, ApplicationContext applicationContext, EmailService emailService) {
+    public ImporterGeneric(ESErrorRetryWriter esErrorRetryWriter, GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, RuleFilterExecutor ruleFilterExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService, ApplicationContext applicationContext, EmailService emailService, SnmpService snmpService) {
         super(genericValidator, transformValidator, genericParser, processConfiguration, externalHTTPService);
         this.ruleFilterExecutor = ruleFilterExecutor;
         this.esErrorRetryWriter = esErrorRetryWriter;
         this.kafkaAdminService = kafkaAdminService;
         this.applicationContext = applicationContext;
         this.emailService = emailService;
+        this.snmpService = snmpService;
     }
 
     public void createProcessGeneric(ProcessConsumer processConsumer) {
@@ -71,7 +73,8 @@ public class ImporterGeneric extends AbstractGenericImporter {
                 genericFilters,
                 esErrorRetryWriter,
                 applicationContext.getBean(JsonNodeToElasticSearchProcessor.class),
-                emailService
+                emailService,
+                snmpService
         );
         getListConsumer().add(processStreamService);
         getExecutor().submit(processStreamService);

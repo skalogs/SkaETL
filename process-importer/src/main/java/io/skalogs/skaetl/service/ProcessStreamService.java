@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.rules.filters.GenericFilter;
 import io.skalogs.skaetl.serdes.GenericSerdes;
-import io.skalogs.skaetl.service.processor.JsonNodeEmailProcessor;
-import io.skalogs.skaetl.service.processor.JsonNodeSlackProcessor;
-import io.skalogs.skaetl.service.processor.JsonNodeToElasticSearchProcessor;
-import io.skalogs.skaetl.service.processor.LoggingProcessor;
+import io.skalogs.skaetl.service.processor.*;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -28,13 +25,15 @@ public class ProcessStreamService extends AbstractStreamProcess {
     private final JsonNodeToElasticSearchProcessor elasticSearchProcessor;
     private final List<GenericFilter> genericFilters;
     private final EmailService emailService;
+    private final SnmpService snmpService;
 
-    public ProcessStreamService(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, ProcessConsumer processConsumer, List<GenericFilter> genericFilters, ESErrorRetryWriter esErrorRetryWriter, JsonNodeToElasticSearchProcessor elasticSearchProcessor, EmailService emailService) {
+    public ProcessStreamService(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, ProcessConsumer processConsumer, List<GenericFilter> genericFilters, ESErrorRetryWriter esErrorRetryWriter, JsonNodeToElasticSearchProcessor elasticSearchProcessor, EmailService emailService, SnmpService snmpService) {
         super(genericValidator, transformValidator, genericParser, processConsumer);
         this.esErrorRetryWriter = esErrorRetryWriter;
         this.elasticSearchProcessor = elasticSearchProcessor;
         this.genericFilters = genericFilters;
         this.emailService = emailService;
+        this.snmpService = snmpService;
     }
 
     public void createStreamProcess() {
@@ -47,7 +46,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
     }
 
     private void treatOutput(ProcessOutput processOutput){
-        log.info("create Stream Process for output {}",processOutput);
+        log.info("create Stream Process for output {} / {}",processOutput.getTypeOutput(),processOutput);
         switch (processOutput.getTypeOutput()) {
             case ELASTICSEARCH:
                 log.info("create Stream Process for treat ES");
@@ -64,6 +63,9 @@ public class ProcessStreamService extends AbstractStreamProcess {
                 break;
             case SLACK:
                 createStreamSlack(getProcessConsumer().getIdProcess() + ProcessConstants.TOPIC_TREAT_PROCESS, processOutput.getParameterOutput());
+                break;
+            case SNMP:
+                createStreamSnmp(getProcessConsumer().getIdProcess() + ProcessConstants.TOPIC_TREAT_PROCESS, processOutput.getParameterOutput());
                 break;
             default:
                 log.error("TypeOut not managed {}", getProcessConsumer().getProcessOutput());
@@ -210,5 +212,16 @@ public class ProcessStreamService extends AbstractStreamProcess {
         } else {
             log.error("webHookURL is null and it's not normal");
         }
+    }
+
+    public void createStreamSnmp(String inputTopic, ParameterOutput parameterOutput) {
+
+        StreamsBuilder builder = new StreamsBuilder();
+        builder.stream(inputTopic, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde())).process(() -> new JsonNodeSnmpProcessor(snmpService));
+
+        KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.SNMP_PROCESS, getBootstrapServer()));
+        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
+        streams.start();
+        addStreams(getProcessConsumer().getIdProcess() + ProcessConstants.SNMP_PROCESS, streams);
     }
 }
