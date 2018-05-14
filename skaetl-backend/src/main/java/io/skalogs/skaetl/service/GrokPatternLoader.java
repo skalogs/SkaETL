@@ -1,8 +1,9 @@
 package io.skalogs.skaetl.service;
 
+import io.krakens.grok.api.GrokCompiler;
+import io.krakens.grok.api.exception.GrokException;
+import io.skalogs.skaetl.domain.GrokData;
 import io.skalogs.skaetl.utils.KafkaUtils;
-import io.thekraken.grok.api.Grok;
-import io.thekraken.grok.api.exception.GrokException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
@@ -26,7 +27,7 @@ public class GrokPatternLoader {
     @PostConstruct
     public void init() throws GrokException, IOException {
 
-        Grok grok = new Grok();
+        GrokCompiler grok = GrokCompiler.newInstance();
         loadFromResource(grok, "/patterns/patterns");
         loadFromResource(grok, "/patterns/firewall");
         loadFromResource(grok, "/patterns/haproxy");
@@ -36,20 +37,21 @@ public class GrokPatternLoader {
         loadFromResource(grok, "/patterns/postfix");
         loadFromResource(grok, "/patterns/ruby");
 
-        Map<String, String> patterns = grok.getPatterns();
-        Producer<String, String> grokProducer = kafkaUtils.kafkaProducer();
+        Map<String, String> patterns = grok.getPatternDefinitions();
+        Producer<String, GrokData> grokProducer = kafkaUtils.kafkaGrokProducer();
         for (Map.Entry<String, String> pattern : patterns.entrySet()) {
-            ProducerRecord<String, String> record = new ProducerRecord<>("grok-referential-db", pattern.getKey(), pattern.getValue());
+            log.info(" GrokPatternLoader Produce with key {} value {}",pattern.getKey(),pattern.getValue());
+            ProducerRecord<String, GrokData> record = new ProducerRecord<>("grok-referential-db", pattern.getKey(), GrokData.builder().key(pattern.getKey()).value(pattern.getValue()).build());
             grokProducer.send(record);
         }
     }
 
-    private void loadFromResource(Grok grok, String path) throws IOException, GrokException {
+    private void loadFromResource(GrokCompiler grok, String path) throws IOException, GrokException {
         log.info("Loading grok patterns from {}", path);
         Resource resource = new ClassPathResource(path);
         InputStream dbAsStream = resource.getInputStream();
         InputStreamReader inputStreamReader = new InputStreamReader(dbAsStream);
 
-        grok.addPatternFromReader(inputStreamReader);
+        grok.register(inputStreamReader);
     }
 }

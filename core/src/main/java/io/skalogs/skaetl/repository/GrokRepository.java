@@ -2,6 +2,9 @@ package io.skalogs.skaetl.repository;
 
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.KafkaConfiguration;
+import io.skalogs.skaetl.domain.GrokData;
+import io.skalogs.skaetl.serdes.GenericDeserializer;
+import io.skalogs.skaetl.serdes.GenericSerializer;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
@@ -12,22 +15,16 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class GrokRepository extends AbstractKafkaRepository<String> {
+public class GrokRepository extends AbstractKafkaRepository<GrokData> {
 
     private final Producer<String, String> producerGrok;
 
     public GrokRepository(KafkaAdminService kafkaAdminService, KafkaConfiguration kafkaConfiguration) {
         super("grok-referential",
-                Serdes.String(),
-                grokRawData -> grokRawData,
+                Serdes.serdeFrom(new GenericSerializer<>(), new GenericDeserializer<>(GrokData.class)),
+                grokRawData -> grokRawData.getKey(),
                 kafkaAdminService,
                 kafkaConfiguration);
         this.producerGrok = KafkaUtils.kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, StringSerializer.class);
     }
-
-    public void save(String key, String value) {
-        producerGrok.send(new ProducerRecord<>(getRepositoryName(), key, value));
-        producerGrok.flush();
-    }
-
 }

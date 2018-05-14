@@ -1,12 +1,15 @@
 package io.skalogs.skaetl.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.krakens.grok.api.Grok;
+import io.krakens.grok.api.GrokCompiler;
+import io.krakens.grok.api.Match;
+import io.krakens.grok.api.exception.GrokException;
+import io.skalogs.skaetl.domain.GrokData;
 import io.skalogs.skaetl.domain.GrokDomain;
 import io.skalogs.skaetl.domain.GrokResult;
 import io.skalogs.skaetl.domain.GrokResultSimulate;
 import io.skalogs.skaetl.repository.GrokRepository;
-import io.thekraken.grok.api.Grok;
-import io.thekraken.grok.api.Match;
-import io.thekraken.grok.api.exception.GrokException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
@@ -23,8 +26,9 @@ import static java.util.stream.Collectors.toList;
 @Component
 public class GrokService {
 
-    private Grok grokInstance;
+    private GrokCompiler grokInstance;
     private final GrokRepository grokRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public GrokService(GrokRepository grokRepository){
         this.grokRepository = grokRepository;
@@ -32,12 +36,12 @@ public class GrokService {
 
     @PostConstruct
     public void setup() {
-        grokInstance = new Grok();
+        grokInstance = GrokCompiler.newInstance();
         loadAll();
     }
 
     public List<GrokDomain> findGrokPatten(String filter) {
-        return grokInstance.getPatterns().entrySet().stream()
+        return grokInstance.getPatternDefinitions().entrySet().stream()
                 .filter(e -> filterGrok(e, filter))
                 .map(e -> GrokDomain.builder()
                         .keyPattern(e.getKey())
@@ -61,9 +65,9 @@ public class GrokService {
     public void createUserGrok(String key, String value){
         if(StringUtils.isNotBlank(key) && StringUtils.isNotBlank(value)){
             try {
-                grokInstance.addPattern(key,value);
+                grokInstance.register(key,value);
                 log.info("add user grok key {} value {}",key,value);
-                grokRepository.save(key,value);
+                grokRepository.save(GrokData.builder().key(key).value(value).build());
             } catch (GrokException e) {
                 log.error("GrokException for create user grok key {} value {}",key,value);
             }
@@ -76,14 +80,7 @@ public class GrokService {
     private void loadAll(){
         grokRepository.findAll().stream().forEach(grokDataRaw -> {
             try {
-                int firstBlank = grokDataRaw.indexOf(" ");
-                if(firstBlank!= -1) {
-                    String key = grokDataRaw.substring(0,firstBlank);
-                    String value = grokDataRaw.substring(firstBlank+1,grokDataRaw.length());
-                    grokInstance.addPattern(key,value);
-                }else{
-                  log.error("Error in grokDataRaw {}",grokDataRaw);
-                }
+                grokInstance.register(grokDataRaw.getKey(),grokDataRaw.getValue());
             } catch (GrokException e) {
                 log.error("GrokException for grokDataRaw {}",grokDataRaw);
             }
@@ -91,8 +88,8 @@ public class GrokService {
     }
 
     public List<GrokResult> simulateAllPattern(String input) {
-        return grokInstance.getPatterns().entrySet().stream()
-                .map(e -> parseGrok(input, "%{" + e.getKey() + "}", true))
+        return grokInstance.getPatternDefinitions().entrySet().stream()
+                .map(e -> parseGrok(input, "%{" + e.getKey() + "}"))
                 .filter(e -> StringUtils.isBlank(e.messageError))
                 .filter(e -> StringUtils.isNotBlank(e.value))
                 .filter(e -> !e.value.equals("{}"))
@@ -104,7 +101,7 @@ public class GrokService {
         if (StringUtils.isNotBlank(value)) {
             String[] tabLine = value.split("\n");
             for (String item : tabLine) {
-                GrokResult resultItem = parseGrok(item, grokPattern, true);
+                GrokResult resultItem = parseGrok(item, grokPattern);
                 result.add(GrokResultSimulate.builder()
                         .jsonValue(resultItem.value)
                         .value(item)
@@ -115,13 +112,13 @@ public class GrokService {
         return result;
     }
 
-    public GrokResult parseGrok(String value, String grokPattern, Boolean jsonReturn) {
+    public GrokResult parseGrok(String value, String grokPattern) {
         try {
             log.info("parseGrok pattern {} for value {}", grokPattern, value);
-            grokInstance.compile(grokPattern);
-            Match match = grokInstance.match(value);
-            match.captures();
-            return GrokResult.builder().value(jsonReturn ? match.toJson() : match.toString()).pattern(grokPattern).build();
+            Grok grok = grokInstance.compile(grokPattern);
+            Match match = grok.match(value);
+            Map<String, Object> capture = match.capture();
+            return GrokResult.builder().value(objectMapper.writeValueAsString(capture)).pattern(grokPattern).build();
         } catch (GrokException e) {
             log.error("GrokException pattern {} message {}", grokPattern, e);
             return GrokResult.builder().messageError("GrokException pattern " + grokPattern + " message " + e.getMessage()).pattern(grokPattern).build();

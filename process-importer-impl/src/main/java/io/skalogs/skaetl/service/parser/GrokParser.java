@@ -20,7 +20,7 @@ public class GrokParser implements ParserProcess {
 
     @Override
     public ParserResult process(String value, ProcessParser processParser) {
-        GrokResult result = grokService.parseGrok(value, processParser.getGrokPattern(), true);
+        GrokResult result = grokService.parseGrok(value, processParser.getGrokPattern());
         if (StringUtils.isBlank(result.value)) {
             return ParserResult.builder().failParse(true).messageFailParse(result.messageError).build();
         } else {

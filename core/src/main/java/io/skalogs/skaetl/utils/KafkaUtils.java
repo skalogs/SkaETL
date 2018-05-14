@@ -1,6 +1,10 @@
 package io.skalogs.skaetl.utils;
 
 import io.skalogs.skaetl.config.KafkaConfiguration;
+import io.skalogs.skaetl.domain.GrokData;
+import io.skalogs.skaetl.serdes.GenericDeserializer;
+import io.skalogs.skaetl.serdes.GenericSerializer;
+import io.skalogs.skaetl.serdes.GrokDataSerializer;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -73,6 +77,10 @@ public class KafkaUtils {
 
     public Producer<String, String> kafkaProducer(String bootstrapServer) {
         return kafkaProducer(bootstrapServer, StringSerializer.class, StringSerializer.class);
+    }
+
+    public Producer<String, GrokData> kafkaGrokProducer() {
+        return kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, GrokDataSerializer.class);
     }
 
     public static <K, V> Producer<K, V> kafkaProducer(String bootstrapServer, Class<? extends Serializer<K>> keySerializer, Class<? extends Serializer<V>> valueSerializer) {

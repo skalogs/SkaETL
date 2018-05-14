@@ -145,8 +145,8 @@
             <artifactId>prometheus-spring-boot-starter</artifactId>
         </dependency>
         <dependency>
-            <groupId>io.thekraken</groupId>
-            <artifactId>grok</artifactId>
+            <groupId>io.krakens</groupId>
+            <artifactId>java-grok</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>org.apache.commons</groupId>
