@@ -36,6 +36,7 @@ public class GrokService {
 
     @PostConstruct
     public void setup() {
+        grokInstance.getPatternDefinitions().clear();
         loadAll();
     }
 
