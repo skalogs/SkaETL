@@ -118,6 +118,17 @@ public class RegistryService {
         }
     }
 
+    public void rescale(ProcessDefinition processDefinition, int scale) {
+        ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
+        if (consumerState.getStatusProcess() == StatusProcess.ENABLE) {
+            deactivate(processDefinition);
+            consumerState = assignConsumerToWorkers(consumerState.withNbInstance(scale));
+            triggerAction(consumerState, "activate", StatusProcess.ENABLE, StatusProcess.ERROR);
+        } else {
+            assignConsumerToWorkers(consumerState.withNbInstance(scale));
+        }
+    }
+
     // Internal apis
     private RegistryWorker getWorkerAvailable(WorkerType workerType, Set<String> alreadyAssignedWorkers) throws Exception{
         return workerRepository.findAll().stream()
