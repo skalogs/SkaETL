@@ -107,21 +107,6 @@ public class RegistryService {
         triggerAction(consumerState, "deactivate", StatusProcess.DISABLE, StatusProcess.DISABLE);
     }
 
-    public void register(ProcessDefinition processDefinition, WorkerType workerType, StatusProcess statusProcess) {
-        ConsumerState consumerState = new ConsumerState(processDefinition, workerType, statusProcess);
-        consumerStateRepository.save(consumerState);
-    }
-
-    public void updateStatus(String idProcess, StatusProcess statusProcess) {
-        ConsumerState consumerState = consumerStateRepository.findByKey(idProcess);
-        consumerStateRepository.save(consumerState.withStatusProcess(statusProcess));
-    }
-
-    public void updateProcessDefinition(ProcessDefinition processDefinition) {
-        ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
-        consumerStateRepository.save(consumerState.withProcessDefinition(processDefinition));
-    }
-
     public void createOrUpdateProcessDefinition(ProcessDefinition processDefinition, WorkerType workerType, StatusProcess statusProcess) {
         ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
         if (consumerState == null) {

@@ -57,9 +57,4 @@ public class ProcessService {
     public ConsumerState findConsumerState(String idProcess) {
         return registryService.findConsumerStateById(idProcess);
     }
-
-    public void changeStatusProcess(String idProcess, StatusProcess statusProcess) {
-        registryService.updateStatus(idProcess, statusProcess);
-    }
-
 }
