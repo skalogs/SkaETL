@@ -288,7 +288,7 @@ public class KafkaUnit {
             kafkaConsumer.subscribe(Collections.singletonList(topicName));
             kafkaConsumer.poll(0); // dummy poll
             kafkaConsumer.seekToBeginning(Collections.singletonList(new TopicPartition(topicName, 0)));
-            final ConsumerRecords<byte[], byte[]> records = kafkaConsumer.poll(1000);
+            final ConsumerRecords<byte[], byte[]> records = kafkaConsumer.poll(10000);
             final List<Message<K, V>> messages = new ArrayList<>();
             for (ConsumerRecord<byte[], byte[]> record : records) {
                 messages.add(messageExtractor.extract(record));
