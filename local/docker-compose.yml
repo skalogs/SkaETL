@@ -25,3 +25,64 @@ services:
     image: docker.elastic.co/kibana/kibana:6.2.1
     ports:
     - "5601:5601"
+  importer:
+    image: skalogs/process-importer:1.0.1-SNAPSHOT
+    ports:
+    - "8080:8080"
+    links:
+    - zookeeper
+    - kafka
+    - elasticsearch
+    environment:
+      - ELASTICSEARCH_CLUSTERNAME=skalogs-demo
+      - ELASTICSEARCH_CUSTOM_INDEX_PREFIX=skalogs-demo
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
+      - PROCESS_URL_REGISTRY=http://172.17.0.1:8090
+      - SPRING_MAIL_HOST=localhost
+      - SPRING_MAIL_PORT=25
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+      - ZOOKEEPER_BOOTSTRAP_SERVERS=localhost:2181/kafka
+  skaetl-backend:
+    image: skalogs/skaetl-backend:1.0.1-SNAPSHOT
+    ports:
+    - "8090:8090"
+    links:
+    - kafka
+    - zookeeper
+    - simulate
+    - elasticsearch
+    environment:
+      - ELASTICSEARCH_CLUSTERNAME=skalogs-demo
+      - ELASTICSEARCH_CUSTOM_INDEX_PREFIX=skalogs-demo
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - IMPORTER_FULLURLSIMULATE=http://simulate:8084
+      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
+      - SPRING_PROFILES_ACTIVE=prod
+      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka         
+  skaetl-frontend:
+    image: skalogs/skaetl-frontend:1.0.1-SNAPSHOT
+    environment:
+      - BACKEND=http://skaetl-backend:8090
+    ports:
+    - "8083:5555"
+    links:
+    - skaetl-backend
+  simulate:
+    image: skalogs/process-importer-simulator:1.0.1-SNAPSHOT
+    environment:
+      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
+      - PROCESS_URL_REGISTRY=http://172.17.0.1:8090
+      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
+    links:
+    - kafka
+    - zookeeper
+    ports:
+    - "8084:8084"
