@@ -9,7 +9,7 @@ services:
     links:
     - zookeeper
     environment:
-      - KAFKA_ADVERTISED_HOST_NAME=127.0.0.1
+      - KAFKA_ADVERTISED_HOST_NAME=172.17.0.1
       - ZOOKEEPER_IP=zookeeper
       - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
     ports:
@@ -46,7 +46,7 @@ services:
       - SPRING_MAIL_PORT=25
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
       - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
-      - ZOOKEEPER_BOOTSTRAP_SERVERS=localhost:2181/kafka
+      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
   skaetl-backend:
     image: skalogs/skaetl-backend:1.0.1-SNAPSHOT
     ports:
