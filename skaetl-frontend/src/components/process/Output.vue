@@ -92,12 +92,15 @@
     },
     data: function () {
       return {
-        typeOut: [{name: 'KAFKA', type: 'processing dedicated'},
-                  {name: 'SYSTEM_OUT', type: 'testing dedicated'},
+        typeOut: [{ header: 'Outputs' },
+                  {name: 'KAFKA', type: 'processing dedicated'},
                   {name: 'ELASTICSEARCH', type: 'long term storage dedicated'},
+                  { divider: true },
+                  { header: 'Notifications' },
                   {name: 'EMAIL', type: 'notification dedicated'},
                   {name: 'SLACK', type: 'notification dedicated'},
-                  {name: 'SNMP', type: 'notification dedicated'}],
+                  {name: 'SNMP', type: 'notification dedicated'},
+                  {name: 'SYSTEM_OUT', type: 'testing dedicated'}],
         typeRetention: ["week","month","quarter","year"],
         currentProcessOutput: {"typeOutput": "ELASTICSEARCH",
                                "parameterOutput": {"topicOut": "output-topic",
