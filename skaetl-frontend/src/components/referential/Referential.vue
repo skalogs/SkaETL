@@ -158,6 +158,8 @@
    mounted() {
       this.$http.get('/process/findAll').then(response => {
          this.listProcess=response.data;
+         console.log(this.listProcess.length + " process(es) has been found");
+         this.refreshSelected();
       }, response => {
          this.viewError=true;
          this.msgError = "Error during call service";
@@ -187,19 +189,21 @@
         this.$http.get('/referential/find', {params: {idReferential: id}}).then(response => {
            this.itemToEdit = response.data;
            this.listSelected = [];
-           for (var i= 0; i < this.listProcess.length; i++) {
-              var processConsumer = this.listProcess[i];
-              for (var j= 0; j < this.itemToEdit.listIdProcessConsumer.length; j++) {
-                 if(this.itemToEdit.listIdProcessConsumer[j] === processConsumer.processDefinition.idProcess){
-                  //  console.log(''+processConsumer.processDefinition.name);
-                    this.listSelected.push(processConsumer);
-                 }
-              }
-           }
+           this.refreshSelected();
         }, response => {
            this.viewError=true;
            this.msgError = "Error during call service";
         });
+      },
+      refreshSelected(){
+        for (var i= 0; i < this.listProcess.length; i++) {
+          var processConsumer = this.listProcess[i];
+          for (var j= 0; j < this.itemToEdit.listIdProcessConsumer.length; j++) {
+            if(this.itemToEdit.listIdProcessConsumer[j] === processConsumer.processDefinition.idProcess){
+              this.listSelected.push(processConsumer);
+            }
+          }
+        }
       },
       deleteReferential(id){
         this.$http.get('/referential/delete', {params: {idReferential: id}}).then(response => {
