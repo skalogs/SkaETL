@@ -22,7 +22,7 @@ public abstract class AbstractSnmpProcessor<K, V> extends AbstractOutputProcesso
     public void process(K key, V value) {
         try {
 
-            snmpService.send();
+            snmpService.send(buildMsg(value));
 
         } catch (Exception ex) {
             log.error("Exception during SNMP sending {}", ex.getMessage());

@@ -26,8 +26,6 @@ public class SnmpService {
 
     public void init() {
 
-        log.info("here");
-
         try {
             targetAddress = GenericAddress.parse("udp:" + snmpConfiguration.getIpAddress() + "/" + snmpConfiguration.getPort());
             TransportMapping<?> transport = new DefaultUdpTransportMapping();
@@ -59,7 +57,7 @@ public class SnmpService {
         return this.snmp;
     }
 
-    public void send() {
+    public void send(String value) {
 
         // Create Target
         UserTarget target = new UserTarget();
@@ -76,11 +74,16 @@ public class SnmpService {
         pdu.add(new VariableBinding(SnmpConstants.sysUpTime));
         pdu.add(new VariableBinding(SnmpConstants.snmpTrapOID, SnmpConstants.linkDown));
         pdu.add(new VariableBinding(new OID(snmpConfiguration.getTrapOid()), new OctetString("Major")));
+        pdu.add(new VariableBinding(new OID(snmpConfiguration.getTrapOid()), new OctetString(value)));
 
         // Send the PDU
         try {
-            this.getSnmp().send(pdu, target);
-            log.info("Sending Trap to ({}:{})", snmpConfiguration.getIpAddress(), snmpConfiguration.getPort());
+            Snmp s = this.getSnmp();
+            if (s != null)
+                s.send(pdu, target);
+
+            //this.getSnmp().send(pdu, target);
+            log.info("Sending Trap [{}] to ({}:{})", value, snmpConfiguration.getIpAddress(), snmpConfiguration.getPort());
             this.getSnmp().addCommandResponder(new CommandResponder() {
                 public void processPdu(CommandResponderEvent arg0) {
                     log.info(arg0.toString());
