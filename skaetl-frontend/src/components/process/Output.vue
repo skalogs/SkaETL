@@ -10,7 +10,14 @@
       <v-flex xs6 sm6 md6>
         <v-flex xs8 sm8 md8>
           <v-layout row>
-            <v-select label="Output type" v-model="currentProcessOutput.typeOutput" v-bind:items="typeOut"/>
+            <v-select label="Output type" v-model="currentProcessOutput.typeOutput" v-bind:items="typeOut" item-text="name" item-value="name">
+              <template slot="item" slot-scope="typeOut">
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="typeOut.item.name"></v-list-tile-title>
+                  <v-list-tile-sub-title v-html="typeOut.item.type"></v-list-tile-sub-title>
+                </v-list-tile-content>
+              </template>
+            </v-select>
           </v-layout>
         </v-flex>
         <v-flex xs8 sm8 md8>
@@ -85,7 +92,12 @@
     },
     data: function () {
       return {
-        typeOut: ["KAFKA","SYSTEM_OUT","ELASTICSEARCH","EMAIL","SLACK","SNMP"],
+        typeOut: [{name: 'KAFKA', type: 'processing dedicated'},
+                  {name: 'SYSTEM_OUT', type: 'testing dedicated'},
+                  {name: 'ELASTICSEARCH', type: 'long term storage dedicated'},
+                  {name: 'EMAIL', type: 'notification dedicated'},
+                  {name: 'SLACK', type: 'notification dedicated'},
+                  {name: 'SNMP', type: 'notification dedicated'}],
         typeRetention: ["week","month","quarter","year"],
         currentProcessOutput: {"typeOutput": "ELASTICSEARCH",
                                "parameterOutput": {"topicOut": "output-topic",
