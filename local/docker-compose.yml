@@ -48,6 +48,11 @@ services:
     - zookeeper
     - kafka
     - elasticsearch
+    healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:8090/health"]
+            interval: 10s
+            timeout: 10s
+            retries: 3
   importer:
     image: skalogs/process-importer:1.0.1-SNAPSHOT
     ports:
