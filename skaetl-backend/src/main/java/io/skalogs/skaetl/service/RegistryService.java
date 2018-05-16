@@ -62,7 +62,8 @@ public class RegistryService {
     public void refresh(RegistryWorker registryWorker) {
         RegistryWorker registry = workerRepository.findByKey(registryWorker.getFQDN());
         if (registry == null) {
-            log.error("Refresh but not registry for item {}", registryWorker);
+            log.info("Refresh but not registry for item {}", registryWorker);
+            addHost(registryWorker);
         } else {
             registry.setStatus(statusWorker(registry.getDateRefresh(), registryWorker));
             registry.setDateRefresh(new Date());

@@ -81,7 +81,7 @@ public class ImporterGeneric extends AbstractGenericImporter {
         sendToRegistry("refresh");
     }
 
-    @Scheduled(initialDelay = 20 * 1000, fixedRate = 5 * 60 * 1000)
+    @Scheduled(initialDelay = 20 * 1000, fixedRate = 1 * 60 * 1000)
     public void refresh() {
         sendToRegistry("refresh");
     }
