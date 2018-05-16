@@ -143,6 +143,7 @@
             this.viewError=true;
             this.msgError = "Error during call service";
         });
+        this.load();
         }
       }
     }
