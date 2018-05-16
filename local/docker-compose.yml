@@ -1,20 +1,23 @@
-version: '2'
+version: '2.1'
 services:
   zookeeper:
+    hostname: zookeeper
     image: "zookeeper:3.4"
     ports:
     - "2181:2181"
   kafka:
+    hostname: kafka
     image: "ches/kafka"
-    links:
+    depends_on:
     - zookeeper
     environment:
-      - KAFKA_ADVERTISED_HOST_NAME=172.17.0.1
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
       - ZOOKEEPER_IP=zookeeper
       - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
     ports:
       - "9092:9092"
   elasticsearch:
+    hostname: elasticsearch
     image: docker.elastic.co/elasticsearch/elasticsearch-platinum:6.2.1
     environment:
       - ELASTIC_PASSWORD=changeme
@@ -25,37 +28,11 @@ services:
     image: docker.elastic.co/kibana/kibana:6.2.1
     ports:
     - "5601:5601"
-  importer:
-    image: skalogs/process-importer:1.0.1-SNAPSHOT
-    ports:
-    - "8080:8080"
-    links:
-    - zookeeper
-    - kafka
-    - elasticsearch
-    environment:
-      - ELASTICSEARCH_CLUSTERNAME=skalogs-demo
-      - ELASTICSEARCH_CUSTOM_INDEX_PREFIX=skalogs-demo
-      - ELASTICSEARCH_HOST=elasticsearch
-      - ELASTICSEARCH_PASSWORD=changeme
-      - ELASTICSEARCH_PORT=9200
-      - ELASTICSEARCH_USERNAME=elastic
-      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
-      - PROCESS_URL_REGISTRY=http://172.17.0.1:8090
-      - SPRING_MAIL_HOST=localhost
-      - SPRING_MAIL_PORT=25
-      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
-      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
-      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
-  skaetl-backend:
+  skaetlbackend:
+    hostname: skaetlbackend
     image: skalogs/skaetl-backend:1.0.1-SNAPSHOT
     ports:
     - "8090:8090"
-    links:
-    - kafka
-    - zookeeper
-    - simulate
-    - elasticsearch
     environment:
       - ELASTICSEARCH_CLUSTERNAME=skalogs-demo
       - ELASTICSEARCH_CUSTOM_INDEX_PREFIX=skalogs-demo
@@ -66,23 +43,50 @@ services:
       - IMPORTER_FULLURLSIMULATE=http://simulate:8084
       - KAFKA_BOOTSTRAPSERVERS=kafka:9092
       - SPRING_PROFILES_ACTIVE=prod
-      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka         
+      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
+    depends_on:
+    - zookeeper
+    - kafka
+    - elasticsearch
+  importer:
+    image: skalogs/process-importer:1.0.1-SNAPSHOT
+    ports:
+    - "8080:8080"
+    environment:
+      - ELASTICSEARCH_CLUSTERNAME=skalogs-demo
+      - ELASTICSEARCH_CUSTOM_INDEX_PREFIX=skalogs-demo
+      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_PASSWORD=changeme
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
+      - PROCESS_URL_REGISTRY=http://skaetlbackend:8090
+      - SPRING_MAIL_HOST=localhost
+      - SPRING_MAIL_PORT=25
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+      - SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
+    depends_on:
+    - zookeeper
+    - kafka
+    - elasticsearch
+    - skaetlbackend
   skaetl-frontend:
     image: skalogs/skaetl-frontend:1.0.1-SNAPSHOT
     environment:
-      - BACKEND=http://skaetl-backend:8090
+      - BACKEND=http://skaetlbackend:8090
     ports:
     - "8083:5555"
-    links:
-    - skaetl-backend
+    depends_on:
+    - skaetlbackend
   simulate:
     image: skalogs/process-importer-simulator:1.0.1-SNAPSHOT
     environment:
       - KAFKA_BOOTSTRAPSERVERS=kafka:9092
-      - PROCESS_URL_REGISTRY=http://172.17.0.1:8090
+      - PROCESS_URL_REGISTRY=http://skaetlbackend:8090
       - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
-    links:
-    - kafka
-    - zookeeper
     ports:
     - "8084:8084"
+    depends_on:
+    - zookeeper
+    - kafka
