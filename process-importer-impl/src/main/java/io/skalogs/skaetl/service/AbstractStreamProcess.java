@@ -24,12 +24,12 @@ public abstract class AbstractStreamProcess implements Runnable {
     private final HashMap<String, KafkaStreams> mapStreams = new HashMap<>();
 
     public static final Counter readKafkaCount = Counter.build()
-            .name("nb_read_kafka_count")
+            .name("skaetl_nb_read_kafka_count")
             .help("nb read")
             .labelNames("processConsumerName")
             .register();
     public static final Counter transformationAndValidationCount = Counter.build()
-            .name("nb_transformation_validation_count")
+            .name("skaetl_nb_transformation_validation_count")
             .help("nb transfo & validation")
             .labelNames("processConsumerName")
             .register();

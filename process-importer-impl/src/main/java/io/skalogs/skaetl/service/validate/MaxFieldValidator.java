@@ -15,7 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 public class MaxFieldValidator extends ValidatorProcess {
 
     private static final Histogram eventSizeHistogram = Histogram.build()
-            .name("event_size")
+            .name("skaetl_event_size")
             .help("event size.")
             .linearBuckets(1, 100, 10)
             .register();

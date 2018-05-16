@@ -23,7 +23,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     private final ESBuffer esBuffer;
     private final ESErrorRetryWriter esErrorRetryWriter;
     private static final Counter esWriteEs = Counter.build()
-            .name("nb_write_es_common")
+            .name("skaetl_nb_write_es_common")
             .help("count nb elements to write into ES")
             .labelNames("processConsumerName", "project", "type")
             .register();

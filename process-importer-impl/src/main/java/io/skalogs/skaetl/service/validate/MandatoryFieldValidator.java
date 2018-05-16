@@ -22,7 +22,7 @@ public class MandatoryFieldValidator extends ValidatorProcess {
     private static final String UNKNOWN = "unknown";
 
     private static final Counter missingMandatoryFieldsCount = Counter.build()
-            .name("nb_missing_mandatory_field_count")
+            .name("skaetl_nb_missing_mandatory_field_count")
             .labelNames("fieldname")
             .help("nb missing mandatory field count.")
             .register();

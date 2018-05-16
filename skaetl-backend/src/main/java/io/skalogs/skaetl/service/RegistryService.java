@@ -28,7 +28,7 @@ public class RegistryService {
     private final ConsumerStateRepository consumerStateRepository;
 
     public static final Gauge worker = Gauge.build()
-            .name("nb_worker")
+            .name("skaetl_nb_worker")
             .help("nb worker")
             .labelNames("status")
             .register();

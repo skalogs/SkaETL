@@ -11,13 +11,13 @@ import java.util.Collection;
 public class Rebalancer implements ConsumerRebalanceListener {
 
     private static final Counter nbPartitionRevokedCount = Counter.build()
-            .name("nb_partition_revoked_count")
+            .name("skaetl_nb_partition_revoked_count")
             .labelNames("topic", "partition")
             .help("nb partition revoked count.")
             .register();
 
     private static final Counter nbPartitionAssignedCount = Counter.build()
-            .name("nb_partition_assigned_count")
+            .name("skaetl_nb_partition_assigned_count")
             .labelNames("topic", "partition")
             .help("nb partition assigned count.")
             .register();

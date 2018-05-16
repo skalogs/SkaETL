@@ -20,7 +20,7 @@ public class BlackListValidator extends ValidatorProcess {
     }
 
     private static final Counter nbMessageBlackList = Counter.build()
-            .name("nb_message_blacklist")
+            .name("skaetl_nb_message_blacklist")
             .help("nb message blacklist")
             .labelNames("fieldname")
             .register();

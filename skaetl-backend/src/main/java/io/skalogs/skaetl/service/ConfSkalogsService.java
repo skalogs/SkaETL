@@ -31,13 +31,13 @@ public class ConfSkalogsService {
     }
 
     public static final Gauge fetchConf = Gauge.build()
-            .name("fetch_skalogs_conf")
+            .name("skaetl_fetch_skalogs_conf")
             .help("fetch skalogs conf")
             .labelNames("category","env")
             .register();
 
     public static final Gauge fetchConfError = Gauge.build()
-            .name("fetch_skalogs_conf_error")
+            .name("skaetl_fetch_skalogs_conf_error")
             .help("fetch skalogs conf")
             .register();
 

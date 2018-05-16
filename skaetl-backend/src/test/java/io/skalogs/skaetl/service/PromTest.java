@@ -12,10 +12,10 @@ public class PromTest {
         prometheusConfiguration.setHost("35.205.180.150:9090");
         PromService promService = new PromService(prometheusConfiguration);
 
-        promService.fetchDataCapture("nb_read_kafka_count", "processConsumerName", "demo-toto", 5).stream()
+        promService.fetchDataCapture("skaetl_nb_read_kafka_count", "processConsumerName", "demo-toto", 5).stream()
                 .forEach(item -> log.error("mouarf " + item.toString()));
 
-        promService.fetchDataCapture("nb_read_kafka_count", "processConsumerName", "cart", 5).stream()
+        promService.fetchDataCapture("skaetl_nb_read_kafka_count", "processConsumerName", "cart", 5).stream()
                 .forEach(item -> log.error("demo " + item.toString()));
     }
 

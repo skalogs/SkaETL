@@ -41,7 +41,7 @@ public class ConfService {
 
     public HashMap<String, ConfigurationLogstash> map = new HashMap<>();
     public static final Gauge conf = Gauge.build()
-            .name("nb_configuration")
+            .name("skaetl_nb_configuration")
             .help("nb Configuration")
             .labelNames("status")
             .register();

@@ -31,9 +31,9 @@ public class HomeController {
         return DataChartsWeb.builder()
                 .dataProcess(homeService.chartsForProcess())
                 .dataMetric(homeService.chartsForMetrics())
-                .numberAllClientConfiguration(promService.fetchData("fetch_skalogs_conf",null,null,5))
-                .numberErrorClientConfiguration(promService.fetchData("fetch_skalogs_conf_error",null,null,5))
-                .numberProdClientConfiguration(promService.fetchData("fetch_skalogs_conf","env","prod",5))
+                .numberAllClientConfiguration(promService.fetchData("skaetl_fetch_skalogs_conf", null, null, 5))
+                .numberErrorClientConfiguration(promService.fetchData("skaetl_fetch_skalogs_conf_error", null, null, 5))
+                .numberProdClientConfiguration(promService.fetchData("skaetl_fetch_skalogs_conf", "env", "prod", 5))
                 .dataClient(homeService.chartsForClients())
                 .build();
     }

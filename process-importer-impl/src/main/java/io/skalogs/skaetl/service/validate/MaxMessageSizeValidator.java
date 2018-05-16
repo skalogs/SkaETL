@@ -15,7 +15,7 @@ import static io.skalogs.skaetl.service.UtilsValidateData.createValidateData;
 public class MaxMessageSizeValidator extends ValidatorProcess {
 
     private static final Histogram nbFieldsHistogram = Histogram.build()
-            .name("nb_fields")
+            .name("skaetl_nb_fields")
             .help("nb fields.")
             .linearBuckets(1, 10, 10)
             .register();

@@ -57,7 +57,7 @@ public class HomeService {
         return DataUnitCharts.builder()
                 .borderColor(randomColor())
                 .label("All client")
-                .data(promservice.fetchDataCapture("fetch_skalogs_conf", null, null, 5))
+                .data(promservice.fetchDataCapture("skaetl_fetch_skalogs_conf", null, null, 5))
                 .build();
     }
 
@@ -65,7 +65,7 @@ public class HomeService {
         return DataUnitCharts.builder()
                 .borderColor(randomColor())
                 .label("Client for "+value)
-                .data(promservice.fetchDataCapture("fetch_skalogs_conf", key, value, 5))
+                .data(promservice.fetchDataCapture("skaetl_fetch_skalogs_conf", key, value, 5))
                 .build();
     }
 
@@ -85,7 +85,7 @@ public class HomeService {
         return DataUnitCharts.builder()
                 .borderColor(randomColor())
                 .label("Input "+ name)
-                .data(promservice.fetchDataCapture("nb_read_kafka_count", "processConsumerName", name, 5))
+                .data(promservice.fetchDataCapture("skaetl_nb_read_kafka_count", "processConsumerName", name, 5))
                 .build();
     }
 
@@ -95,12 +95,12 @@ public class HomeService {
         charts.add(DataUnitCharts.builder()
                 .borderColor(randomColor())
                 .label("Input "+name)
-                .data(promservice.fetchDataCapture("nb_metric_input", "metricConsumerName", name, 5))
+                .data(promservice.fetchDataCapture("skaetl_nb_metric_input", "metricConsumerName", name, 5))
                 .build());
         charts.add(DataUnitCharts.builder()
                 .borderColor(randomColor())
                 .label("Output "+name)
-                .data(promservice.fetchDataCapture("nb_metric_output", "metricConsumerName", name, 5))
+                .data(promservice.fetchDataCapture("skaetl_nb_metric_output", "metricConsumerName", name, 5))
                 .build());
         return charts;
     }
@@ -111,12 +111,12 @@ public class HomeService {
         charts.add(DataUnitCharts.builder()
                 .borderColor(randomColor())
                 .label("Input " + name)
-                .data(promservice.fetchDataCapture("nb_referential_input", "referentialConsumerName", name, 5))
+                .data(promservice.fetchDataCapture("skaetl_nb_referential_input", "referentialConsumerName", name, 5))
                 .build());
         charts.add(DataUnitCharts.builder()
                 .borderColor(randomColor())
                 .label("Output " + name)
-                .data(promservice.fetchDataCapture("nb_referential_output", "referentialConsumerName", name, 5))
+                .data(promservice.fetchDataCapture("skaetl_nb_referential_output", "referentialConsumerName", name, 5))
                 .build());
         return charts;
     }
@@ -162,8 +162,8 @@ public class HomeService {
         return StatProcess.builder()
                 .name(name)
                 .status(consumerState.getStatusProcess().name())
-                .nbRead(promservice.fetchData("nb_read_kafka_count", "processConsumerName", name, 5))
-                .nbOutput(promservice.fetchData("nb_transformation_validation_count", "processConsumerName", name, 5))
+                .nbRead(promservice.fetchData("skaetl_nb_read_kafka_count", "processConsumerName", name, 5))
+                .nbOutput(promservice.fetchData("skaetl_nb_transformation_validation_count", "processConsumerName", name, 5))
                 .build();
     }
 
@@ -178,8 +178,8 @@ public class HomeService {
         return StatMetric.builder()
                 .name(name)
                 .status(consumerState.getStatusProcess().name())
-                .nbInput(promservice.fetchData("nb_metric_input", "metricConsumerName", name, 5))
-                .nbInput(promservice.fetchData("nb_metric_output", "metricConsumerName", name, 5))
+                .nbInput(promservice.fetchData("skaetl_nb_metric_input", "metricConsumerName", name, 5))
+                .nbInput(promservice.fetchData("skaetl_nb_metric_output", "metricConsumerName", name, 5))
                 .build();
     }
 
@@ -194,8 +194,8 @@ public class HomeService {
         return StatReferential.builder()
                 .name(name)
                 .status(consumerState.getStatusProcess().name())
-                .nbInput(promservice.fetchData("nb_referential_input", "referentialConsumerName", name, 5))
-                .nbInput(promservice.fetchData("nb_referentialmetric_output", "referentialConsumerName", name, 5))
+                .nbInput(promservice.fetchData("skaetl_nb_referential_input", "referentialConsumerName", name, 5))
+                .nbInput(promservice.fetchData("skaetl_nb_referentialmetric_output", "referentialConsumerName", name, 5))
                 .build();
     }
 

@@ -24,12 +24,12 @@ public class ESErrorRetryWriter {
     private final Producer<String, ErrorData> errorProducer;
     private final Producer<String, JsonNode> retryProducer;
     private static final Counter producerErrorKafkaCount = Counter.build()
-            .name("nb_produce_error_kafka_count")
+            .name("skaetl_nb_produce_error_kafka_count")
             .help("count nb error elements.")
             .labelNames("processConsumerName", "type", "reason")
             .register();
     private static final Counter produceMessageToKafka = Counter.build()
-            .name("nb_produce_message_kafka_count")
+            .name("skaetl_nb_produce_message_kafka_count")
             .help("count nb produce kafka")
             .labelNames("processConsumerName", "topic", "type")
             .register();

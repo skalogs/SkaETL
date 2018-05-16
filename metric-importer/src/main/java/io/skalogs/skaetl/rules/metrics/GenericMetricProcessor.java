@@ -43,13 +43,13 @@ public abstract class GenericMetricProcessor {
     private ApplicationContext applicationContext;
 
     private static final Counter inputMessageCount = Counter.build()
-            .name("nb_metric_input")
+            .name("skaetl_nb_metric_input")
             .help("nb input")
             .labelNames("metricConsumerName")
             .register();
 
     private static final Counter outputMessageCount = Counter.build()
-            .name("nb_metric_output")
+            .name("skaetl_nb_metric_output")
             .help("nb output")
             .labelNames("metricConsumerName")
             .register();

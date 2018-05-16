@@ -25,7 +25,7 @@ import static java.util.stream.Collectors.toList;
 public class GenericValidator {
 
     private static final Counter nbMandatoryImporter = Counter.build()
-            .name("nb_mandatory_importer")
+            .name("skaetl_nb_mandatory_importer")
             .labelNames("type")
             .help("nb message not json.")
             .register();
