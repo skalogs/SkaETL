@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -64,7 +66,7 @@ public class GeneratorService {
 
     public void createRandomNetwork(Integer nbElem) {
         for (int i = 0; i < nbElem; i++) {
-            ISO8601DateFormat df = new ISO8601DateFormat();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
             if (i % 2 == 0) {
                 sendToKafka(RawNetworkDataGen.builder()
@@ -101,7 +103,7 @@ public class GeneratorService {
 
         for (int i = 0; i < nbSlot; i++) {
             for (int j = 0; j < nbElemBySlot; j++) {
-                ISO8601DateFormat df = new ISO8601DateFormat();
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                 Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
                 log.debug(i + "--" + j + "***" + df.format(newDate));
                 sendToKafka(RawDataGen.builder()
@@ -126,7 +128,7 @@ public class GeneratorService {
 
             String line;
             int i = 0;
-            ISO8601DateFormat df = new ISO8601DateFormat();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
             while ((line = in.readLine()) != null) {
 
@@ -149,10 +151,6 @@ public class GeneratorService {
         }
     }
 
-    private void sendToKafkaAccessLog(String sourceLine) {
-
-    }
-
     public void createApacheAsJSON(Integer nbElemBySlot, Integer nbSlot) {
         try {
 
@@ -162,7 +160,7 @@ public class GeneratorService {
 
             String line;
             int i = 0;
-            ISO8601DateFormat df = new ISO8601DateFormat();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
             while ((line = in.readLine()) != null) {
                 final java.util.Map<String, Object> capture = grokService.capture(line,"%{COMMONAPACHELOG}");

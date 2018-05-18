@@ -9,6 +9,8 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -34,7 +36,7 @@ public class GeneratorRetryService {
 
         for (int i = 0; i < nbSlot; i++) {
             for (int j = 0; j < nbElemBySlot; j++) {
-                ISO8601DateFormat df = new ISO8601DateFormat();
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                 Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
                 log.debug(i + "--" + j + "***" + df.format(newDate));
                 sendToKafka(RawDataGen.builder()

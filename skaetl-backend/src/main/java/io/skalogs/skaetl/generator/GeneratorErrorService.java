@@ -1,7 +1,6 @@
 package io.skalogs.skaetl.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -9,6 +8,8 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
@@ -82,7 +83,7 @@ public class GeneratorErrorService {
     }
 
     private void generateBlackList() {
-        ISO8601DateFormat df = new ISO8601DateFormat();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = new Date();
         sendToKafka(RawDataGen.builder()
                 .timestamp(df.format(newDate))
@@ -93,7 +94,7 @@ public class GeneratorErrorService {
     }
 
     private void generateJsonLengthInvalid() {
-        ISO8601DateFormat df = new ISO8601DateFormat();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = new Date();
         sendToKafka(RawDataGen.builder()
                 .timestamp(df.format(newDate))
@@ -108,7 +109,7 @@ public class GeneratorErrorService {
     }
 
     private void generateMaxFieldsJsonInvalid() {
-        ISO8601DateFormat df = new ISO8601DateFormat();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = new Date();
         StringBuilder sb = new StringBuilder();
         sb.append("{");
@@ -121,7 +122,7 @@ public class GeneratorErrorService {
     }
 
     private void generateMandatoryInvalid() {
-        ISO8601DateFormat df = new ISO8601DateFormat();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = new Date();
         StringBuilder sb = new StringBuilder();
         sb.append("{");
@@ -139,7 +140,7 @@ public class GeneratorErrorService {
     }
 
     private void generateInFuture() {
-        ISO8601DateFormat df = new ISO8601DateFormat();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMonthToTime(4, new Date());
         StringBuilder sb = new StringBuilder();
         sb.append("{");
@@ -149,7 +150,7 @@ public class GeneratorErrorService {
     }
 
     private void generateInPast() {
-        ISO8601DateFormat df = new ISO8601DateFormat();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMonthToTime(-4, new Date());
         StringBuilder sb = new StringBuilder();
         sb.append("{");
@@ -159,7 +160,7 @@ public class GeneratorErrorService {
     }
 
     private void generateNoProject() {
-        ISO8601DateFormat df = new ISO8601DateFormat();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMonthToTime(-4, new Date());
         StringBuilder sb = new StringBuilder();
         sb.append("{");
