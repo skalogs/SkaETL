@@ -1,8 +1,11 @@
 package io.skalogs.skaetl.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import io.skalogs.skaetl.config.KafkaConfiguration;
+import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.GrokService;
+import io.skalogs.skaetl.service.ProcessService;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
@@ -19,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -27,6 +31,7 @@ public class GeneratorService {
 
     private final Producer<String, String> producer;
     private final GrokService grokService;
+    private final ProcessService processService;
     private final String topic;
     private final ObjectMapper mapper = new ObjectMapper();
     private Random RANDOM = new Random();
@@ -63,12 +68,29 @@ public class GeneratorService {
         return cal.getTime();
     }
 
+
+    private void createAndActiveProcessConsumer(String topic){
+        String idProcess = UUID.randomUUID().toString();
+        processService.saveOrUpdate(ProcessConsumer.builder()
+                .idProcess(idProcess)
+                .processInput(ProcessInput.builder().topicInput(topic).host("kafka.kafka").port("9092").build())
+                .processOutput(Lists.newArrayList(
+                        ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
+                .build());
+        try {
+            processService.activateProcess(processService.findProcess(idProcess));
+        } catch (Exception e) {
+          log.error("Exception createAndActiveProcessConsumer {} ",idProcess);
+        }
+    }
+
     public void createRandomNetwork(Integer nbElem) {
+        createAndActiveProcessConsumer("processtopicnetwork");
         for (int i = 0; i < nbElem; i++) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
             if (i % 2 == 0) {
-                sendToKafka(RawNetworkDataGen.builder()
+                sendToKafka("processtopicnetwork", RawNetworkDataGen.builder()
                         .timestamp(df.format(newDate))
                         .type("network")
                         .project("infra")
@@ -79,7 +101,7 @@ public class GeneratorService {
                         .build());
             }
             if (i % 2 != 0) {
-                sendToKafka(RawNetworkDataGen.builder()
+                sendToKafka("processtopicnetwork", RawNetworkDataGen.builder()
                         .timestamp(df.format(newDate))
                         .type("network")
                         .project("infra")
@@ -99,13 +121,13 @@ public class GeneratorService {
     }
 
     public void createRandom(Integer nbElemBySlot, Integer nbSlot) {
-
+        createAndActiveProcessConsumer("processtopic");
         for (int i = 0; i < nbSlot; i++) {
             for (int j = 0; j < nbElemBySlot; j++) {
                 DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
                 Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
                 log.debug(i + "--" + j + "***" + df.format(newDate));
-                sendToKafka(RawDataGen.builder()
+                sendToKafka("processtopic",RawDataGen.builder()
                         .timestamp(df.format(newDate))
                         .type("gnii")
                         .project("toto")
@@ -118,9 +140,8 @@ public class GeneratorService {
     }
 
     public void createApacheAsText(Integer nbElemBySlot, Integer nbSlot) {
-
+        createAndActiveProcessConsumer("apacheastext");
         try {
-
             Resource resource = new ClassPathResource("/access.log");
             InputStream inputstream = resource.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputstream));
@@ -133,7 +154,7 @@ public class GeneratorService {
 
                 Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
 
-                sendToKafka(RawApacheTextDataGen.builder()
+                sendToKafka("apacheastext", RawApacheTextDataGen.builder()
                         .type("apache_text")
                         .project("genere-apache-log")
                         .timestamp(df.format(newDate))
@@ -151,22 +172,20 @@ public class GeneratorService {
     }
 
     public void createApacheAsJSON(Integer nbElemBySlot, Integer nbSlot) {
+        createAndActiveProcessConsumer("apacheasjson");
         try {
-
             Resource resource = new ClassPathResource("/access.log");
             InputStream inputstream = resource.getInputStream();
             BufferedReader in = new BufferedReader(new InputStreamReader(inputstream));
-
             String line;
             int i = 0;
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
             while ((line = in.readLine()) != null) {
                 final java.util.Map<String, Object> capture = grokService.capture(line,"%{COMMONAPACHELOG}");
 
                 Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
 
-                sendToKafka(RawApacheDataGen.builder()
+                sendToKafka("apacheasjson", RawApacheDataGen.builder()
                         .type("apache_json")
                         .project("genere-apache-log")
                         .timestamp(df.format(newDate))
@@ -189,7 +208,7 @@ public class GeneratorService {
         }
     }
 
-    private void sendToKafka(RawDataGen rdg) {
+    private void sendToKafka(String topic, RawDataGen rdg) {
         try {
             String value = mapper.writeValueAsString(rdg);
             log.info("Sending {}", value);
@@ -199,7 +218,7 @@ public class GeneratorService {
         }
     }
 
-    private void sendToKafka(RawNetworkDataGen rdg) {
+    private void sendToKafka(String topic, RawNetworkDataGen rdg) {
         try {
             String value = mapper.writeValueAsString(rdg);
             log.info("Sending {}", value);
@@ -209,7 +228,7 @@ public class GeneratorService {
         }
     }
 
-    private void sendToKafka(RawApacheDataGen ndg) {
+    private void sendToKafka(String topic, RawApacheDataGen ndg) {
         try {
             String value = mapper.writeValueAsString(ndg);
             log.info("Sending {}", value);
@@ -219,7 +238,7 @@ public class GeneratorService {
         }
     }
 
-    private void sendToKafka(RawApacheTextDataGen ndg) {
+    private void sendToKafka(String topic, RawApacheTextDataGen ndg) {
         try {
             String value = mapper.writeValueAsString(ndg);
             log.info("Sending {}", value);
@@ -229,9 +248,10 @@ public class GeneratorService {
         }
     }
 
-    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService) {
+    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService, ProcessService processService ) {
         producer = kafkaUtils.kafkaProducer();
         topic = kafkaConfiguration.getTopic();
         this.grokService = grokService;
+        this.processService = processService;
     }
 }
