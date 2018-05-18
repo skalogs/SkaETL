@@ -2,15 +2,14 @@ package io.skalogs.skaetl.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import io.krakens.grok.api.Grok;
-import io.krakens.grok.api.GrokCompiler;
-import io.krakens.grok.api.Match;
 import io.skalogs.skaetl.config.KafkaConfiguration;
-import io.skalogs.skaetl.service.transform.AddGeoLocalisationTransformator;
+import io.skalogs.skaetl.service.GrokService;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -18,7 +17,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class GeneratorService {
 
     private final Producer<String, String> producer;
+    private final GrokService grokService;
     private final String topic;
     private final ObjectMapper mapper = new ObjectMapper();
     private Random RANDOM = new Random();
@@ -121,8 +120,9 @@ public class GeneratorService {
 
         try {
 
-            InputStream accessIS = AddGeoLocalisationTransformator.class.getResourceAsStream("/access.log");
-            BufferedReader in = new BufferedReader(new InputStreamReader(accessIS));
+            Resource resource = new ClassPathResource("/access.log");
+            InputStream inputstream = resource.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputstream));
 
             String line;
             int i = 0;
@@ -149,29 +149,23 @@ public class GeneratorService {
         }
     }
 
-    public void createApacheAsJSON(Integer nbElemBySlot, Integer nbSlot) {
+    private void sendToKafkaAccessLog(String sourceLine) {
 
+    }
+
+    public void createApacheAsJSON(Integer nbElemBySlot, Integer nbSlot) {
         try {
 
-            InputStream patternIS = AddGeoLocalisationTransformator.class.getResourceAsStream("/patterns");
-            BufferedReader patterns = new BufferedReader(new InputStreamReader(patternIS));
-
-            GrokCompiler grokInstance = GrokCompiler.newInstance();
-            grokInstance.register(patterns);
-            Grok grok = grokInstance.compile("%{COMMONAPACHELOG}");
-
-            InputStream accessIS = AddGeoLocalisationTransformator.class.getResourceAsStream("/access.log");
-            BufferedReader in = new BufferedReader(new InputStreamReader(accessIS));
+            Resource resource = new ClassPathResource("/access.log");
+            InputStream inputstream = resource.getInputStream();
+            BufferedReader in = new BufferedReader(new InputStreamReader(inputstream));
 
             String line;
             int i = 0;
             ISO8601DateFormat df = new ISO8601DateFormat();
 
             while ((line = in.readLine()) != null) {
-
-
-                Match match = grok.match(line);
-                final java.util.Map<String, Object> capture =  match.capture();
+                final java.util.Map<String, Object> capture = grokService.capture(line,"%{COMMONAPACHELOG}");
 
                 Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
 
@@ -238,8 +232,9 @@ public class GeneratorService {
         }
     }
 
-    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
+    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService) {
         producer = kafkaUtils.kafkaProducer();
         topic = kafkaConfiguration.getTopic();
+        this.grokService = grokService;
     }
 }

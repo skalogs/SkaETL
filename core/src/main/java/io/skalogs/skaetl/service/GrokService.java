@@ -10,12 +10,14 @@ import io.skalogs.skaetl.domain.GrokDomain;
 import io.skalogs.skaetl.domain.GrokResult;
 import io.skalogs.skaetl.domain.GrokResultSimulate;
 import io.skalogs.skaetl.repository.GrokRepository;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,6 +112,22 @@ public class GrokService {
             }
         }
         return result;
+    }
+
+    public Map<String, Object> capture(String value, String grokPattern ){
+        Map<String, Object> capture = new HashMap<>();
+        try {
+            log.info("parseGrok pattern {} for value {}", grokPattern, value);
+            Grok grok = grokInstance.compile(grokPattern);
+            Match match = grok.match(value);
+            capture = match.capture();
+        } catch (GrokException e) {
+            log.error("GrokException pattern {} message {}", grokPattern, e);
+        } catch (Exception r) {
+            log.error("RuntimeException GrokService {}", r);
+        } finally {
+            return capture;
+        }
     }
 
     public GrokResult parseGrok(String value, String grokPattern) {
