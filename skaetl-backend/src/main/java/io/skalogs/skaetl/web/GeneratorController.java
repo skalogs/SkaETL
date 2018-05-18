@@ -1,5 +1,7 @@
 package io.skalogs.skaetl.web;
 
+import io.skalogs.skaetl.generator.GeneratorErrorService;
+import io.skalogs.skaetl.generator.GeneratorRetryService;
 import io.skalogs.skaetl.generator.GeneratorService;
 import io.skalogs.skaetl.web.domain.PayloadTopic;
 import lombok.AllArgsConstructor;
@@ -16,6 +18,8 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class GeneratorController {
 
     private final GeneratorService generatorService;
+    private final GeneratorErrorService generatorErrorService;
+    private final GeneratorRetryService generatorRetryService;
 
     @ResponseStatus(CREATED)
     @PutMapping("/inputTopic")
@@ -39,5 +43,17 @@ public class GeneratorController {
     @PutMapping(value = "/inputTopicApacheAsTEXT", produces = MediaType.TEXT_PLAIN_VALUE)
     public void inputTopicApacheAsTEXT(@Valid @RequestBody PayloadTopic payload) {
         generatorService.createApacheAsText(payload.getNbElemBySlot(), payload.getNbSlot());
+    }
+
+    @ResponseStatus(CREATED)
+    @PutMapping("/inputErrorTopic")
+    public void inputErrorTopic(@Valid @RequestBody PayloadTopic payload) {
+        generatorErrorService.createRandom(payload.getNbElemBySlot());
+    }
+
+    @ResponseStatus(CREATED)
+    @PutMapping("/inputRetryTopic")
+    public void inputRetryTopic(@Valid @RequestBody PayloadTopic payload) {
+        generatorRetryService.createRandom(payload.getNbElemBySlot(), payload.getNbSlot());
     }
 }

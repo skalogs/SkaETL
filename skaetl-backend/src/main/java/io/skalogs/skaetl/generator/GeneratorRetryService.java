@@ -15,7 +15,7 @@ import java.util.Random;
 
 @Component
 @Slf4j
-public class GeneratorService {
+public class GeneratorRetryService {
 
     private final Producer<String, String> producer;
     private final String topic;
@@ -56,7 +56,7 @@ public class GeneratorService {
         }
     }
 
-    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
+    public GeneratorRetryService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
         producer = kafkaUtils.kafkaProducer();
         topic = kafkaConfiguration.getRetryTopic();
     }
