@@ -11,7 +11,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void checkJavaClassName() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT COUNT() FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic";
+        String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic";
         RuleCode rule = ruleToJava.convert("my simple rule", dsl);
         assertThat(rule.getName()).isEqualTo("MySimpleRule");
         assertThat(rule.getRuleClassName()).isEqualTo("io.skalogs.skaetl.metrics.generated.MySimpleRule");
@@ -21,7 +21,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void functionNoArg() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT COUNT() FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic";
+        String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic";
         RuleCode rule = ruleToJava.convert("My_Count_Rule", dsl);
         assertThat(rule)
                 .isEqualTo(new RuleCode("MyCountRule",

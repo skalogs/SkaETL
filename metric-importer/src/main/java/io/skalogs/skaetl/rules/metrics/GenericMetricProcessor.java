@@ -205,7 +205,9 @@ public abstract class GenericMetricProcessor {
     // MANDATORY METHODS
     protected abstract AggregateFunction aggInitializer();
 
-    protected abstract Double mapValues(JsonNode value);
+    protected Double mapValues(JsonNode value) {
+        return Double.NaN;
+    }
 
     protected abstract KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream);
 

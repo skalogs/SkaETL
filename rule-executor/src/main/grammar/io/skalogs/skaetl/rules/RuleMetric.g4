@@ -10,7 +10,7 @@ select_clause
  ;
 
 aggfunction
- : function_name '(' ')'
+ : function_name '(*)'
  | function_name '(' target ')'
  ;
 

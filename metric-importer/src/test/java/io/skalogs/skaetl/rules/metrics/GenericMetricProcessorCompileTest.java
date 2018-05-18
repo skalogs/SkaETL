@@ -60,13 +60,19 @@ public class GenericMetricProcessorCompileTest {
         rule.compile();
     }
 
+    @Test
+    public void countNoField() {
+        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES) HAVING result > 10";
+        RuleCode rule = ruleToJava.convert("MyMinRule", dsl);
+        rule.compile();
+    }
 
     @Test
     public void join() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 10 MINUTES";
         RuleCode rule = ruleToJava.convert("MyMinRule", dsl);
-        System.out.println(rule.getJava());
         rule.compile();
     }
 
@@ -84,6 +90,16 @@ public class GenericMetricProcessorCompileTest {
     public void generateCode() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 10 MINUTES";
+        RuleCode myMetricRule = ruleToJava.convert("My_Min_Rule", dsl);
+        File home = new File("target/generated-test-sources");
+        CodeGenerationUtils.write(myMetricRule, home);
+    }
+
+    @Test
+    @Ignore
+    public void sss() {
+        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES) HAVING result > 10";
         RuleCode myMetricRule = ruleToJava.convert("My_Min_Rule", dsl);
         File home = new File("target/generated-test-sources");
         CodeGenerationUtils.write(myMetricRule, home);
