@@ -22,37 +22,37 @@ public class GeneratorController {
     private final GeneratorRetryService generatorRetryService;
 
     @ResponseStatus(CREATED)
-    @PutMapping("/inputTopic")
+    @PostMapping("/inputTopic")
     public void inputTopic(@Valid @RequestBody PayloadTopic payload) {
         generatorService.createRandom(payload.getNbElemBySlot(), payload.getNbSlot());
     }
 
     @ResponseStatus(CREATED)
-    @PutMapping("/inputTopicNetwork")
+    @PostMapping("/inputTopicNetwork")
     public void inputTopicNetwork(@Valid @RequestBody PayloadTopic payload) {
         generatorService.createRandomNetwork(payload.getNbElemBySlot());
     }
 
     @ResponseStatus(CREATED)
-    @PutMapping(value = "/inputTopicApacheAsJSON", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/inputTopicApacheAsJSON", produces = MediaType.APPLICATION_JSON_VALUE)
     public void inputTopicApacheAsJSON(@Valid @RequestBody PayloadTopic payload) {
         generatorService.createApacheAsJSON(payload.getNbElemBySlot(), payload.getNbSlot());
     }
 
     @ResponseStatus(CREATED)
-    @PutMapping(value = "/inputTopicApacheAsTEXT", produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = "/inputTopicApacheAsTEXT", produces = MediaType.TEXT_PLAIN_VALUE)
     public void inputTopicApacheAsTEXT(@Valid @RequestBody PayloadTopic payload) {
         generatorService.createApacheAsText(payload.getNbElemBySlot(), payload.getNbSlot());
     }
 
     @ResponseStatus(CREATED)
-    @PutMapping("/inputErrorTopic")
+    @PostMapping("/inputErrorTopic")
     public void inputErrorTopic(@Valid @RequestBody PayloadTopic payload) {
         generatorErrorService.createRandom(payload.getNbElemBySlot());
     }
 
     @ResponseStatus(CREATED)
-    @PutMapping("/inputRetryTopic")
+    @PostMapping("/inputRetryTopic")
     public void inputRetryTopic(@Valid @RequestBody PayloadTopic payload) {
         generatorRetryService.createRandom(payload.getNbElemBySlot(), payload.getNbSlot());
     }

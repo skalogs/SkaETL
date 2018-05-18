@@ -1,7 +1,6 @@
 package io.skalogs.skaetl.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.service.GrokService;
 import io.skalogs.skaetl.utils.KafkaUtils;

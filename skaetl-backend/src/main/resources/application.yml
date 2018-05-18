@@ -29,6 +29,7 @@ grok.type: "backend-pattern-type"
 kafka.bootstrapServers: localhost:9092
 kafka.groupId: adminGrok
 kafka.pollRecord: 50
+kafka.topic: processtopic
 
 elasticsearch.host: localhost
 elasticsearch.port: 9200
