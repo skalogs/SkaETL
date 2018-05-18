@@ -102,8 +102,10 @@ public class MetricImporter {
 
     public void deactivate(ProcessMetric processMetric) {
         log.info("deactivating {} Metric Stream Process", processMetric.getName());
-        runningMetricProcessors.get(processMetric).forEach((stream) -> stream.close());
-        runningMetricProcessors.remove(processMetric);
+        if (runningMetricProcessors.containsKey(processMetric)) {
+            runningMetricProcessors.get(processMetric).forEach((stream) -> stream.close());
+            runningMetricProcessors.remove(processMetric);
+        }
     }
 
     private Properties createProperties(String bootstrapServers) {
