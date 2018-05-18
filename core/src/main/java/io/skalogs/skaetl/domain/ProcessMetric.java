@@ -21,7 +21,8 @@ public class ProcessMetric extends ProcessDefinition {
     private String idProcess;
     private String name;
     private String aggFunction;
-    private List<String> sourceProcessConsumers;
+    @Builder.Default
+    private List<String> sourceProcessConsumers = new ArrayList<>();
     private String where;
     private String groupBy;
     private String having;
@@ -32,7 +33,8 @@ public class ProcessMetric extends ProcessDefinition {
     private long advanceBy;
     private TimeUnit advanceByUnit;
 
-    private List<String> sourceProcessConsumersB;
+    @Builder.Default
+    private List<String> sourceProcessConsumersB = new ArrayList<>();
     private String joinKeyFromA;
     private String joinKeyFromB;
     private String joinWhere;
