@@ -2,6 +2,7 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.domain.*;
+import kafka.common.UnknownTopicOrPartitionException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

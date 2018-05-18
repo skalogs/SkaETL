@@ -4,6 +4,7 @@ import io.skalogs.skaetl.config.ZookeeperConfiguration;
 import io.skalogs.skaetl.domain.TopicInfo;
 import kafka.admin.AdminUtils;
 import kafka.admin.RackAwareMode;
+import kafka.common.UnknownTopicOrPartitionException;
 import kafka.utils.ZkUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,8 @@ public class KafkaAdminService {
         try {
             AdminUtils.deleteTopic(zkUtils, topicName);
             log.info("Delete topic ok {}", topicName);
+        } catch (UnknownTopicOrPartitionException e) {
+            log.error("an error occured while deleting topic" + topicName, e);
         } catch (RuntimeException e) {
             log.error("Error for delete name {} msg {}", topicName, e);
         } finally {
