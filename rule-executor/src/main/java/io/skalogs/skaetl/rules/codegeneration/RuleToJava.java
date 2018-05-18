@@ -133,11 +133,11 @@ public class RuleToJava {
         if (FunctionRegistry.getInstance().getRuleFunction(functionName) == null) {
             throw new IllegalArgumentException("Unknown function " + functionName);
         }
-        return "evaluate(" + functionName + "," + fieldValue + ")";
+        return "evaluate(\"" + functionName + "\"," + fieldValue + ")";
     }
 
     public static String twoArgsFunction(String function, String expr1, String expr2) {
-        return function + "(" + expr1 + "," + expr2 + ")";
+        return "evaluateOperation(\"" + function + "\"," + expr1 + "," + expr2 + ")";
     }
 
     public static String varArgCondition(String functionName, String fieldValue, String args) {
@@ -145,7 +145,7 @@ public class RuleToJava {
             throw new IllegalArgumentException("Unknown function " + functionName);
         }
 
-        return "evaluate(" + functionName + "," + fieldValue + "," + args + ")";
+        return "evaluate(\"" + functionName + "\"," + fieldValue + "," + args + ")";
     }
 
     public static String toCamelCase(String input) {

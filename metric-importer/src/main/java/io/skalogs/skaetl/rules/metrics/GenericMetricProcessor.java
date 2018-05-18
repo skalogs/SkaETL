@@ -86,7 +86,7 @@ public abstract class GenericMetricProcessor {
         result.peek(this::countOutput);
         routeResult(result);
 
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, processMetric.getName() + "-stream");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "metric-" + processMetric.getIdProcess() + "-stream");
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
@@ -248,6 +248,9 @@ public abstract class GenericMetricProcessor {
         return FunctionRegistry.getInstance().evaluate(functionName, args);
     }
 
+    protected Double evaluateOperation(String functionName, Double... args) {
+        return FunctionRegistry.getInstance().evaluate(functionName, args);
+    }
 
     protected KTable<Windowed<Keys>, Double> aggregateHoppingWindow(KGroupedStream<Keys, Double> kGroupedStream,
                                                                     long size,

@@ -28,6 +28,23 @@ public class GenericMetricProcessorCompileTest {
 
 
     @Test
+    public void filterWithFilterFunction() {
+        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) WHERE type IN(\"something\",\"somethingelse\")";
+        RuleCode rule = ruleToJava.convert("MyMinRule", dsl);
+        rule.compile();
+    }
+
+    @Test
+    public void filterWithFilterOperation() {
+        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) WHERE myfield = something + else";
+        RuleCode rule = ruleToJava.convert("MyMinRule", dsl);
+        rule.compile();
+    }
+
+
+    @Test
     public void groupBy() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY type";

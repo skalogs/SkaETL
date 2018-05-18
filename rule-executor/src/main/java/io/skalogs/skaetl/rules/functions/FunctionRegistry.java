@@ -1,6 +1,6 @@
 package io.skalogs.skaetl.rules.functions;
 
-import io.skalogs.skaetl.rules.functions.numbers.IsNumberFunction;
+import io.skalogs.skaetl.rules.functions.numbers.*;
 import io.skalogs.skaetl.rules.functions.strings.*;
 
 import java.util.HashMap;
@@ -24,6 +24,12 @@ public class FunctionRegistry {
         register("IN", new InFunction());
 
         register("IN_SUBNET", new InSubnetFunction());
+
+        register("ADD", new AddFunction());
+        register("SUBTRACT", new SubtractFunction());
+        register("MULTIPLY", new MultiplyFunction());
+        register("DIVIDE", new DivideFunction());
+        register("EXP", new ExpFunction());
     }
 
     public void register(String name, RuleFunction ruleFunction) {

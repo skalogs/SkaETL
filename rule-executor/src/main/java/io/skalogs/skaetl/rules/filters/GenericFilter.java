@@ -18,4 +18,8 @@ public abstract class GenericFilter {
         return FunctionRegistry.getInstance().evaluate(functionName, args);
     }
 
+    protected Double evaluateOperation(String functionName, Object... args) {
+        return FunctionRegistry.getInstance().evaluate(functionName, args);
+    }
+
 }

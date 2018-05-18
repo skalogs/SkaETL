@@ -44,18 +44,19 @@ public class RuleMetricVisitorImplTest {
 
     @Test
     public void expr_exp_expr() {
-        assertThat(expr("1^2")).isEqualTo("exp(1,2)");
+        assertThat(expr("1^2")).isEqualTo("evaluateOperation(\"exp\",1,2)");
     }
 
     @Test
     public void expr_high_priority_expr() {
-        assertThat(expr("1*2")).isEqualTo("multiply(1,2)");
-        assertThat(expr("1/2")).isEqualTo("divide(1,2)");
+        assertThat(expr("1*2")).isEqualTo("evaluateOperation(\"multiply\",1,2)");
+        assertThat(expr("1/2")).isEqualTo("evaluateOperation(\"divide\",1,2)");
     }
 
     @Test
     public void expr_low_priority_expr() {
-        assertThat(expr("1+2")).isEqualTo("add(1,2)");
+        assertThat(expr("1+2")).isEqualTo("evaluateOperation(\"add\",1,2)");
+        assertThat(expr("1 - 2")).isEqualTo("evaluateOperation(\"subtract\",1,2)");
     }
 
     @Test
@@ -85,52 +86,52 @@ public class RuleMetricVisitorImplTest {
     @Test
     public void expr_if_condition() {
         assertThat(expr("IF(1,2,3)")).isEqualTo("(1)?(2):(3)");
-        assertThat(expr("IF(1,2,(3+4))")).isEqualTo("(1)?(2):((add(3,4)))");
+        assertThat(expr("IF(1,2,(3+4))")).isEqualTo("(1)?(2):((evaluateOperation(\"add\",3,4)))");
     }
 
     @Test
     public void expr_is_blank_condition() {
-        assertThat(expr("IS_BLANK(a)")).isEqualTo("evaluate(IS_BLANK,get(jsonValue,\"a\"))");
+        assertThat(expr("IS_BLANK(a)")).isEqualTo("evaluate(\"IS_BLANK\",get(jsonValue,\"a\"))");
     }
 
     @Test
     public void expr_is_not_blank_condition() {
-        assertThat(expr("IS_NOT_BLANK(a)")).isEqualTo("evaluate(IS_NOT_BLANK,get(jsonValue,\"a\"))");
+        assertThat(expr("IS_NOT_BLANK(a)")).isEqualTo("evaluate(\"IS_NOT_BLANK\",get(jsonValue,\"a\"))");
     }
 
     @Test
     public void expr_is_number_condition() {
-        assertThat(expr("IS_NUMBER(a)")).isEqualTo("evaluate(IS_NUMBER,get(jsonValue,\"a\"))");
+        assertThat(expr("IS_NUMBER(a)")).isEqualTo("evaluate(\"IS_NUMBER\",get(jsonValue,\"a\"))");
     }
 
     @Test
     public void expr_contains_condition() {
-        assertThat(expr("a CONTAINS(2)")).isEqualTo("evaluate(CONTAINS,get(jsonValue,\"a\"),2)");
-        assertThat(expr("a CONTAINS(2,3)")).isEqualTo("evaluate(CONTAINS,get(jsonValue,\"a\"),2,3)");
+        assertThat(expr("a CONTAINS(2)")).isEqualTo("evaluate(\"CONTAINS\",get(jsonValue,\"a\"),2)");
+        assertThat(expr("a CONTAINS(2,3)")).isEqualTo("evaluate(\"CONTAINS\",get(jsonValue,\"a\"),2,3)");
     }
 
     @Test
     public void expr_regexp_condition() {
-        assertThat(expr("a REGEXP(\"\\d+\")")).isEqualTo("evaluate(REGEXP,get(jsonValue,\"a\"),\"\\d+\")");
-        assertThat(expr("a REGEXP(\"[A-Z]*\", \"[0-1]*\")")).isEqualTo("evaluate(REGEXP,get(jsonValue,\"a\"),\"[A-Z]*\",\"[0-1]*\")");
+        assertThat(expr("a REGEXP(\"\\d+\")")).isEqualTo("evaluate(\"REGEXP\",get(jsonValue,\"a\"),\"\\d+\")");
+        assertThat(expr("a REGEXP(\"[A-Z]*\", \"[0-1]*\")")).isEqualTo("evaluate(\"REGEXP\",get(jsonValue,\"a\"),\"[A-Z]*\",\"[0-1]*\")");
     }
 
 
     @Test
     public void expr_in_condition() {
-        assertThat(expr("a IN(2)")).isEqualTo("evaluate(IN,get(jsonValue,\"a\"),2)");
-        assertThat(expr("a IN(2,3)")).isEqualTo("evaluate(IN,get(jsonValue,\"a\"),2,3)");
+        assertThat(expr("a IN(2)")).isEqualTo("evaluate(\"IN\",get(jsonValue,\"a\"),2)");
+        assertThat(expr("a IN(2,3)")).isEqualTo("evaluate(\"IN\",get(jsonValue,\"a\"),2,3)");
     }
 
     @Test
     public void expr_in_subnet_condition() {
-        assertThat(expr("a IN_SUBNET(\"10.12.1.0/23\")")).isEqualTo("evaluate(IN_SUBNET,get(jsonValue,\"a\"),\"10.12.1.0/23\")");
+        assertThat(expr("a IN_SUBNET(\"10.12.1.0/23\")")).isEqualTo("evaluate(\"IN_SUBNET\",get(jsonValue,\"a\"),\"10.12.1.0/23\")");
     }
 
     @Test
     public void expr_not_in_subnet_condition() {
-        assertThat(expr("NOT(a IN_SUBNET(\"10.12.1.0/23\"))")).isEqualTo("!evaluate(IN_SUBNET,get(jsonValue,\"a\"),\"10.12.1.0/23\")");
-        assertThat(expr("a NOT IN_SUBNET(\"10.12.1.0/23\")")).isEqualTo("!evaluate(IN_SUBNET,get(jsonValue,\"a\"),\"10.12.1.0/23\")");
+        assertThat(expr("NOT(a IN_SUBNET(\"10.12.1.0/23\"))")).isEqualTo("!evaluate(\"IN_SUBNET\",get(jsonValue,\"a\"),\"10.12.1.0/23\")");
+        assertThat(expr("a NOT IN_SUBNET(\"10.12.1.0/23\")")).isEqualTo("!evaluate(\"IN_SUBNET\",get(jsonValue,\"a\"),\"10.12.1.0/23\")");
     }
 
     @Test
