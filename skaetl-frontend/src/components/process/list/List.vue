@@ -25,7 +25,7 @@
                 <td class="text-xs subheading">{{props.item.processDefinition.name}}</td>
                 <td class="text-xs-center">
                     <v-flex xs12>
-                       <v-chip color="purple lighten-2" small>{{props.item.processDefinition.processInput.host}} {{props.item.processDefinition.processInput.port}} {{props.item.processDefinition.processInput.topic}}</v-chip>
+                       <v-chip color="purple lighten-2" small>{{props.item.processDefinition.processInput.host}}:{{props.item.processDefinition.processInput.port}}({{props.item.processDefinition.processInput.topicInput}})</v-chip>
                     </v-flex>
                 </td>
                 <td class="text-xs-center">
