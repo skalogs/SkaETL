@@ -1,9 +1,10 @@
+<!--
+#todo Improve UI of the several detail lists
+-->
 <template>
-  <v-container fluid grid-list-md text-xs-center>
-
+  <v-container fluid grid-list-xs text-xs-center pa-0>
   <v-layout row wrap>
     <v-flex d-flex xs12>
-
       <v-tooltip right>
         <span slot="activator">
           <v-card flat hover>
@@ -111,14 +112,14 @@
        <v-card tile>
           <v-data-table v-bind:headers="headersMetric" :items="home.listStatMetric" hide-actions  >
              <template slot="items" slot-scope="props">
-               <td>{{props.item.name}}</td>
-               <td>{{props.item.status}}</td>
-               <td>{{props.item.nbInput}}</td>
-               <td>{{props.item.nbOutput}}</td>
+               <td><b>{{props.item.name}}</b></td>
+               <td class="text-xs-center">{{props.item.status}}</td>
+               <td class="text-xs-center">{{props.item.nbInput}}</td>
+               <td class="text-xs-center">{{props.item.nbOutput}}</td>
              </template>
           </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogMetric=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogMetric=false">Close this window</v-btn>
          </v-card-actions>
        </v-card>
      </v-dialog>
@@ -141,12 +142,12 @@
       <v-card tile>
            <v-data-table v-bind:headers="headersConfiguration" :items="home.listStatConfiguration" hide-actions  >
               <template slot="items" slot-scope="props">
-                <td>{{props.item.name}}</td>
-                <td>{{props.item.status}}</td>
+                <td><b>{{props.item.name}}</b></td>
+                <td class="text-xs-center">{{props.item.status}}</td>
               </template>
            </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogConfiguration=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogConfiguration=false">Close this window</v-btn>
          </v-card-actions>
       </v-card>
     </v-dialog>
@@ -165,21 +166,23 @@
          </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-dialog v-model="dialogProcess" fullscreen transition="dialog-bottom-transition" :overlay="false" >
       <v-card tile>
-         <v-data-table v-bind:headers="headersProcess" :items="home.listStatProcess" hide-actions  >
+         <v-data-table v-bind:headers="headersProcess" :items="home.listStatProcess" hide-actions>
             <template slot="items" slot-scope="props">
-              <td>{{props.item.name}}</td>
-              <td>{{props.item.status}}</td>
-              <td>{{props.item.nbRead}}</td>
-              <td>{{props.item.nbOutput}}</td>
+              <td><b>{{props.item.name}}</b></td>
+              <td class="text-xs-center">{{props.item.status}}</td>
+              <td class="text-xs-center">{{props.item.nbRead}}</td>
+              <td class="text-xs-center">{{props.item.nbOutput}}</td>
             </template>
          </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogProcess=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogProcess=false">Close this window</v-btn>
          </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-dialog v-model="dialogClient" fullscreen transition="dialog-bottom-transition" :overlay="false" >
       <v-card tile>
          <v-data-table v-bind:headers="headersClient" :items="home.listStatClient" hide-actions  >
@@ -198,43 +201,43 @@
     <v-layout row wrap>
       <v-flex xs6>
         <v-card>
-          <v-card-title>Consumers processes</v-card-title>
+          <v-card-title class="table-title">Consumer processes</v-card-title>
 
-          <v-data-table v-bind:headers="headers" :items="listProcess" hide-actions hide-headers>
+          <v-data-table :items="listProcess" hide-actions hide-headers>
             <template slot="items" slot-scope="props">
-              <td><v-icon color="orange">cached</v-icon></td>
+              <td width="1%"><v-icon>cached</v-icon></td>
 
                 <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
                   <v-badge color="red">
                     <v-icon slot="badge">error</v-icon>
-                    <span>{{props.item.processDefinition.name}}</span>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'ENABLE'" class="text-xs-left">
                   <v-badge color="green">
                     <v-icon slot="badge">play_arrow</v-icon>
-                    <span>{{props.item.processDefinition.name}}</span>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
                   <v-badge color="blue lighten-2">
                     <v-icon slot="badge">power_settings_new</v-icon>
-                    <span>{{props.item.processDefinition.name}}</span>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'DISABLE'" class="text-xs-left">
                   <v-badge color="warning">
                     <v-icon slot="badge">pause</v-icon>
-                    <span>{{props.item.processDefinition.name}}</span>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
                   </v-badge>
                 </td>
 
                 <td class="text-xs-center">
                     <v-flex xs12>
-                       {{props.item.processDefinition.processInput.host}} {{props.item.processDefinition.processInput.port}} {{props.item.processDefinition.processInput.topic}}
+                       {{props.item.processDefinition.processInput.host}}:{{props.item.processDefinition.processInput.port}}({{props.item.processDefinition.processInput.topicInput}})
                     </v-flex>
                 </td>
                 <td class="text-xs-center">
@@ -254,40 +257,49 @@
 
       <v-flex xs6>
         <v-card>
-          <v-card-title>Metric processes</v-card-title>
-            <v-data-table v-bind:headers="metricHeaders" :items="listMetricProcess" hide-actions hide-headers>
+          <v-card-title class="table-title">Metric processes</v-card-title>
+            <v-data-table :items="listMetricProcess" hide-actions hide-headers>
               <template slot="items" slot-scope="props">
-                <td><v-icon color="indigo darken-2">widgets</v-icon></td>
+                <td width="1%"><v-icon>widgets</v-icon></td>
 
                 <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
                   <v-badge color="red darken-1">
                     <v-icon slot="badge" dark>report_problem</v-icon>
-                    <span>{{props.item.processDefinition.name}}</span>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'ENABLE'" class="text-xs-left">
                   <v-badge color="green">
                     <v-icon slot="badge">play_arrow</v-icon>
-                    <span>{{props.item.processDefinition.name}}</span>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
                   <v-badge color="blue lighten-2">
                     <v-icon slot="badge">power_settings_new</v-icon>
-                    <span>{{props.item.processDefinition.name}}</span>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'DISABLE'" class="text-xs-left">
                   <v-badge color="warning">
                     <v-icon slot="badge">pause</v-icon>
-                    <span>{{props.item.processDefinition.name}}</span>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
                   </v-badge>
                 </td>
 
                 <td class="text-xs-center">{{props.item.processDefinition.aggFunction}}</td>
+
+                <td>
+                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="source in props.item.processDefinition.sourceProcessConsumers">
+                    <v-flex class="pa-0 ma-0">
+                      {{ getProcessName(source) }}
+                    </v-flex>
+                  </v-flex>
+                </td>
+
                 <td class="text-xs-center">
                   <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="outputitem in props.item.processDefinition.processOutputs">
                     <v-flex class="pa-0 ma-0">
@@ -321,6 +333,11 @@
     font-size: 50px;
     font-weight: bold;
   }
+  .table-title {
+    color: #757575;
+    font-size: 22px;
+    font-weight: bold;
+  }
 </style>
 
 <script>
@@ -342,10 +359,10 @@
               { text : 'Environment',align : 'center',value : 'env'}
            ],
            headersProcess : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Status',align : 'center',value : 'status'},
-             { text : 'Nb Read',align : 'center',value : 'nbRead'},
-             { text : 'Nb Treat',align : 'center',value : 'nbOutput'}
+             { text : 'Process name',align : 'center',value : 'name'},
+             { text : 'Process status',align : 'center',value : 'status'},
+             { text : 'Number of read',align : 'center',value : 'nbRead'},
+             { text : 'Number of processing', align : 'center',value : 'nbOutput'}
            ],
            headersWorker : [
              { text : 'Name',align : 'center',value : 'name'},
@@ -354,10 +371,10 @@
              { text : 'Type',align : 'center',value : 'type'}
            ],
            headersMetric : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Status',align : 'center',value : 'status'},
-             { text : 'Nb Input',align : 'center',value : 'nbInput'},
-             { text : 'Nb Output',align : 'center',value : 'nbOutput'}
+             { text : 'Process name',align : 'center',value : 'name'},
+             { text : 'Process status',align : 'center',value : 'status'},
+             { text : 'Nb Input todo',align : 'center',value : 'nbInput'},
+             { text : 'Number of processing',align : 'center',value : 'todo'}
            ],
            headersReferential : [
              { text : 'Name',align : 'center',value : 'name'},
@@ -400,19 +417,8 @@
                                 },
            dataCharts: {"dataProcess": '',"dataMetric": '',"dataWorker": '',"dataConfiguration" :''},
            listProcess: [],
-           headers: [
-             { text: 'Icon',align: 'center',value: '',width: '2%'},
-             { text: 'Name',align: 'left',value: 'processDefinition.name',width: '10%'},
-             { text: 'Input', align: 'center',value: 'processDefinition.input',width: '8%' },
-             { text: 'Output', align: 'center',value: 'processDefinition.output',width: '8%' }
-           ],
            listMetricProcess: [],
-           metricHeaders: [
-             {text: 'Icon', align: 'center', sortable: 0, value: '', width: '4%'},
-             {text: 'Name', align: 'center', value: 'processDefinition.name', width: '8%'},
-             {text: 'Function', align: 'center', value: 'processDefinition.aggFunction', width: '16%'},
-             {text: 'Output', align: 'center', value: 'processDefinition.processOutputs',width: '8%' }
-           ]
+           metricProcess: new Map()
          }
     },
     mounted() {
@@ -440,6 +446,7 @@
       loadConsumerProcess() {
         this.$http.get('/process/findAll').then(response => {
             this.listProcess=response.data;
+            this.listProcess = this.listProcess.slice(0,3);
          }, response => {
            this.viewError=true;
            this.msgError = "Error during call service";
@@ -448,11 +455,26 @@
       loadMetricProcess() {
         this.$http.get('/metric/listProcess').then(response => {
           this.listMetricProcess = response.data;
-          console.log(this.listProcess);
+          this.listMetricProcess = this.listMetricProcess.slice(0,3);
         }, response => {
           this.viewError = true;
           this.msgError = "Error during call service";
         });
+      },
+      getProcessName(id){
+        if (this.metricProcess != undefined && this.metricProcess.get(id) != undefined) {
+            return this.metricProcess.get(id);
+        } else {
+          this.$http.get('/referential/find', {params: {idReferential: id}}).then(response => {
+            this.process = response.data;
+            name = this.process.name;
+            this.metricProcess.set(id, name);
+            return name;
+          }, response => {
+            this.viewError=true;
+            this.msgError = "Error during call service";
+        });
+        }
       }
     }
   }
