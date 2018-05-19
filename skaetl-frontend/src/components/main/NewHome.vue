@@ -202,8 +202,36 @@
 
           <v-data-table v-bind:headers="headers" :items="listProcess" hide-actions hide-headers>
             <template slot="items" slot-scope="props">
-              <td><v-icon large color="orange">cached</v-icon></td>
-                <td class="text-xs-left">{{props.item.processDefinition.name}}</td>
+              <td><v-icon color="orange">cached</v-icon></td>
+
+                <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
+                  <v-badge color="red">
+                    <v-icon slot="badge">error</v-icon>
+                    <span>{{props.item.processDefinition.name}}</span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'ENABLE'" class="text-xs-left">
+                  <v-badge color="green">
+                    <v-icon slot="badge">play_arrow</v-icon>
+                    <span>{{props.item.processDefinition.name}}</span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
+                  <v-badge color="blue lighten-2">
+                    <v-icon slot="badge">power_settings_new</v-icon>
+                    <span>{{props.item.processDefinition.name}}</span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'DISABLE'" class="text-xs-left">
+                  <v-badge color="warning">
+                    <v-icon slot="badge">pause</v-icon>
+                    <span>{{props.item.processDefinition.name}}</span>
+                  </v-badge>
+                </td>
+
                 <td class="text-xs-center">
                     <v-flex xs12>
                        {{props.item.processDefinition.processInput.host}} {{props.item.processDefinition.processInput.port}} {{props.item.processDefinition.processInput.topic}}
@@ -218,15 +246,60 @@
                 </td>
             </template>
           </v-data-table>
-          <v-card-action>
+          <v-card-actions>
             <v-btn color="primary" flat href="/process/list">See all consumer processes</v-btn>
-          </v-card-action>
+          </v-card-actions>
         </v-card>
       </v-flex>
 
       <v-flex xs6>
         <v-card>
-          <v-card-title class="metric-title">Metric processes</v-card-title>
+          <v-card-title>Metric processes</v-card-title>
+            <v-data-table v-bind:headers="metricHeaders" :items="listMetricProcess" hide-actions hide-headers>
+              <template slot="items" slot-scope="props">
+                <td><v-icon color="indigo darken-2">widgets</v-icon></td>
+
+                <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
+                  <v-badge color="red darken-1">
+                    <v-icon slot="badge" dark>report_problem</v-icon>
+                    <span>{{props.item.processDefinition.name}}</span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'ENABLE'" class="text-xs-left">
+                  <v-badge color="green">
+                    <v-icon slot="badge">play_arrow</v-icon>
+                    <span>{{props.item.processDefinition.name}}</span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
+                  <v-badge color="blue lighten-2">
+                    <v-icon slot="badge">power_settings_new</v-icon>
+                    <span>{{props.item.processDefinition.name}}</span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'DISABLE'" class="text-xs-left">
+                  <v-badge color="warning">
+                    <v-icon slot="badge">pause</v-icon>
+                    <span>{{props.item.processDefinition.name}}</span>
+                  </v-badge>
+                </td>
+
+                <td class="text-xs-center">{{props.item.processDefinition.aggFunction}}</td>
+                <td class="text-xs-center">
+                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="outputitem in props.item.processDefinition.processOutputs">
+                    <v-flex class="pa-0 ma-0">
+                      {{outputitem.typeOutput}}
+                    </v-flex>
+                  </v-flex>
+                </td>
+              </template>
+            </v-data-table>
+          <v-card-actions>
+            <v-btn color="primary" flat href="/metric/list">See all metric processes</v-btn>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-layout>
@@ -332,6 +405,13 @@
              { text: 'Name',align: 'left',value: 'processDefinition.name',width: '10%'},
              { text: 'Input', align: 'center',value: 'processDefinition.input',width: '8%' },
              { text: 'Output', align: 'center',value: 'processDefinition.output',width: '8%' }
+           ],
+           listMetricProcess: [],
+           metricHeaders: [
+             {text: 'Icon', align: 'center', sortable: 0, value: '', width: '4%'},
+             {text: 'Name', align: 'center', value: 'processDefinition.name', width: '8%'},
+             {text: 'Function', align: 'center', value: 'processDefinition.aggFunction', width: '16%'},
+             {text: 'Output', align: 'center', value: 'processDefinition.processOutputs',width: '8%' }
            ]
          }
     },
@@ -349,6 +429,7 @@
            this.msgError = "Error during call service";
          });
          this.loadConsumerProcess();
+         this.loadMetricProcess();
     },
 
     methods : {
@@ -364,6 +445,15 @@
            this.msgError = "Error during call service";
          });
       },
+      loadMetricProcess() {
+        this.$http.get('/metric/listProcess').then(response => {
+          this.listMetricProcess = response.data;
+          console.log(this.listProcess);
+        }, response => {
+          this.viewError = true;
+          this.msgError = "Error during call service";
+        });
+      }
     }
   }
 </script>
