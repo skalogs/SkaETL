@@ -26,7 +26,7 @@ let router = new VueRouter({
       {
         path: '/main/process/new',
         component: require('../../components/main/NewHome.vue'),
-        name: 'main',
+        name: 'mainNew',
         meta: {
           requiresAuth: true
         }
