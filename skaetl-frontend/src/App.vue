@@ -43,7 +43,7 @@
           {title: 'Home', icon: 'dashboard', color: 'blue darken-2', link: '/main/process'},
           {title: 'Logstash Configuration', icon: 'settings', color: 'green darken-2', link: '/configuration/list'},
           {title: 'Process Consumer', icon: 'cached', color: 'orange darken-2', link: '/process/list'},
-          {title: 'Metric Consumer', icon: 'widgets', color: 'indigo darken-2', link: '/metric/list'},
+          {title: 'Metric Process', icon: 'widgets', color: 'indigo darken-2', link: '/metric/list'},
           {title: 'Referential', icon: 'near_me', color: 'red darken-2', link: '/referential/list'},
           {title: 'Grok Pattern Simulation', icon: 'question_answer', color: 'purple darken-2', link: '/simulate/grok'},
           {title: 'Kafka Live', icon: 'call_split', color: 'blue-grey darken-2', link: '/process/live'}
