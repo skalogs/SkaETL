@@ -1,5 +1,6 @@
 <!--
-#todo Improve UI of the several detail lists
+#todo Add authentification on Grafana or Guest user with specific rights
+#todo Add Escape key and/or Enter key to close the several detail lists
 -->
 <template>
   <v-container fluid grid-list-xs text-xs-center pa-0>
@@ -9,7 +10,7 @@
         <span slot="activator">
           <v-card flat hover>
             <v-card-text class="metric-title" @click="dialogConfiguration=true">Configuration</v-card-text>
-            <v-card-text class="metric-value" @click="dialogConfiguration=true">8</v-card-text>
+            <v-card-text class="metric-value" @click="dialogConfiguration=true">{{home.numberConfigurationTotal}}</v-card-text>
           </v-card>
         </span>
         <span>
@@ -24,7 +25,7 @@
         <span slot="activator">
           <v-card flat hover>
             <v-card-text class="metric-title" @click="dialogProcess=true">Consumer</v-card-text>
-            <v-card-text class="metric-value" @click="dialogProcess=true">12</v-card-text>
+            <v-card-text class="metric-value" @click="dialogProcess=true">{{home.numberProcessTotal}}</v-card-text>
           </v-card>
         </span>
         <span>
@@ -39,7 +40,7 @@
         <span slot="activator">
           <v-card flat hover>
             <v-card-text class="metric-title" @click="dialogMetric=true">Metric</v-card-text>
-            <v-card-text class="metric-value" @click="dialogMetric=true">28</v-card-text>
+            <v-card-text class="metric-value" @click="dialogMetric=true">{{home.numberMetricTotal}}</v-card-text>
           </v-card>
         </span>
         <span>
@@ -54,7 +55,7 @@
         <span slot="activator">
           <v-card flat hover>
             <v-card-text class="metric-title" @click="dialogReferential=true">Referential</v-card-text>
-            <v-card-text class="metric-value" @click="dialogReferential=true">6</v-card-text>
+            <v-card-text class="metric-value" @click="dialogReferential=true">{{home.numberReferentialTotal}}</v-card-text>
           </v-card>
         </span>
         <span>
@@ -69,7 +70,7 @@
         <span slot="activator">
           <v-card flat hover>
             <v-card-text class="metric-title" @click="dialogWorker=true">Worker</v-card-text>
-            <v-card-text class="metric-value" @click="dialogWorker=true">3</v-card-text>
+            <v-card-text class="metric-value" @click="dialogWorker=true">{{home.numberWorkerTotal}}</v-card-text>
           </v-card>
         </span>
         <span>
@@ -83,7 +84,7 @@
         <span slot="activator">
           <v-card flat hover>
             <v-card-text class="metric-title" @click="dialogClient=true">Client Logstash</v-card-text>
-            <v-card-text class="metric-value" @click="dialogClient=true">0</v-card-text>
+            <v-card-text class="metric-value" @click="dialogClient=true">{{dataCharts.numberAllClientConfiguration}}</v-card-text>
           </v-card>
         </span>
         <span>
@@ -127,14 +128,14 @@
        <v-card tile>
           <v-data-table v-bind:headers="headersReferential" :items="home.listStatReferential" hide-actions  >
              <template slot="items" slot-scope="props">
-               <td>{{props.item.name}}</td>
-               <td>{{props.item.status}}</td>
-               <td>{{props.item.nbInput}}</td>
-               <td>{{props.item.nbOutput}}</td>
+               <td><b>{{props.item.name}}</b></td>
+               <td class="text-xs-center">{{props.item.status}}</td>
+               <td class="text-xs-center">{{props.item.nbInput}}</td>
+               <td class="text-xs-center">{{props.item.nbOutput}}</td>
              </template>
           </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogReferential=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogReferential=false">Close this windows</v-btn>
          </v-card-actions>
        </v-card>
      </v-dialog>
@@ -155,14 +156,14 @@
       <v-card tile>
          <v-data-table v-bind:headers="headersWorker" :items="home.listStatWorker" hide-actions  >
             <template slot="items" slot-scope="props">
-              <td>{{props.item.name}}</td>
-              <td>{{props.item.ip}}</td>
-              <td>{{props.item.nbProcess}}</td>
-              <td>{{props.item.type}}</td>
+              <td><b>{{props.item.name}}</b></td>
+              <td class="text-xs-center">{{props.item.ip}}</td>
+              <td class="text-xs-center">{{props.item.nbProcess}}</td>
+              <td class="text-xs-center">{{props.item.type}}</td>
             </template>
          </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogWorker=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogWorker=false">Close this window</v-btn>
          </v-card-actions>
       </v-card>
     </v-dialog>
@@ -187,13 +188,13 @@
       <v-card tile>
          <v-data-table v-bind:headers="headersClient" :items="home.listStatClient" hide-actions  >
             <template slot="items" slot-scope="props">
-              <td>{{props.item.hostname}}</td>
-              <td>{{props.item.dateActivity}}</td>
-              <td>{{props.item.env}}</td>
+              <td><b>{{props.item.hostname}}</b></td>
+              <td class="text-xs-center">{{props.item.dateActivity}}</td>
+              <td class="text-xs-center">{{props.item.env}}</td>
             </template>
          </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogClient=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogClient=false">Close this window</v-btn>
          </v-card-actions>
       </v-card>
     </v-dialog>
@@ -354,9 +355,9 @@
            msgError : '',
            home : '',
            headersClient : [
-              { text : 'Hostname',align : 'center',value : 'hostname'},
-              { text : 'Date Activity',align : 'center',value : 'dateActivity'},
-              { text : 'Environment',align : 'center',value : 'env'}
+              { text : 'Client hostname',align : 'center',value : 'hostname'},
+              { text : 'Activity date',align : 'center',value : 'dateActivity'},
+              { text : 'Client environment',align : 'center',value : 'env'}
            ],
            headersProcess : [
              { text : 'Process name',align : 'center',value : 'name'},
@@ -365,10 +366,10 @@
              { text : 'Number of processing', align : 'center',value : 'nbOutput'}
            ],
            headersWorker : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Ip',align : 'center',value : 'ip'},
-             { text : 'Nb Process',align : 'center',value : 'nbProcess'},
-             { text : 'Type',align : 'center',value : 'type'}
+             { text : 'Worker name',align : 'center',value : 'name'},
+             { text : 'Worker IP address',align : 'center',value : 'ip'},
+             { text : 'Number of processing',align : 'center',value : 'nbProcess'},
+             { text : 'Worker type',align : 'center',value : 'type'}
            ],
            headersMetric : [
              { text : 'Process name',align : 'center',value : 'name'},
@@ -377,13 +378,13 @@
              { text : 'Number of processing',align : 'center',value : 'todo'}
            ],
            headersReferential : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Status',align : 'center',value : 'status'},
-             { text : 'Nb Process',align : 'center',value : 'nbProcess'}
+             { text : 'Referential name',align : 'center',value : 'name'},
+             { text : 'Referential status',align : 'center',value : 'status'},
+             { text : 'Number of processing',align : 'center',value : 'nbProcess'}
            ],
            headersConfiguration : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Status',align : 'center',value : 'status'}
+             { text : 'Configuration name',align : 'center',value : 'name'},
+             { text : 'Configuration status',align : 'center',value : 'status'}
            ],
            optionsGlobal: {responsive: true,maintainAspectRatio: false,
                                    legend: {
