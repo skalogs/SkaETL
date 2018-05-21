@@ -15,6 +15,8 @@ import java.util.List;
 @ToString
 public class HomeWeb {
     @Builder.Default
+    private Long numberProcessTotal = new Long(0);
+    @Builder.Default
     private Long numberProcessActive = new Long(0);
     @Builder.Default
     private Long numberProcessDeActive = new Long(0);
@@ -26,6 +28,8 @@ public class HomeWeb {
     private List<StatProcess> listStatProcess = new ArrayList<>();
 
     @Builder.Default
+    private Long numberWorkerTotal = new Long(0);
+    @Builder.Default
     private Long numberWorkerProcess = new Long(0);
     @Builder.Default
     private Long numberWorkerMetric = new Long(0);
@@ -33,8 +37,10 @@ public class HomeWeb {
     private Long numberWorkerReferential = new Long(0);
     @Builder.Default
     private List<StatWorker> listStatWorker = new ArrayList<>();
-    @Builder.Default
 
+    @Builder.Default
+    private Long numberMetricTotal = new Long(0);
+    @Builder.Default
     private Long numberMetricActive = new Long(0);
     @Builder.Default
     private Long numberMetricDeActive = new Long(0);
@@ -46,6 +52,8 @@ public class HomeWeb {
     private List<StatMetric> listStatMetric = new ArrayList<>();
 
     @Builder.Default
+    private Long numberReferentialTotal = new Long(0);
+    @Builder.Default
     private Long numberReferentialActive = new Long(0);
     @Builder.Default
     private Long numberReferentialDeActive = new Long(0);
@@ -56,6 +64,8 @@ public class HomeWeb {
     @Builder.Default
     private List<StatReferential> listStatReferential = new ArrayList<>();
 
+    @Builder.Default
+    private Long numberConfigurationTotal = new Long(0);
     @Builder.Default
     private Long numberConfigurationActive = new Long(0);
     @Builder.Default
