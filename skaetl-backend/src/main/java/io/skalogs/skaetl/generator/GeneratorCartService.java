@@ -70,7 +70,7 @@ public class GeneratorCartService {
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_IP)
+                    .typeTransformation(TypeValidation.ADD_GEO_LOCALISATION)
                     .parameterTransformation(ParameterTransformation.builder()
                             .keyField("ip")
                             .build())
