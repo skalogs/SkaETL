@@ -24,6 +24,7 @@ public class GenerateCartData {
     private Integer discount;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String idPayment;
-
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Integer price;
 
 }

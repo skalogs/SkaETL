@@ -181,6 +181,7 @@ public class UtilsCartData {
                 .name(cartProduct.getName())
                 .customerEmail(customer)
                 .quantity(quantity)
+                .price(cartProduct.getPrice())
                 .timestamp(df.format(newDate))
                 .build());
     }
