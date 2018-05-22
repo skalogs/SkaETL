@@ -139,7 +139,7 @@ public class GeneratorCartService {
                 .processOutputs(Lists.newArrayList(toEsOutput()))
                 .build());
         processMetrics.add(ProcessMetric.builder()
-                .idProcess("CART_NB_PRODUCT_SEEN")
+                .idProcess("CART_NB_PRODUCT_SEEN_PER_USER")
                 .name("Cart - Number of Product seen per user")
                 .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
                 .aggFunction("COUNT(*)")
@@ -192,9 +192,9 @@ public class GeneratorCartService {
                 .idProcess("CART_FRAUD_DIFFERENT_COUNTRY")
                 .name("Cart - Fraud different country")
                 .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
-                .aggFunction("COUNT(*)")
+                .aggFunction("COUNT-DISTINCT(ip_country_name)")
                 .where("type = \"payment\"")
-                .groupBy("customerEmail_ue,ip_country_name")
+                .groupBy("customerEmail_ue")
                 .having("> 1")
                 .windowType(WindowType.TUMBLING)
                 .size(2)
@@ -214,6 +214,11 @@ public class GeneratorCartService {
     private void createAndActivateMetrics(List<ProcessMetric> processMetrics) {
         for (ProcessMetric processMetric : processMetrics) {
             metricProcessService.updateProcess(processMetric);
+        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            //don't care;
         }
         for (ProcessMetric processMetric : processMetrics) {
             try {
