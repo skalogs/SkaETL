@@ -118,6 +118,15 @@ public class UtilsCartData {
             "live.com",
             "yandex.com"
     };
+    private final String[] tabIp = new String[]{
+            "80.93.80.0",
+            "85.192.192.0",
+            "93.57.56.0",
+            "77.241.80.0",
+            "217.15.224.0",
+            "78.159.200.0",
+            "85.235.128.0"
+    };
 
     private final Producer<String, String> producer;
     private final String topic;
@@ -139,6 +148,10 @@ public class UtilsCartData {
         return tabProduct[RANDOM.nextInt(tabProduct.length)];
     }
 
+    public String generateIp(){
+        return tabIp[RANDOM.nextInt(tabIp.length)];
+    }
+
     public List<String> generateCustomer(Integer nbCustomer) {
         List<String> listCustomer = new ArrayList<>();
         for (int i = 0; i < nbCustomer; i++) {
@@ -152,17 +165,19 @@ public class UtilsCartData {
         Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
         sendToKafka(topic,GenerateCartData.builder()
                 .type("showProduct")
+                .ip(generateIp())
                 .name(cartProduct.getName())
                 .customerEmail(customer)
                 .timestamp(df.format(newDate))
                 .build());
     }
     //{type: "addToCart", quantity: , name:,customerEmail: }
-    private void generateAddToCart(int minute, String customer, CartProduct cartProduct, Integer quantity) {
+    private void generateAddToCart(int minute, String customer, String ip, CartProduct cartProduct, Integer quantity) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
         sendToKafka(topic,GenerateCartData.builder()
                 .type("addToCart")
+                .ip(ip)
                 .name(cartProduct.getName())
                 .customerEmail(customer)
                 .quantity(quantity)
@@ -170,12 +185,13 @@ public class UtilsCartData {
                 .build());
     }
     //{type: "payment", customerEmail: ,totalItemPrice:, idPayment: , discount: discount }
-    private void generatePayment(int minute, String customer, Double totalPrice, Integer discount) {
+    private void generatePayment(int minute, String customer, String ip, Double totalPrice, Integer discount) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
         sendToKafka(topic,GenerateCartData.builder()
                 .type("payment")
                 .customerEmail(customer)
+                .ip(ip)
                 .totalItemPrice(totalPrice)
                 .idPayment(UUID.randomUUID().toString())
                 .discount(discount)
@@ -183,12 +199,13 @@ public class UtilsCartData {
                 .build());
     }
     //{type: "incident", customerEmail: , totalItemPrice: , idPayment:}
-    private void generateIncident(int minute, String customer, Double totalPrice) {
+    private void generateIncident(int minute, String customer, String ip, Double totalPrice) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
         sendToKafka(topic,GenerateCartData.builder()
                 .type("incident")
                 .customerEmail(customer)
+                .ip(ip)
                 .totalItemPrice(totalPrice)
                 .idPayment(UUID.randomUUID().toString())
                 .timestamp(df.format(newDate))
@@ -214,30 +231,30 @@ public class UtilsCartData {
         }
     }
 
-    public void generateScriptAddToCart(int nbAddTocar, int minute, String customer, int nbProduct) {
+    public void generateScriptAddToCart(int nbAddTocar, int minute, String customer, String ip, int nbProduct) {
         for (int j = 0; j < nbAddTocar; j++) {
-            generateScenarioAddToCart(minute, customer, nbProduct);
+            generateScenarioAddToCart(minute, customer, ip, nbProduct);
         }
     }
 
-    public void generateScriptPaySucess(int nbPay, int minute, String customer, int nbProduct) {
+    public void generateScriptPaySucess(int nbPay, int minute, String customer, String ip, int nbProduct) {
         for (int j = 0; j < nbPay; j++) {
-            generateScenarioPaySuccess(minute, customer, nbProduct);
+            generateScenarioPaySuccess(minute, customer, ip, nbProduct);
         }
     }
 
-    public void generateScriptPayNotSucess(int nbPay, int minute, String customer, int nbProduct) {
+    public void generateScriptPayNotSucess(int nbPay, int minute, String customer, String ip, int nbProduct) {
         for (int j = 0; j < nbPay; j++) {
-            generateScenarioPayNotSuccess(minute, customer, nbProduct);
+            generateScenarioPayNotSuccess(minute, customer, ip, nbProduct);
         }
     }
 
-    private void generateScenarioAddToCart(int minute, String customer, int nbProduct) {
+    private void generateScenarioAddToCart(int minute, String customer, String ip, int nbProduct) {
         for (int i = 0; i < nbProduct; i++) {
             CartProduct c = tabProduct[RANDOM.nextInt(tabProduct.length)];
             generateShowProduct(minute + i, customer, c);
             int quantity = RANDOM.nextInt(3);
-            generateAddToCart(minute + i + 1, customer, c , quantity);
+            generateAddToCart(minute + i + 1, customer, ip , c, quantity);
         }
         int otherShow = RANDOM.nextInt(nbProduct);
         for (int i = 0; i < otherShow; i++) {
@@ -246,13 +263,13 @@ public class UtilsCartData {
         }
     }
 
-    private void generateScenarioPaySuccess(int minute, String customer,int nbProduct) {
+    private void generateScenarioPaySuccess(int minute, String customer, String ip, int nbProduct) {
         Double totalPrice = Double.valueOf(0);
         for (int i = 0; i < nbProduct; i++) {
             CartProduct c = tabProduct[RANDOM.nextInt(tabProduct.length)];
             generateShowProduct(minute + i, customer, c);
             int quantity = RANDOM.nextInt(3);
-            generateAddToCart(minute + i + 1, customer, c, quantity);
+            generateAddToCart(minute + i + 1, customer, ip, c, quantity);
             totalPrice += c.getPrice() * quantity;
             c.setStock(c.getStock()-quantity);
             generateStock(minute + i +1,customer,c.getName(),0);
@@ -265,7 +282,7 @@ public class UtilsCartData {
         if(discountRandom == 3){
             discount = 30;
         }
-        generatePayment(minute+nbProduct+1,customer,discount!=null ? totalPrice*discount/100 : totalPrice,discount);
+        generatePayment(minute+nbProduct+1,customer,ip,discount!=null ? totalPrice*discount/100 : totalPrice,discount);
         // Other search
         int otherShow = RANDOM.nextInt(nbProduct);
         for (int i = 0; i < otherShow; i++) {
@@ -274,16 +291,16 @@ public class UtilsCartData {
         }
     }
 
-    private void generateScenarioPayNotSuccess(int minute, String customer, int nbProduct) {
+    private void generateScenarioPayNotSuccess(int minute, String customer, String ip, int nbProduct) {
         Double totalPrice = Double.valueOf(0);
         for (int i = 0; i < nbProduct; i++) {
             CartProduct c = tabProduct[RANDOM.nextInt(tabProduct.length)];
             generateShowProduct(minute + i, customer, c);
             int quantity = RANDOM.nextInt(3);
-            generateAddToCart(minute + i + 1, customer, c, quantity);
+            generateAddToCart(minute + i + 1, customer, ip, c, quantity);
             totalPrice += c.getPrice() * quantity;
         }
-        generateIncident(minute+nbProduct+1,customer,totalPrice);
+        generateIncident(minute+nbProduct+1,customer,ip,totalPrice);
         // Other search
         int otherShow = RANDOM.nextInt(nbProduct);
         for (int i = 0; i < otherShow; i++) {

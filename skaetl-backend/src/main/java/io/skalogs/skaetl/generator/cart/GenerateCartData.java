@@ -10,6 +10,7 @@ import lombok.*;
 @Setter
 public class GenerateCartData {
     private String type;
+    private String ip;
     private String timestamp;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String customerEmail;
@@ -23,5 +24,6 @@ public class GenerateCartData {
     private Integer discount;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String idPayment;
+
 
 }

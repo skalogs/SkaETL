@@ -69,7 +69,12 @@ public class GeneratorCartService {
                             .keyField("customerEmail")
                             .build())
                     .build());
-            //IP
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.FORMAT_IP)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .keyField("ip")
+                            .build())
+                    .build());
 
             processService.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessCardData")
@@ -93,9 +98,9 @@ public class GeneratorCartService {
         for(int i = 0 ; i< timeToGenerateInMinute ;i++){
             try {
                     utilsCartData.generateScriptShowProduct(nbShowByMinute,i,listCustomer);
-                    utilsCartData.generateScriptAddToCart(nbAddToCardByMinute,i,utilsCartData.getUser(listCustomer),RANDOM.nextInt(3)+1);
-                    utilsCartData.generateScriptPaySucess(nbPaySuccessByMinute, i,utilsCartData.getUser(listCustomer),RANDOM.nextInt(3)+1);
-                    utilsCartData.generateScriptPayNotSucess(nbPayNotSuccessByMinute, i,utilsCartData.getUser(listCustomer),RANDOM.nextInt(3)+1);
+                    utilsCartData.generateScriptAddToCart(nbAddToCardByMinute,i,utilsCartData.getUser(listCustomer),utilsCartData.generateIp(),RANDOM.nextInt(3)+1);
+                    utilsCartData.generateScriptPaySucess(nbPaySuccessByMinute, i,utilsCartData.getUser(listCustomer),utilsCartData.generateIp(),RANDOM.nextInt(3)+1);
+                    utilsCartData.generateScriptPayNotSucess(nbPayNotSuccessByMinute, i,utilsCartData.getUser(listCustomer),utilsCartData.generateIp(),RANDOM.nextInt(3)+1);
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 log.error("InterruptedException ",e);
