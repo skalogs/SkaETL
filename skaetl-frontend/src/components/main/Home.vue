@@ -207,28 +207,28 @@
                 <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
                   <v-badge color="red">
                     <v-icon slot="badge">error</v-icon>
-                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                    <span class="process-name">{{props.item.processDefinition.name}}</span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'ENABLE'" class="text-xs-left">
                   <v-badge color="green">
                     <v-icon slot="badge">play_arrow</v-icon>
-                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                    <span class="process-name">{{props.item.processDefinition.name}}</span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
                   <v-badge color="blue lighten-2">
                     <v-icon slot="badge">power_settings_new</v-icon>
-                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                    <span class="process-name">{{props.item.processDefinition.name}}</span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'DISABLE'" class="text-xs-left">
                   <v-badge color="warning">
                     <v-icon slot="badge">pause</v-icon>
-                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                    <span class="process-name">{{props.item.processDefinition.name}}</span>
                   </v-badge>
                 </td>
 
@@ -262,28 +262,28 @@
                 <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
                   <v-badge color="red darken-1">
                     <v-icon slot="badge" dark>report_problem</v-icon>
-                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                    <span class="process-name">{{props.item.processDefinition.name}}</span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'ENABLE'" class="text-xs-left">
                   <v-badge color="green">
                     <v-icon slot="badge">play_arrow</v-icon>
-                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                    <span class="process-name">{{props.item.processDefinition.name}}</span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
                   <v-badge color="blue lighten-2">
                     <v-icon slot="badge">power_settings_new</v-icon>
-                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                    <span class="process-name">{{props.item.processDefinition.name}}</span>
                   </v-badge>
                 </td>
 
                 <td v-if="props.item.statusProcess == 'DISABLE'" class="text-xs-left">
                   <v-badge color="warning">
                     <v-icon slot="badge">pause</v-icon>
-                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                    <span class="process-name">{{props.item.processDefinition.name}}</span>
                   </v-badge>
                 </td>
 
@@ -333,6 +333,10 @@
   .table-title {
     color: #757575;
     font-size: 22px;
+    font-weight: bold;
+  }
+  .process-name {
+    white-space: nowrap;
     font-weight: bold;
   }
 </style>
