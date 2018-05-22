@@ -7,12 +7,14 @@ import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
+@Component
 public class UtilsCartData {
 
     private final CartProduct[] tabProduct = new CartProduct[]{
@@ -125,7 +127,8 @@ public class UtilsCartData {
 
     public UtilsCartData(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
         producer = kafkaUtils.kafkaProducer();
-        topic = kafkaConfiguration.getTopic();
+        //topic = kafkaConfiguration.getTopic();
+        topic = "demo-cart";
     }
 
     public String getUser(List<String> listCustomer){
@@ -204,8 +207,9 @@ public class UtilsCartData {
                 .build());
     }
 
-    public void generateScriptShowProduct(int nbShow, int minute, String customer) {
+    public void generateScriptShowProduct(int nbShow, int minute, List<String> listCustomer) {
         for (int j = 0; j < nbShow; j++) {
+            String customer = getUser(listCustomer);
             generateShowProduct(minute, customer, tabProduct[RANDOM.nextInt(tabProduct.length)]);;
         }
     }

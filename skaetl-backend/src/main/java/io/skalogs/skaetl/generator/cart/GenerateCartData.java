@@ -1,9 +1,13 @@
 package io.skalogs.skaetl.generator.cart;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Builder;
+import lombok.*;
 
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 public class GenerateCartData {
     private String type;
     private String timestamp;
