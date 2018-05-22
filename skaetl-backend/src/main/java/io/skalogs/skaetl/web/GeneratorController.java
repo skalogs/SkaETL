@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.web;
 
+import io.skalogs.skaetl.generator.GeneratorCartService;
 import io.skalogs.skaetl.generator.GeneratorErrorService;
 import io.skalogs.skaetl.generator.GeneratorRetryService;
 import io.skalogs.skaetl.generator.GeneratorService;
@@ -9,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -17,6 +19,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @AllArgsConstructor
 public class GeneratorController {
 
+    private final GeneratorCartService generatorCartService;
     private final GeneratorService generatorService;
     private final GeneratorErrorService generatorErrorService;
     private final GeneratorRetryService generatorRetryService;
@@ -55,5 +58,16 @@ public class GeneratorController {
     @PostMapping("/inputRetryTopic")
     public void inputRetryTopic(@Valid @RequestBody PayloadTopic payload) {
         generatorRetryService.createRandom(payload.getNbElemBySlot(), payload.getNbSlot());
+    }
+
+    @ResponseStatus(CREATED)
+    @GetMapping("/inputCard")
+    public void inputCard(@PathParam("nbCustomer") Integer nbCustomer,
+                          @PathParam("nbShowByMinute") Integer nbShowByMinute,
+                          @PathParam("nbAddToCardByMinute") Integer nbAddToCardByMinute,
+                          @PathParam("nbPaySuccessByMinute") Integer nbPaySuccessByMinute,
+                          @PathParam("nbPayNotSuccessByMinute") Integer nbPayNotSuccessByMinute,
+                          @PathParam("timeToGenerateInMinute") Integer timeToGenerateInMinute ) {
+        generatorCartService.generateData(nbCustomer, nbShowByMinute, nbAddToCardByMinute, nbPaySuccessByMinute, nbPayNotSuccessByMinute, timeToGenerateInMinute);
     }
 }
