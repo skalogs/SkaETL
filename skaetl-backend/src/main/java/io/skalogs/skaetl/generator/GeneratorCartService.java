@@ -85,6 +85,8 @@ public class GeneratorCartService {
                             ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
                     .build());
             try {
+                //HACK
+                Thread.sleep(2000);
                 processService.activateProcess(processService.findProcess("idProcessCardData"));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer idProcessCardData");
