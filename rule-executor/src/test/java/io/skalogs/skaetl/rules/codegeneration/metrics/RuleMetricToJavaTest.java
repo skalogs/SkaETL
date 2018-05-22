@@ -58,7 +58,7 @@ public class RuleMetricToJavaTest {
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {\n" +
+                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
                                 "        return aggregateTumblingWindow(kGroupedStream,5,MINUTES);\n" +
                                 "    }\n" +
                                 "}"));
@@ -104,13 +104,13 @@ public class RuleMetricToJavaTest {
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {\n" +
+                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
                                 "        return aggregateTumblingWindow(kGroupedStream,5,MINUTES);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected Double mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\").asDouble();\n" +
+                                "    protected JsonNode mapValues(JsonNode value) {\n" +
+                                "        return value.path(\"duration\");\n" +
                                 "    }\n" +
                                 "}"));
     }
@@ -157,13 +157,13 @@ public class RuleMetricToJavaTest {
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {\n" +
+                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
                                 "        return aggregateTumblingWindow(kGroupedStream,5,MINUTES);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected Double mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\").asDouble();\n" +
+                                "    protected JsonNode mapValues(JsonNode value) {\n" +
+                                "        return value.path(\"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -214,13 +214,13 @@ public class RuleMetricToJavaTest {
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {\n" +
+                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
                                 "        return aggregateTumblingWindow(kGroupedStream,5,MINUTES);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected Double mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\").asDouble();\n" +
+                                "    protected JsonNode mapValues(JsonNode value) {\n" +
+                                "        return value.path(\"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -277,13 +277,13 @@ public class RuleMetricToJavaTest {
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {\n" +
+                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
                                 "        return aggregateTumblingWindow(kGroupedStream,5,MINUTES);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected Double mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\").asDouble();\n" +
+                                "    protected JsonNode mapValues(JsonNode value) {\n" +
+                                "        return value.path(\"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -334,13 +334,13 @@ public class RuleMetricToJavaTest {
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {\n" +
+                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
                                 "        return aggregateTumblingWindow(kGroupedStream,5,MINUTES);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected Double mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\").asDouble();\n" +
+                                "    protected JsonNode mapValues(JsonNode value) {\n" +
+                                "        return value.path(\"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -404,13 +404,13 @@ public class RuleMetricToJavaTest {
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {\n" +
+                                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
                                 "        return aggregateTumblingWindow(kGroupedStream,5,MINUTES);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
-                                "    protected Double mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\").asDouble();\n" +
+                                "    protected JsonNode mapValues(JsonNode value) {\n" +
+                                "        return value.path(\"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +

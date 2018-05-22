@@ -364,7 +364,7 @@
           having: "",
           processOutputs: []
         },
-        functions: ["SUM", "AVG", "MIN", "MAX", "COUNT", "STDDEV", "MEAN"],
+        functions: ["COUNT", "COUNT-DISTINCT", "SUM", "AVG", "MIN", "MAX", "STDDEV", "MEAN"],
         windowTypes: ["TUMBLING", "HOPPING", "SESSION"],
         timeunits: ["SECONDS", "MINUTES", "HOURS", "DAYS"],
         metricWizardStep: 1,

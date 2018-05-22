@@ -1,14 +1,15 @@
 package io.skalogs.skaetl.rules.metrics.udaf;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
-public class MaxFunction extends AggregateFunction<Number, Double> {
+public class MaxFunction extends AggregateFunction<JsonNode, Double> {
     @Getter
     private Double maxValue = Double.NaN;
 
     @Override
-    public AggregateFunction addValue(Number value) {
+    public AggregateFunction addValue(JsonNode value) {
         double doubleValue = value.doubleValue();
         if (Double.isNaN(maxValue)) {
             maxValue = doubleValue;
@@ -25,7 +26,7 @@ public class MaxFunction extends AggregateFunction<Number, Double> {
     }
 
     @Override
-    public AggregateFunction<Number, Double> merge(AggregateFunction<Number, Double> newValue) {
+    public AggregateFunction<JsonNode, Double> merge(AggregateFunction<JsonNode, Double> newValue) {
         return compute() > newValue.compute() ? this : newValue;
     }
 }

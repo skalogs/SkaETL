@@ -13,6 +13,7 @@ public class UDAFRegistry {
 
     private UDAFRegistry() {
         register("count", CountFunction.class);
+        register("count-distinct", CountDistinctFunction.class);
         register("sum", SumFunction.class);
         register("min", MinFunction.class);
         register("max", MaxFunction.class);

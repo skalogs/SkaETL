@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.rules.metrics.udaf;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.common.math.Quantiles;
 import lombok.Getter;
 
@@ -7,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MADFunction extends AggregateFunction<Number, Double> {
+public class MADFunction extends AggregateFunction<JsonNode, Double> {
     @Getter
     private List<Double> values = new ArrayList<>();
 
     @Override
-    public AggregateFunction addValue(Number value) {
+    public AggregateFunction addValue(JsonNode value) {
         values.add(value.doubleValue());
         return this;
     }
@@ -39,7 +40,7 @@ public class MADFunction extends AggregateFunction<Number, Double> {
     }
 
     @Override
-    public AggregateFunction<Number, Double> merge(AggregateFunction<Number, Double> newValue) {
+    public AggregateFunction<JsonNode, Double> merge(AggregateFunction<JsonNode, Double> newValue) {
         return compute() > newValue.compute() ? this : newValue;
     }
 }

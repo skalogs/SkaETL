@@ -1,6 +1,7 @@
 package io.skalogs.skaetl.rules.metrics;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import io.prometheus.client.Counter;
 import io.skalogs.skaetl.domain.ParameterOutput;
 import io.skalogs.skaetl.domain.ProcessMetric;
@@ -74,10 +75,10 @@ public abstract class GenericMetricProcessor {
                 .selectKey(this::selectKey);
 
 
-        KGroupedStream<Keys, Double> filteredElementsGroupByKeys = mainStream
+        KGroupedStream<Keys, JsonNode> filteredElementsGroupByKeys = mainStream
                 .peek(this::countInput)
                 .mapValues(this::mapValues)
-                .groupByKey(Serialized.with(MetricsSerdes.keysSerde(), Serdes.Double()));
+                .groupByKey(Serialized.with(MetricsSerdes.keysSerde(), GenericSerdes.jsonNodeSerde()));
 
         KTable<Windowed<Keys>, Double> aggregateResults = aggregate(filteredElementsGroupByKeys);
 
@@ -205,11 +206,11 @@ public abstract class GenericMetricProcessor {
     // MANDATORY METHODS
     protected abstract AggregateFunction aggInitializer();
 
-    protected Double mapValues(JsonNode value) {
-        return Double.NaN;
+    protected JsonNode mapValues(JsonNode value) {
+        return JsonNodeFactory.instance.nullNode();
     }
 
-    protected abstract KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream);
+    protected abstract KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream);
 
 
     // OPTIONAL METHODS
@@ -254,12 +255,12 @@ public abstract class GenericMetricProcessor {
         return FunctionRegistry.getInstance().evaluate(functionName, args);
     }
 
-    protected KTable<Windowed<Keys>, Double> aggregateHoppingWindow(KGroupedStream<Keys, Double> kGroupedStream,
+    protected KTable<Windowed<Keys>, Double> aggregateHoppingWindow(KGroupedStream<Keys, JsonNode> kGroupedStream,
                                                                     long size,
                                                                     TimeUnit sizeUnit,
                                                                     long advanceBy,
                                                                     TimeUnit advanceByUnit) {
-        TimeWindowedKStream<Keys, Double> windowedKStream = kGroupedStream
+        TimeWindowedKStream<Keys, JsonNode> windowedKStream = kGroupedStream
                 .windowedBy(TimeWindows.of(sizeUnit.toMillis(size)).advanceBy(advanceByUnit.toMillis(advanceBy)));
         KTable<Windowed<Keys>, AggregateFunction> aggregate = windowedKStream.aggregate(
                 this::aggInitializer,
@@ -270,10 +271,10 @@ public abstract class GenericMetricProcessor {
         return aggregate.mapValues(this::operation);
     }
 
-    protected KTable<Windowed<Keys>, Double> aggregateTumblingWindow(KGroupedStream<Keys, Double> kGroupedStream,
+    protected KTable<Windowed<Keys>, Double> aggregateTumblingWindow(KGroupedStream<Keys, JsonNode> kGroupedStream,
                                                                      long size,
                                                                      TimeUnit sizeUnit) {
-        TimeWindowedKStream<Keys, Double> windowedKStream = kGroupedStream
+        TimeWindowedKStream<Keys, JsonNode> windowedKStream = kGroupedStream
                 .windowedBy(TimeWindows.of(sizeUnit.toMillis(size)));
         KTable<Windowed<Keys>, AggregateFunction> aggregate = windowedKStream.aggregate(
                 this::aggInitializer,
@@ -283,10 +284,10 @@ public abstract class GenericMetricProcessor {
         return aggregate.mapValues(this::operation);
     }
 
-    protected KTable<Windowed<Keys>, Double> aggregateSessionWindow(KGroupedStream<Keys, Double> kGroupedStream,
+    protected KTable<Windowed<Keys>, Double> aggregateSessionWindow(KGroupedStream<Keys, JsonNode> kGroupedStream,
                                                                     long gap,
                                                                     TimeUnit sizeUnit) {
-        SessionWindowedKStream<Keys, Double> windowedKStream = kGroupedStream
+        SessionWindowedKStream<Keys, JsonNode> windowedKStream = kGroupedStream
                 .windowedBy(SessionWindows.with(sizeUnit.toMillis(gap)));
         KTable<Windowed<Keys>, AggregateFunction> aggregate = windowedKStream.aggregate(
                 this::aggInitializer,

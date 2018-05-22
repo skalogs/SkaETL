@@ -73,14 +73,14 @@ public class RuleMetricToJava {
                 "    }\n" +
                 "    \n" +
                 "    @Override\n" +
-                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {\n" +
+                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
                 "        return " + ruleMetricVisitor.getWindow() + ";\n" +
                 "    }\n";
         if (StringUtils.isNotBlank(ruleMetricVisitor.getAggFunctionField())) {
             javaCode += "    \n" +
                     "    @Override\n" +
-                    "    protected Double mapValues(JsonNode value) {\n" +
-                    "        return value.path(\"" + ruleMetricVisitor.getAggFunctionField() + "\").asDouble();\n" +
+                    "    protected JsonNode mapValues(JsonNode value) {\n" +
+                    "        return value.path(\"" + ruleMetricVisitor.getAggFunctionField() + "\");\n" +
                     "    }\n";
         }
         if (StringUtils.isNotBlank(ruleMetricVisitor.getWhere())) {

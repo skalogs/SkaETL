@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.rules.metrics.udaf;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -8,14 +9,14 @@ import static java.lang.Double.NaN;
 import static java.lang.Double.isNaN;
 
 @Getter
-public abstract class StdDevFunction extends AggregateFunction<Number, Double> {
+public abstract class StdDevFunction extends AggregateFunction<JsonNode, Double> {
     private long count = 0;
     private Double mean = 0.0;
     private Double sumOfSquaresOfDeltas = 0.0;
 
 
     @Override
-    public AggregateFunction addValue(Number inputvalue) {
+    public AggregateFunction addValue(JsonNode inputvalue) {
         Double value = inputvalue.doubleValue();
         if (count == 0) {
             count = 1;
@@ -57,7 +58,7 @@ public abstract class StdDevFunction extends AggregateFunction<Number, Double> {
     }
 
     @Override
-    public AggregateFunction<Number, Double> merge(AggregateFunction<Number, Double> newValue) {
+    public AggregateFunction<JsonNode, Double> merge(AggregateFunction<JsonNode, Double> newValue) {
         return compute() > newValue.compute() ? this : newValue;
     }
 }

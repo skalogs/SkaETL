@@ -71,13 +71,12 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {                return value.path("duration");
             }
         };
         List<KafkaUnit.Message<Keys, MetricResult>> resultInDestTopic = executeMetricStream(input, minDuration, destTopic);
@@ -86,6 +85,42 @@ public class GenericMetricProcessorIT {
         assertThat(resultInDestTopic.get(0).getKey().getRuleDSL()).isNotBlank();
         assertThat(resultInDestTopic.get(0).getKey().getProject()).isEqualTo("myproject");
         assertThat(resultInDestTopic.get(0).getValue().getResult()).isEqualTo(2);
+    }
+
+    @Test
+    public void shouldComputeCountDistinct() {
+
+        List<JsonNode> input = Arrays.asList(
+                toJsonNode("{\"project\":\"myproject\",\"type\":\"something\",\"duration\": 1}"),
+                toJsonNode("{\"project\":\"myproject\",\"type\":\"somethingelse\",\"duration\": 10}"),
+                toJsonNode("{\"project\":\"myproject\",\"type\":\"somethingelse\",\"duration\": 11}"),
+                toJsonNode("{\"project\":\"myproject\",\"type\":\"somethingelse\",\"duration\": 12}"),
+                toJsonNode("{\"project\":\"myproject\",\"type\":\"somethingelse\",\"duration\": 13}"),
+                toJsonNode("{\"project\":\"myproject\",\"type\":\"anotherone\",\"duration\": 13}")
+
+        );
+        String destTopic = "count-distinct-dest";
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count-distinct", destTopic), "count-distinct-src") {
+            @Override
+            protected AggregateFunction aggInitializer() {
+                return aggFunction("count-distinct");
+            }
+
+            @Override
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
+                return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
+            }
+
+            @Override
+            protected JsonNode mapValues(JsonNode value) {                return value.path("type");
+            }
+        };
+        List<KafkaUnit.Message<Keys, MetricResult>> resultInDestTopic = executeMetricStream(input, minDuration, destTopic);
+        assertThat(resultInDestTopic).hasSize(1);
+        assertThat(resultInDestTopic.get(0).getKey().getRuleName()).isEqualTo("count-distinct");
+        assertThat(resultInDestTopic.get(0).getKey().getRuleDSL()).isNotBlank();
+        assertThat(resultInDestTopic.get(0).getKey().getProject()).isEqualTo("myproject");
+        assertThat(resultInDestTopic.get(0).getValue().getResult()).isEqualTo(3);
     }
 
     private ProcessMetric buildProcessMetric(String name, String destTopic) {
@@ -121,13 +156,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
         };
         List<KafkaUnit.Message<Keys, MetricResult>> resultInDestTopic = executeMetricStream(input, minDuration, destTopic);
@@ -155,13 +190,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
         };
         List<KafkaUnit.Message<Keys, MetricResult>> resultInDestTopic = executeMetricStream(input, minDuration, destTopic);
@@ -191,13 +226,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
         };
         List<KafkaUnit.Message<Keys, MetricResult>> resultInDestTopic = executeMetricStream(input, minDuration, destTopic);
@@ -227,13 +262,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
         };
         List<KafkaUnit.Message<Keys, MetricResult>> resultInDestTopic = executeMetricStream(input, minDuration, destTopic);
@@ -268,13 +303,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
         };
         List<KafkaUnit.Message<Keys, MetricResult>> resultInDestTopic = executeMetricStream(input, minDuration, destTopic);
@@ -305,13 +340,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
 
             @Override
@@ -364,13 +399,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
 
             @Override
@@ -434,13 +469,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.at("/a/duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.at("/a/duration");
             }
 
             @Override
@@ -496,13 +531,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
 
             @Override
@@ -550,13 +585,13 @@ public class GenericMetricProcessorIT {
             }
 
             @Override
-            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, Double> kGroupedStream) {
+            protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {
                 return aggregateTumblingWindow(kGroupedStream, 1, TimeUnit.SECONDS);
             }
 
             @Override
-            protected Double mapValues(JsonNode value) {
-                return value.path("duration").asDouble();
+            protected JsonNode mapValues(JsonNode value) {
+                return value.path("duration");
             }
         };
         List<KafkaUnit.Message<Keys, MetricResult>> resultInDestTopic = executeMetricStream(input, minDuration, destTopic);

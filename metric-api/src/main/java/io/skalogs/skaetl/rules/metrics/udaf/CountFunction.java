@@ -1,14 +1,15 @@
 package io.skalogs.skaetl.rules.metrics.udaf;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 
-public class CountFunction extends AggregateFunction<Object,Double> {
+public class CountFunction extends AggregateFunction<JsonNode,Double> {
 
     @Getter
     private Double count = 0d;
 
     @Override
-    public AggregateFunction addValue(Object value) {
+    public AggregateFunction addValue(JsonNode value) {
         count++;
         return this;
     }
@@ -19,7 +20,7 @@ public class CountFunction extends AggregateFunction<Object,Double> {
     }
 
     @Override
-    public AggregateFunction<Object, Double> merge(AggregateFunction<Object, Double> newValue) {
+    public AggregateFunction<JsonNode, Double> merge(AggregateFunction<JsonNode, Double> newValue) {
         CountFunction countFunction = (CountFunction) newValue;
         count += countFunction.getCount();
         return this;
