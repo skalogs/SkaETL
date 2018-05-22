@@ -312,6 +312,7 @@ public class UtilsCartData {
     private Date addMinutesAndSecondsToTime(int minutesToAdd, int secondsToAdd, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTime());
+        cal.roll(Calendar.HOUR, 1);
         cal.add(Calendar.MINUTE, minutesToAdd);
         cal.add(Calendar.SECOND, secondsToAdd);
         return cal.getTime();
