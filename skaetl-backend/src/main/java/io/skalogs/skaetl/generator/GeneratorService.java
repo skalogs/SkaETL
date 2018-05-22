@@ -70,16 +70,18 @@ public class GeneratorService {
 
 
     private void createAndActiveProcessConsumer(String topic){
-        processService.saveOrUpdate(ProcessConsumer.builder()
-                .idProcess("idProcess"+topic)
-                .processInput(ProcessInput.builder().topicInput(topic).host("kafka.kafka").port("9092").build())
-                .processOutput(Lists.newArrayList(
-                        ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
-                .build());
-        try {
-            processService.activateProcess(processService.findProcess("idProcess"+topic));
-        } catch (Exception e) {
-          log.error("Exception createAndActiveProcessConsumer idProcess"+topic);
+        if(processService.findProcess("idProcess"+topic) == null) {
+            processService.saveOrUpdate(ProcessConsumer.builder()
+                    .idProcess("idProcess" + topic)
+                    .processInput(ProcessInput.builder().topicInput(topic).host("kafka.kafka").port("9092").build())
+                    .processOutput(Lists.newArrayList(
+                            ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
+                    .build());
+            try {
+                processService.activateProcess(processService.findProcess("idProcess" + topic));
+            } catch (Exception e) {
+                log.error("Exception createAndActiveProcessConsumer idProcess" + topic);
+            }
         }
     }
 
