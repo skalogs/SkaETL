@@ -74,7 +74,7 @@ public class UtilsCartData {
     };
     private final String[] tabCustomerLastName = new String[]{
             "SMITH",
-            ",JOHNSON",
+            "JOHNSON",
             "WILLIAMS",
             "BROWN",
             "JONES",
