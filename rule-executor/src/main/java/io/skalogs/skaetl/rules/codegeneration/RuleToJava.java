@@ -151,7 +151,16 @@ public class RuleToJava {
     public static String toCamelCase(String input) {
         String sanitizedInput = org.apache.commons.lang3.StringUtils.stripAccents(input);
         return Stream.of(sanitizedInput.split("[^a-zA-Z0-9]"))
-                .map(v -> v.substring(0, 1).toUpperCase() + v.substring(1).toLowerCase())
+                .filter(v -> StringUtils.isNotBlank(v))
+                .map(v -> toLowerCase(v))
                 .collect(Collectors.joining());
+    }
+
+    private static String toLowerCase(String v) {
+        if (v.length() == 1) {
+            return v.toUpperCase();
+        } else {
+            return v.substring(0, 1).toUpperCase() + v.substring(1).toLowerCase();
+        }
     }
 }
