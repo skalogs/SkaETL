@@ -1,6 +1,3 @@
-<!--
-#todo Add Escape key and/or Enter key to close the several detail lists
--->
 <template>
   <v-container fluid grid-list-xs text-xs-center pa-0>
   <v-layout row wrap>
@@ -108,7 +105,7 @@
     </v-card>
   </v-layout>
 
-    <v-dialog v-model="dialogMetric" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+    <v-dialog v-model="dialogMetric" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogMetric=false" @keydown.enter="dialogMetric=false">
        <v-card tile>
           <v-data-table v-bind:headers="headersMetric" :items="home.listStatMetric" hide-actions  >
              <template slot="items" slot-scope="props">
@@ -123,7 +120,7 @@
          </v-card-actions>
        </v-card>
      </v-dialog>
-     <v-dialog v-model="dialogReferential" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+     <v-dialog v-model="dialogReferential" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogReferential=false" @keydown.enter="dialogReferential=false">
        <v-card tile>
           <v-data-table v-bind:headers="headersReferential" :items="home.listStatReferential" hide-actions  >
              <template slot="items" slot-scope="props">
@@ -138,7 +135,7 @@
          </v-card-actions>
        </v-card>
      </v-dialog>
-     <v-dialog v-model="dialogConfiguration"  fullscreen transition="dialog-bottom-transition" :overlay="false" >
+     <v-dialog v-model="dialogConfiguration"  fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogConfiguration=false" @keydown.enter="dialogConfiguration=false">
       <v-card tile>
            <v-data-table v-bind:headers="headersConfiguration" :items="home.listStatConfiguration" hide-actions  >
               <template slot="items" slot-scope="props">
@@ -151,7 +148,7 @@
          </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogWorker" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+    <v-dialog v-model="dialogWorker" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogWorker=false" @keydown.enter="dialogWorker=false">
       <v-card tile>
          <v-data-table v-bind:headers="headersWorker" :items="home.listStatWorker" hide-actions  >
             <template slot="items" slot-scope="props">
@@ -167,7 +164,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="dialogProcess" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+    <v-dialog v-model="dialogProcess" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogProcess=false" @keydown.enter="dialogProcess=false">
       <v-card tile>
          <v-data-table v-bind:headers="headersProcess" :items="home.listStatProcess" hide-actions>
             <template slot="items" slot-scope="props">
@@ -183,7 +180,7 @@
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="dialogClient" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+    <v-dialog v-model="dialogClient" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogClient=false" @keydown.enter="dialogClient=false">
       <v-card tile>
          <v-data-table v-bind:headers="headersClient" :items="home.listStatClient" hide-actions  >
             <template slot="items" slot-scope="props">
