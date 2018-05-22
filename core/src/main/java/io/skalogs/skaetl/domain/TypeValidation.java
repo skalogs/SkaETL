@@ -25,5 +25,6 @@ public enum TypeValidation {
     UPPER_CASE,
     LOWER_CASE,
     SWAP_CASE,
-    TRIM;
+    TRIM,
+    EMAIL;
 }

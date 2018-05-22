@@ -47,6 +47,7 @@ public class GenericTransformator {
         listTransformator.add(new SwapCaseTransformator(TypeValidation.SWAP_CASE));
         listTransformator.add(new LookupHTTPServiceTransformator(TypeValidation.LOOKUP_EXTERNAL, externalHTTPService));
         listTransformator.add(new AddGeoLocalisationTransformator(TypeValidation.ADD_GEO_LOCALISATION));
+        listTransformator.add(new EmailTransformator(TypeValidation.EMAIL));
     }
 
     public JsonNode createJsonObject(String value) {
