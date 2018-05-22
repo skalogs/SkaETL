@@ -52,15 +52,12 @@ public class AddGeoLocalisationTransformator extends TransformatorProcess {
 
         String key = parameterTransformation.getKeyField();
         String ipToResolve = jsonValue.path(parameterTransformation.getKeyField()).asText();
-
         log.debug("Start to localise IP address [{}]", ipToResolve);
-
-        if (StringUtils.isNotBlank(ipToResolve)) {
-
+        if (jsonValue.has(parameterTransformation.getKeyField())
+                && jsonValue.path(parameterTransformation.getKeyField()).asText()!=null
+                && !jsonValue.path(parameterTransformation.getKeyField()).asText().equals("null")) {
             try {
-
                 InetAddress ipAddress = InetAddress.getByName(ipToResolve);
-
                 CityResponse response = reader.city(ipAddress);
                 Country country = response.getCountry();
                 Subdivision subdivision = response.getMostSpecificSubdivision();
@@ -78,10 +75,8 @@ public class AddGeoLocalisationTransformator extends TransformatorProcess {
                         put(key + "_city_postalcode", postal.getCode()).
                         put(key + "_location_gp", location.getLatitude().toString() + "," + location.getLongitude().toString());
 
-            } catch (AddressNotFoundException ex) {
-                //
             } catch (Exception ex) {
-                log.error("Exception during Geo IP Transformation");
+                log.error("Exception during Geo IP Transformation {}",ipToResolve);
                 ex.printStackTrace();
             }
         }
