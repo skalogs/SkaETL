@@ -193,7 +193,7 @@ public class GeneratorCartService {
                 .name("Cart - Fraud different country")
                 .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
                 .aggFunction("COUNT-DISTINCT(ip_country_name)")
-                .where("type = \"payment\"")
+                .where("type IN(\"payment\",\"incident\") ")
                 .groupBy("customerEmail_ue")
                 .having("> 1")
                 .windowType(WindowType.TUMBLING)
