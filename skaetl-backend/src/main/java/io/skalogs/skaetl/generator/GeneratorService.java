@@ -70,17 +70,16 @@ public class GeneratorService {
 
 
     private void createAndActiveProcessConsumer(String topic){
-        String idProcess = UUID.randomUUID().toString();
         processService.saveOrUpdate(ProcessConsumer.builder()
-                .idProcess(idProcess)
+                .idProcess("idProcess"+topic)
                 .processInput(ProcessInput.builder().topicInput(topic).host("kafka.kafka").port("9092").build())
                 .processOutput(Lists.newArrayList(
                         ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
                 .build());
         try {
-            processService.activateProcess(processService.findProcess(idProcess));
+            processService.activateProcess(processService.findProcess("idProcess"+topic));
         } catch (Exception e) {
-          log.error("Exception createAndActiveProcessConsumer {} ",idProcess);
+          log.error("Exception createAndActiveProcessConsumer idProcess"+topic);
         }
     }
 
