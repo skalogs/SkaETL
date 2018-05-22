@@ -8,9 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
 @Slf4j
-public class EmailTransformator extends TransformatorProcess {
+public class EmailFormatTransformator extends TransformatorProcess {
 
-    public EmailTransformator(TypeValidation type) {
+    public EmailFormatTransformator(TypeValidation type) {
         super(type);
     }
 
