@@ -28,7 +28,7 @@ public class EmailFieldTransformatorTest {
                         .build(),
                 jsonValue, value);
         assertThat(jsonValue.path("messageSend_ue").asLong()).isEqualTo(new Long(1548));
-        assertThat(jsonValue.path("messageSend").asText()).isEqualTo("");
+        assertThat(jsonValue.has("messageSend2_ue")).isFalse();
     }
 
     @Test

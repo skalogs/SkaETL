@@ -63,6 +63,14 @@ public class GeneratorCartService {
                             .keyField("quantity")
                             .build())
                     .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.FORMAT_EMAIL)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .keyField("customerEmail")
+                            .build())
+                    .build());
+            //IP
+
             processService.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessCardData")
                     .name("demo cart")
