@@ -303,7 +303,7 @@ public class UtilsCartData {
     private void sendToKafka(String topic, GenerateCartData generateCartData) {
         try {
             String value = mapper.writeValueAsString(generateCartData);
-            log.info("Sending {}", value);
+            log.info("Sending topic {} value {}", topic, value);
             producer.send(new ProducerRecord(topic, value));
         } catch (Exception e) {
             log.error("Error sending to Kafka during generation ", e);
