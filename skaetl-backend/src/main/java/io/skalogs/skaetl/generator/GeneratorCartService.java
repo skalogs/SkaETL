@@ -108,6 +108,9 @@ public class GeneratorCartService {
                 log.error("InterruptedException ",e);
             }
         }
+        //Specific usecase
+        //Same user different ip, Buy Or Incident
+        utilsCartData.generateScriptPaySameCustomerDifferentIp(timeToGenerateInMinute/2,utilsCartData.getUser(listCustomer));
     }
 
 }

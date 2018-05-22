@@ -250,6 +250,12 @@ public class UtilsCartData {
         }
     }
 
+    public void generateScriptPaySameCustomerDifferentIp(int minute, String customer){
+        generateScenarioPaySuccess(minute,customer,generateIp(),2);
+        generateScenarioPayNotSuccess(minute+5,customer,generateIp(),4);
+        generateScenarioPaySuccess(minute+8,customer,generateIp(),1);
+    }
+
     private void generateScenarioAddToCart(int minute, String customer, String ip, int nbProduct) {
         for (int i = 0; i < nbProduct; i++) {
             CartProduct c = tabProduct[RANDOM.nextInt(tabProduct.length)];
