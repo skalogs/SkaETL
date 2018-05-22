@@ -187,6 +187,20 @@ public class GeneratorCartService {
                 .sizeUnit(TimeUnit.MINUTES)
                 .processOutputs(Lists.newArrayList(toEsOutput()))
                 .build());
+        //FRAUD
+        processMetrics.add(ProcessMetric.builder()
+                .idProcess("CART_FRAUD_DIFFERENT_COUNTRY")
+                .name("Cart - Fraud different country")
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .aggFunction("COUNT(*)")
+                .where("type = \"payment\"")
+                .groupBy("customerEmail_ue,ip_country_name")
+                .having("> 1")
+                .windowType(WindowType.TUMBLING)
+                .size(2)
+                .sizeUnit(TimeUnit.MINUTES)
+                .processOutputs(Lists.newArrayList(toEsOutput()))
+                .build());
         createAndActivateMetrics(processMetrics);
     }
 
