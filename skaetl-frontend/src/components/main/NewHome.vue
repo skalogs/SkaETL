@@ -441,8 +441,7 @@
 
     methods : {
       openGrafana(){
-         // #todo Remove the hard-coded URL
-         window.open('http://grafana-admin.skalogs-demo.skalogs.com','_blank');
+         window.open(process.env.GF_ROOT_URL,'_blank');
       },
       loadConsumerProcess() {
         this.$http.get('/process/findAll').then(response => {
