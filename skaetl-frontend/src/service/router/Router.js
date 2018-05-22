@@ -24,14 +24,6 @@ let router = new VueRouter({
         }
       },
       {
-        path: '/main/process/new',
-        component: require('../../components/main/NewHome.vue'),
-        name: 'mainNew',
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
         path: '/configuration/list',
         component: require('../../components/configuration/List.vue'),
         name: 'listConf',

@@ -1,319 +1,348 @@
 <template>
-  <v-container fluid grid-list-md>
-     <v-layout row style="cardSkalogs">
-              <v-flex xs2 sm2 md2 class="pa-3">
-                <v-card color="teal darken-1" class="white--text">
-                  <v-container fluid grid-list-lg>
-                     <v-layout row>
-                     <v-icon light>settings</v-icon><div class="subheading">&nbsp;Configuration</div>
-                     </v-layout>
-                     <v-layout row>
-                         <v-flex xs6 sm6 md6 class="text-md-right caption">
-                              Active  </p>
-                              Inactive </p>
-                              Error </p>
-                              Init
-                         </v-flex>
-                         <v-flex xs1 sm1 md1  class="text-md-right caption ">
-                              {{home.numberConfigurationActive}} </p>
-                              {{home.numberConfigurationDeActive}} </p>
-                              {{home.numberConfigurationError }} </p>
-                              {{home.numberConfigurationInit }}
-                         </v-flex>
-                     </v-layout>
-                  </v-container>
-                  <v-card-actions>
-                      <v-btn flat color="orange" v-on:click.native="dialogConfiguration=true">View</v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-flex>
-         <v-flex xs2 sm2 md2 class="pa-3">
-            <v-card color="light-blue darken-3" class="white--text">
-              <v-container fluid grid-list-lg>
-                 <v-layout row>
-                  <v-icon light>cached</v-icon><div class="subheading">&nbsp;Consumer</div>
-                 </v-layout>
-                 <v-layout row>
-                    <v-flex xs6 sm6 md6 class="text-md-right caption">
-                         Active  </p>
-                         Inactive </p>
-                         Error  </p>
-                         Init
-                    </v-flex>
-                    <v-flex xs1 sm1 md1  class="text-md-right caption ">
-                         {{home.numberProcessActive}} </p>
-                         {{home.numberProcessDeActive}} </p>
-                         {{home.numberProcessError }}</p>
-                         {{home.numberProcessInit }}
-                    </v-flex>
-                 </v-layout>
-              </v-container>
-              <v-card-actions>
-                  <v-btn flat color="orange" v-on:click.native="dialogProcess=true">View</v-btn>
-              </v-card-actions>
-            </v-card>
-         </v-flex>
-         <v-flex xs2 sm2 md2 class="pa-3">
-            <v-card color="blue-grey darken-1" class="white--text">
-              <v-container fluid grid-list-lg>
-                 <v-layout row>
-                  <v-icon light>widgets</v-icon><div class="subheading">&nbsp;Metric</div>
-                 </v-layout>
-                 <v-layout row>
-                    <v-flex xs6 sm6 md6 class="text-md-right caption">
-                         Active  </p>
-                         Inactive </p>
-                         Error  </p>
-                         Init
-                    </v-flex>
-                    <v-flex xs1 sm1 md1  class="text-md-right caption ">
-                         {{home.numberMetricActive}} </p>
-                         {{home.numberMetricDeActive}} </p>
-                         {{home.numberMetricError }}</p>
-                         {{home.numberMetricInit }}
-                    </v-flex>
-                 </v-layout>
-              </v-container>
-              <v-card-actions>
-                  <v-btn flat color="orange" v-on:click.native="dialogMetric=true">View</v-btn>
-              </v-card-actions>
-            </v-card>
-         </v-flex>
-         <v-flex xs2 sm2 md2 class="pa-3">
-            <v-card color="red darken-4" class="white--text">
-              <v-container fluid grid-list-lg>
-                 <v-layout row>
-                  <v-icon light>near_me</v-icon><div class="subheading">&nbsp;Referential</div>
-                 </v-layout>
-                 <v-layout row>
-                    <v-flex xs6 sm6 md6 class="text-md-right caption">
-                         Active  </p>
-                         Inactive </p>
-                         Error  </p>
-                         Init
-                    </v-flex>
-                    <v-flex xs1 sm1 md1  class="text-md-right caption ">
-                         {{home.numberReferentialActive}} </p>
-                         {{home.numberReferentialDeActive}} </p>
-                         {{home.numberReferentialError }}</p>
-                         {{home.numberReferentialInit }}
-                    </v-flex>
-                 </v-layout>
-              </v-container>
-              <v-card-actions>
-                  <v-btn flat color="orange" v-on:click.native="dialogReferential=true">View</v-btn>
-              </v-card-actions>
-            </v-card>
-         </v-flex>
-         <v-flex xs2 sm2 md2 class="pa-3">
-            <v-card color="deep-purple lighten-0" class="white--text">
-              <v-container fluid grid-list-lg>
-                 <v-layout row>
-                  <div class="subheading">Worker</div>
-                 </v-layout>
-                 <v-layout row>
-                     <v-flex xs6 sm6 md6 class="text-md-right caption">
-                          <br>
-                          Process</p>
-                          Metric</p>
-                          Ref.</p>
-                     </v-flex>
-                     <v-flex xs1 sm1 md1  class="text-md-right caption ">
-                          <br>
-                          {{home.numberWorkerProcess}} </p>
-                          {{home.numberWorkerMetric}} </p>
-                          {{home.numberWorkerReferential }}
-                     </v-flex>
-                 </v-layout>
-              </v-container>
-              <v-card-actions>
-                  <v-btn flat color="orange" v-on:click.native="dialogWorker=true">View</v-btn>
-              </v-card-actions>
-            </v-card>
-         </v-flex>
+  <v-container fluid grid-list-xs text-xs-center pa-0>
+  <v-layout row wrap>
+    <v-flex d-flex xs12>
+      <v-tooltip right>
+        <span slot="activator">
+          <v-card flat hover>
+            <v-card-text class="metric-title" @click="dialogConfiguration=true">Configuration</v-card-text>
+            <v-card-text class="metric-value" @click="dialogConfiguration=true">{{home.numberConfigurationTotal}}</v-card-text>
+          </v-card>
+        </span>
+        <span>
+          Active: {{home.numberConfigurationActive}}<br>
+          Inactive: {{home.numberConfigurationDeActive}}<br>
+          Error: {{home.numberConfigurationError }}<br>
+          Init: {{home.numberConfigurationInit }}
+        </span>
+      </v-tooltip>
 
-         <v-flex xs2 sm2 md2 class="pa-3">
-           <v-card color="cyan darken-3" class="white--text">
-             <v-container fluid grid-list-lg>
-                <v-layout row>
-                 <div class="subheading">Client Logstash</div>
-                </v-layout>
-                <v-layout row>
-                    <v-flex xs6 sm6 md6 class="text-md-right caption ">
-                         <br>
-                         All </p>
-                         Prod </p>
-                         Error </p>
-                    </v-flex>
-                    <v-flex xs1 sm1 md1  class="text-md-right caption ">
-                         <br>
-                         {{dataCharts.numberAllClientConfiguration}} </p>
-                         {{dataCharts.numberProdClientConfiguration}} </p>
-                         {{dataCharts.numberErrorClientConfiguration}} </p>
-                         </p>
-                    </v-flex>
-                </v-layout>
-             </v-container>
-             <v-card-actions>
-                 <v-btn flat color="orange" v-on:click.native="dialogClient=true">View</v-btn>
-             </v-card-actions>
-           </v-card>
-         </v-flex>
-     </v-layout>
-     <v-layout wrap row style="cardSkalogs">
-         <v-flex class="pa-3">
-           <v-card color="light-blue darken-3" class="white--text" style="height : 350px; width: 550px" >
-             <v-container fluid grid-list-lg>
-                <v-layout row>
-                 <v-icon light>cached</v-icon><div class="subheading">&nbsp;Consumer</div>
-                </v-layout>
-                <v-layout row>
-                      <div style="height: 100px">
-                          <line-chart :chart-data="dataCharts.dataProcess" :options="optionsGlobal" :width="500" :height="300"></line-chart>
-                      </div>
-                </v-layout>
-             </v-container>
-           </v-card>
-         </v-flex>
-         <v-flex class="pa-3">
-           <v-card color="blue-grey darken-1" class="white--text" style="height : 350px; width: 550px">
-             <v-container fluid grid-list-lg>
-                <v-layout row>
-                 <v-icon light>widgets</v-icon><div class="subheading">&nbsp;Metric</div>
-                </v-layout>
-                <v-layout row>
-                      <div>
-                          <line-chart :chart-data="dataCharts.dataMetric" :options="optionsGlobal" :width="500" :height="300" ></line-chart>
-                      </div>
-                </v-layout>
-             </v-container>
-           </v-card>
-         </v-flex>
-         <v-flex  class="pa-3">
-           <v-card color="cyan darken-3" class="white--text" style="height : 350px; width: 550px">
-             <v-container fluid grid-list-lg>
-                <v-layout row>
-                 <div class="subheading">Client</div>
-                </v-layout>
-                <v-layout row>
-                      <div>
-                          <line-chart :chart-data="dataCharts.dataClient" :options="optionsGlobal" :width="500" :height="300" ></line-chart>
-                      </div>
-                </v-layout>
-             </v-container>
-           </v-card>
-         </v-flex>
-     </v-layout>
+      <v-tooltip right>
+        <span slot="activator">
+          <v-card flat hover>
+            <v-card-text class="metric-title" @click="dialogProcess=true">Consumer</v-card-text>
+            <v-card-text class="metric-value" @click="dialogProcess=true">{{home.numberProcessTotal}}</v-card-text>
+          </v-card>
+        </span>
+        <span>
+          Active: {{home.numberProcessActive}}<br>
+          Inactive: {{home.numberProcessDeActive}}<br>
+          Error: {{home.numberProcessError }}<br>
+          Init: {{home.numberProcessInit }}
+        </span>
+      </v-tooltip>
 
-    <v-dialog v-model="dialogMetric" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+      <v-tooltip right>
+        <span slot="activator">
+          <v-card flat hover>
+            <v-card-text class="metric-title" @click="dialogMetric=true">Metric</v-card-text>
+            <v-card-text class="metric-value" @click="dialogMetric=true">{{home.numberMetricTotal}}</v-card-text>
+          </v-card>
+        </span>
+        <span>
+          Active: {{home.numberMetricActive}}<br>
+          Inactive: {{home.numberMetricDeActive}}<br>
+          Error: {{home.numberMetricError }}<br>
+          Init: {{home.numberMetricInit }}
+        </span>
+      </v-tooltip>
+
+      <v-tooltip right>
+        <span slot="activator">
+          <v-card flat hover>
+            <v-card-text class="metric-title" @click="dialogReferential=true">Referential</v-card-text>
+            <v-card-text class="metric-value" @click="dialogReferential=true">{{home.numberReferentialTotal}}</v-card-text>
+          </v-card>
+        </span>
+        <span>
+          Active: {{home.numberReferentialActive}}<br>
+          Inactive: {{home.numberReferentialDeActive}}<br>
+          Error: {{home.numberReferentialError }}<br>
+          Init: {{home.numberReferentialInit }}
+        </span>
+      </v-tooltip>
+
+      <v-tooltip right>
+        <span slot="activator">
+          <v-card flat hover>
+            <v-card-text class="metric-title" @click="dialogWorker=true">Worker</v-card-text>
+            <v-card-text class="metric-value" @click="dialogWorker=true">{{home.numberWorkerTotal}}</v-card-text>
+          </v-card>
+        </span>
+        <span>
+          Process: {{home.numberWorkerProcess}}<br>
+          Metric: {{home.numberWorkerMetric}}<br>
+          Referential: {{home.numberWorkerReferential }}<br>
+        </span>
+      </v-tooltip>
+
+      <v-tooltip right>
+        <span slot="activator">
+          <v-card flat hover>
+            <v-card-text class="metric-title" @click="dialogClient=true">Client Logstash</v-card-text>
+            <v-card-text class="metric-value" @click="dialogClient=true">{{dataCharts.numberAllClientConfiguration}}</v-card-text>
+          </v-card>
+        </span>
+        <span>
+          All: {{dataCharts.numberAllClientConfiguration}}<br>
+          Production: {{dataCharts.numberProdClientConfiguration}}<br>
+          Error: {{dataCharts.numberErrorClientConfiguration}}<br>
+        </span>
+      </v-tooltip>
+
+    </v-flex>
+  </v-layout row>
+
+  <v-layout wrap row>
+    <v-card style="height : 400px; width: 1350px" >
+      <v-card-title class="table-title">Consumer traffic</v-card-title>
+      <v-card-media>
+        <line-chart :chart-data="dataCharts.dataProcess" :options="optionsGlobal" :width="1350" :height="270"></line-chart>
+      </v-card-media>
+      <v-card-actions>
+        <v-btn color="primary" flat v-on:click.native="openGrafana">I want to see more...</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-layout>
+
+    <v-dialog v-model="dialogMetric" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogMetric=false" @keydown.enter="dialogMetric=false">
        <v-card tile>
           <v-data-table v-bind:headers="headersMetric" :items="home.listStatMetric" hide-actions  >
              <template slot="items" slot-scope="props">
-               <td>{{props.item.name}}</td>
-               <td>{{props.item.status}}</td>
-               <td>{{props.item.nbInput}}</td>
-               <td>{{props.item.nbOutput}}</td>
+               <td><b>{{props.item.name}}</b></td>
+               <td class="text-xs-center">{{props.item.status}}</td>
+               <td class="text-xs-center">{{props.item.nbInput}}</td>
+               <td class="text-xs-center">{{props.item.nbOutput}}</td>
              </template>
           </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogMetric=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogMetric=false">Close this window</v-btn>
          </v-card-actions>
        </v-card>
      </v-dialog>
-     <v-dialog v-model="dialogReferential" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+     <v-dialog v-model="dialogReferential" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogReferential=false" @keydown.enter="dialogReferential=false">
        <v-card tile>
           <v-data-table v-bind:headers="headersReferential" :items="home.listStatReferential" hide-actions  >
              <template slot="items" slot-scope="props">
-               <td>{{props.item.name}}</td>
-               <td>{{props.item.status}}</td>
-               <td>{{props.item.nbInput}}</td>
-               <td>{{props.item.nbOutput}}</td>
+               <td><b>{{props.item.name}}</b></td>
+               <td class="text-xs-center">{{props.item.status}}</td>
+               <td class="text-xs-center">{{props.item.nbInput}}</td>
+               <td class="text-xs-center">{{props.item.nbOutput}}</td>
              </template>
           </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogReferential=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogReferential=false">Close this windows</v-btn>
          </v-card-actions>
        </v-card>
      </v-dialog>
-     <v-dialog v-model="dialogConfiguration"  fullscreen transition="dialog-bottom-transition" :overlay="false" >
+     <v-dialog v-model="dialogConfiguration"  fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogConfiguration=false" @keydown.enter="dialogConfiguration=false">
       <v-card tile>
            <v-data-table v-bind:headers="headersConfiguration" :items="home.listStatConfiguration" hide-actions  >
               <template slot="items" slot-scope="props">
-                <td>{{props.item.name}}</td>
-                <td>{{props.item.status}}</td>
+                <td><b>{{props.item.name}}</b></td>
+                <td class="text-xs-center">{{props.item.status}}</td>
               </template>
            </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogConfiguration=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogConfiguration=false">Close this window</v-btn>
          </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogWorker" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+    <v-dialog v-model="dialogWorker" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogWorker=false" @keydown.enter="dialogWorker=false">
       <v-card tile>
          <v-data-table v-bind:headers="headersWorker" :items="home.listStatWorker" hide-actions  >
             <template slot="items" slot-scope="props">
-              <td>{{props.item.name}}</td>
-              <td>{{props.item.ip}}</td>
-              <td>{{props.item.nbProcess}}</td>
-              <td>{{props.item.type}}</td>
+              <td><b>{{props.item.name}}</b></td>
+              <td class="text-xs-center">{{props.item.ip}}</td>
+              <td class="text-xs-center">{{props.item.nbProcess}}</td>
+              <td class="text-xs-center">{{props.item.type}}</td>
             </template>
          </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogWorker=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogWorker=false">Close this window</v-btn>
          </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogProcess" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+
+    <v-dialog v-model="dialogProcess" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogProcess=false" @keydown.enter="dialogProcess=false">
       <v-card tile>
-         <v-data-table v-bind:headers="headersProcess" :items="home.listStatProcess" hide-actions  >
+         <v-data-table v-bind:headers="headersProcess" :items="home.listStatProcess" hide-actions>
             <template slot="items" slot-scope="props">
-              <td>{{props.item.name}}</td>
-              <td>{{props.item.status}}</td>
-              <td>{{props.item.nbRead}}</td>
-              <td>{{props.item.nbOutput}}</td>
+              <td><b>{{props.item.name}}</b></td>
+              <td class="text-xs-center">{{props.item.status}}</td>
+              <td class="text-xs-center">{{props.item.nbRead}}</td>
+              <td class="text-xs-center">{{props.item.nbOutput}}</td>
             </template>
          </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogProcess=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogProcess=false">Close this window</v-btn>
          </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogClient" fullscreen transition="dialog-bottom-transition" :overlay="false" >
+
+    <v-dialog v-model="dialogClient" fullscreen transition="dialog-bottom-transition" :overlay="false" @keydown.esc="dialogClient=false" @keydown.enter="dialogClient=false">
       <v-card tile>
          <v-data-table v-bind:headers="headersClient" :items="home.listStatClient" hide-actions  >
             <template slot="items" slot-scope="props">
-              <td>{{props.item.hostname}}</td>
-              <td>{{props.item.dateActivity}}</td>
-              <td>{{props.item.env}}</td>
+              <td><b>{{props.item.hostname}}</b></td>
+              <td class="text-xs-center">{{props.item.dateActivity}}</td>
+              <td class="text-xs-center">{{props.item.env}}</td>
             </template>
          </v-data-table>
          <v-card-actions>
-             <v-btn color="primary" flat @click.stop="dialogClient=false">Close</v-btn>
+             <v-btn color="primary" flat @click.stop="dialogClient=false">Close this window</v-btn>
          </v-card-actions>
       </v-card>
     </v-dialog>
-     <v-layout row >
-        <v-flex xs12 sm12 md12 >
-          <v-alert v-model="viewError" xs12 sm12 md12  color="error" icon="warning" value="true" dismissible>
-               {{ msgError }}
-          </v-alert>
-        </v-flex>
-     </v-layout>
 
+    <v-layout row wrap>
+      <v-flex xs6>
+        <v-card>
+          <v-card-title class="table-title">Consumer processes</v-card-title>
+
+          <v-data-table :items="listProcess" hide-actions hide-headers>
+            <template slot="items" slot-scope="props">
+              <td width="1%"><v-icon>cached</v-icon></td>
+
+                <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
+                  <v-badge color="red">
+                    <v-icon slot="badge">error</v-icon>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'ENABLE'" class="text-xs-left">
+                  <v-badge color="green">
+                    <v-icon slot="badge">play_arrow</v-icon>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
+                  <v-badge color="blue lighten-2">
+                    <v-icon slot="badge">power_settings_new</v-icon>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'DISABLE'" class="text-xs-left">
+                  <v-badge color="warning">
+                    <v-icon slot="badge">pause</v-icon>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                  </v-badge>
+                </td>
+
+                <td class="text-xs-center">
+                    <v-flex xs12>
+                       {{props.item.processDefinition.processInput.host}}:{{props.item.processDefinition.processInput.port}}({{props.item.processDefinition.processInput.topicInput}})
+                    </v-flex>
+                </td>
+                <td class="text-xs-center">
+                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="outputitem in props.item.processDefinition.processOutput">
+                    <v-flex class="pa-0 ma-0">
+                       {{outputitem.typeOutput}}
+                    </v-flex>
+                  </v-flex>
+                </td>
+            </template>
+          </v-data-table>
+          <v-card-actions>
+            <v-btn color="primary" flat href="/process/list">See all consumer processes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+
+      <v-flex xs6>
+        <v-card>
+          <v-card-title class="table-title">Metric processes</v-card-title>
+            <v-data-table :items="listMetricProcess" hide-actions hide-headers>
+              <template slot="items" slot-scope="props">
+                <td width="1%"><v-icon>widgets</v-icon></td>
+
+                <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
+                  <v-badge color="red darken-1">
+                    <v-icon slot="badge" dark>report_problem</v-icon>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'ENABLE'" class="text-xs-left">
+                  <v-badge color="green">
+                    <v-icon slot="badge">play_arrow</v-icon>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
+                  <v-badge color="blue lighten-2">
+                    <v-icon slot="badge">power_settings_new</v-icon>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                  </v-badge>
+                </td>
+
+                <td v-if="props.item.statusProcess == 'DISABLE'" class="text-xs-left">
+                  <v-badge color="warning">
+                    <v-icon slot="badge">pause</v-icon>
+                    <span><b>{{props.item.processDefinition.name}}</b></span>
+                  </v-badge>
+                </td>
+
+                <td class="text-xs-center">{{props.item.processDefinition.aggFunction}}</td>
+
+                <td>
+                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="source in props.item.processDefinition.sourceProcessConsumers">
+                    <v-flex class="pa-0 ma-0">
+                      {{ getProcessName(source) }}
+                    </v-flex>
+                  </v-flex>
+                </td>
+
+                <td class="text-xs-center">
+                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="outputitem in props.item.processDefinition.processOutputs">
+                    <v-flex class="pa-0 ma-0">
+                      {{outputitem.typeOutput}}
+                    </v-flex>
+                  </v-flex>
+                </td>
+              </template>
+            </v-data-table>
+          <v-card-actions>
+            <v-btn color="primary" flat href="/metric/list">See all metric processes</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
+
 <style>
-  .cardSkalogs {
-    height : 450px;
+  .metric-title {
+    color: #757575;
+    text-align: center;
+    padding: 0;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  .metric-value {
+    color: #1E88E5;
+    text-align: center;
+    padding: 0;
+    font-size: 50px;
+    font-weight: bold;
+  }
+  .table-title {
+    color: #757575;
+    font-size: 22px;
+    font-weight: bold;
   }
 </style>
+
 <script>
   import LineChart from './LineChart.js'
-
-  export default{
-    components: {
-      LineChart
-    },
+    export default{
+      components: {
+        LineChart
+      },
     data () {
          return {
            dialogClient : false,
@@ -326,42 +355,44 @@
            msgError : '',
            home : '',
            headersClient : [
-              { text : 'Hostname',align : 'center',value : 'hostname'},
-              { text : 'Date Activity',align : 'center',value : 'dateActivity'},
-              { text : 'Environment',align : 'center',value : 'env'}
+              { text : 'Client hostname',align : 'center',value : 'hostname'},
+              { text : 'Activity date',align : 'center',value : 'dateActivity'},
+              { text : 'Client environment',align : 'center',value : 'env'}
            ],
            headersProcess : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Status',align : 'center',value : 'status'},
-             { text : 'Nb Read',align : 'center',value : 'nbRead'},
-             { text : 'Nb Treat',align : 'center',value : 'nbOutput'}
+             { text : 'Process name',align : 'center',value : 'name'},
+             { text : 'Process status',align : 'center',value : 'status'},
+             { text : 'Number of read',align : 'center',value : 'nbRead'},
+             { text : 'Number of processing', align : 'center',value : 'nbOutput'}
            ],
            headersWorker : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Ip',align : 'center',value : 'ip'},
-             { text : 'Nb Process',align : 'center',value : 'nbProcess'},
-             { text : 'Type',align : 'center',value : 'type'}
+             { text : 'Worker name',align : 'center',value : 'name'},
+             { text : 'Worker IP address',align : 'center',value : 'ip'},
+             { text : 'Number of processing',align : 'center',value : 'nbProcess'},
+             { text : 'Worker type',align : 'center',value : 'type'}
            ],
            headersMetric : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Status',align : 'center',value : 'status'},
-             { text : 'Nb Input',align : 'center',value : 'nbInput'},
-             { text : 'Nb Output',align : 'center',value : 'nbOutput'}
+             { text : 'Process name',align : 'center',value : 'name'},
+             { text : 'Process status',align : 'center',value : 'status'},
+             { text : 'Nb Input todo',align : 'center',value : 'nbInput'},
+             { text : 'Number of processing',align : 'center',value : 'todo'}
            ],
            headersReferential : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Status',align : 'center',value : 'status'},
-             { text : 'Nb Process',align : 'center',value : 'nbProcess'}
+             { text : 'Referential name',align : 'center',value : 'name'},
+             { text : 'Referential status',align : 'center',value : 'status'},
+             { text : 'Number of processing',align : 'center',value : 'nbProcess'}
            ],
            headersConfiguration : [
-             { text : 'Name',align : 'center',value : 'name'},
-             { text : 'Status',align : 'center',value : 'status'}
+             { text : 'Configuration name',align : 'center',value : 'name'},
+             { text : 'Configuration status',align : 'center',value : 'status'}
            ],
            optionsGlobal: {responsive: true,maintainAspectRatio: false,
                                    legend: {
                                        position: 'bottom',
-                                       labels: {fontColor: "white",
-                                                fontSize: 12
+                                       labels: {fontColor: "black",
+                                                fontSize: 11,
+                                                boxWidth: 15,
+
                                                }
                                    },
                                    hover: {
@@ -374,7 +405,7 @@
                                                scaleLabel: {
                                                    display: true,
                                                    fontStyle: 'bold'
-                                               },ticks: {fontColor: "#CCC"}
+                                               },ticks: {fontColor: "black"}
                                            }],
                                        yAxes: [{
                                                display: true,
@@ -382,12 +413,20 @@
                                                    beginAtZero: true,
                                                    steps: 10,
                                                    stepValue: 5,
-                                                   fontColor: "#CCC"
+                                                   fontColor: "black"
+                                               },
+                                               scaleLabel: {
+                                                 display: true,
+                                                 labelString: "Message processed",
+                                                 fontColor: "black"
                                                }
                                            }]
                                    }
                                 },
-           dataCharts: {"dataProcess": '',"dataMetric": '',"dataWorker": '',"dataConfiguration" :''}
+           dataCharts: {"dataProcess": '',"dataMetric": '',"dataWorker": '',"dataConfiguration" :''},
+           listProcess: [],
+           listMetricProcess: [],
+           metricProcess: new Map()
          }
     },
     mounted() {
@@ -403,9 +442,47 @@
            this.viewError=true;
            this.msgError = "Error during call service";
          });
+         this.loadConsumerProcess();
+         this.loadMetricProcess();
     },
-    methods : {
 
+    methods : {
+      openGrafana(){
+         window.open(process.env.GF_ROOT_URL,'_blank');
+      },
+      loadConsumerProcess() {
+        this.$http.get('/process/findAll').then(response => {
+            this.listProcess=response.data;
+            this.listProcess = this.listProcess.slice(0,3);
+         }, response => {
+           this.viewError=true;
+           this.msgError = "Error during call service";
+         });
+      },
+      loadMetricProcess() {
+        this.$http.get('/metric/listProcess').then(response => {
+          this.listMetricProcess = response.data;
+          this.listMetricProcess = this.listMetricProcess.slice(0,3);
+        }, response => {
+          this.viewError = true;
+          this.msgError = "Error during call service";
+        });
+      },
+      getProcessName(id){
+        if (this.metricProcess != undefined && this.metricProcess.get(id) != undefined) {
+            return this.metricProcess.get(id);
+        } else {
+          this.$http.get('/referential/find', {params: {idReferential: id}}).then(response => {
+            this.process = response.data;
+            name = this.process.name;
+            this.metricProcess.set(id, name);
+            return name;
+          }, response => {
+            this.viewError=true;
+            this.msgError = "Error during call service";
+        });
+        }
+      }
     }
   }
 </script>
