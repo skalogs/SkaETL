@@ -1,5 +1,4 @@
 <!--
-#todo Add authentification on Grafana or Guest user with specific rights
 #todo Add Escape key and/or Enter key to close the several detail lists
 -->
 <template>
@@ -97,17 +96,17 @@
     </v-flex>
   </v-layout row>
 
-  <v-layout row>
-    <v-card>
+  <v-layout wrap row>
+    <v-card style="height : 400px; width: 1350px" >
+      <v-card-title class="table-title">Consumer traffic</v-card-title>
       <v-card-media>
-        <!-- #todo Remove hard-coded width and URL -->
-        <iframe src="http://grafana-admin.skalogs-demo.skalogs.com/d-solo/FCY8Arimz/kafka?orgId=1&panelId=4&theme=light" width="1350" height="380" frameborder="0"></iframe>
+        <line-chart :chart-data="dataCharts.dataProcess" :options="optionsGlobal" :width="1350" :height="270"></line-chart>
       </v-card-media>
       <v-card-actions>
         <v-btn color="primary" flat v-on:click.native="openGrafana">I want to see more...</v-btn>
       </v-card-actions>
     </v-card>
-  </v-layout row>
+  </v-layout>
 
     <v-dialog v-model="dialogMetric" fullscreen transition="dialog-bottom-transition" :overlay="false" >
        <v-card tile>
@@ -342,7 +341,11 @@
 </style>
 
 <script>
-  export default{
+  import LineChart from './LineChart.js'
+    export default{
+      components: {
+        LineChart
+      },
     data () {
          return {
            dialogClient : false,
@@ -389,8 +392,10 @@
            optionsGlobal: {responsive: true,maintainAspectRatio: false,
                                    legend: {
                                        position: 'bottom',
-                                       labels: {fontColor: "white",
-                                                fontSize: 12
+                                       labels: {fontColor: "black",
+                                                fontSize: 11,
+                                                boxWidth: 15,
+
                                                }
                                    },
                                    hover: {
@@ -403,7 +408,7 @@
                                                scaleLabel: {
                                                    display: true,
                                                    fontStyle: 'bold'
-                                               },ticks: {fontColor: "#CCC"}
+                                               },ticks: {fontColor: "black"}
                                            }],
                                        yAxes: [{
                                                display: true,
@@ -411,7 +416,12 @@
                                                    beginAtZero: true,
                                                    steps: 10,
                                                    stepValue: 5,
-                                                   fontColor: "#CCC"
+                                                   fontColor: "black"
+                                               },
+                                               scaleLabel: {
+                                                 display: true,
+                                                 labelString: "Message processed",
+                                                 fontColor: "black"
                                                }
                                            }]
                                    }
