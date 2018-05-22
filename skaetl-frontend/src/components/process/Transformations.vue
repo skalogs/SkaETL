@@ -145,7 +145,7 @@
         typeHash: ["MURMUR3", "SHA256"],
         type: ["ADD_FIELD", "DELETE_FIELD", "RENAME_FIELD", "FORMAT_DATE", "FORMAT_BOOLEAN", "FORMAT_GEOPOINT",
           "FORMAT_DOUBLE", "FORMAT_LONG", "FORMAT_IP", "LOOKUP_LIST", "LOOKUP_EXTERNAL", "HASH", "ADD_GEO_LOCALISATION",
-          "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM"],
+          "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL"],
         viewMessageClient: false,
         viewKeyField: false,
         viewComposeField: false,
@@ -176,7 +176,7 @@
         } else if (value == "ADD_FIELD" || value == "RENAME_FIELD") {
           this.disable();
           this.viewComposeField = true;
-        } else if (value == "DELETE_FIELD" || value == "FORMAT_BOOLEAN" || value == "FORMAT_GEOPOINT" || value == "FORMAT_DOUBLE" || value == "FORMAT_LONG" || value == "FORMAT_IP" || value == "ADD_GEO_LOCALISATION" || value == "CAPITALIZE" || value == "UNCAPITALIZE" || value == "LOWER_CASE" || value == "UPPER_CASE" || value == "SWAP_CASE" ||value == "TRIM") {
+        } else if (value == "DELETE_FIELD" || value == "FORMAT_BOOLEAN" || value == "FORMAT_GEOPOINT" || value == "FORMAT_DOUBLE" || value == "FORMAT_LONG" || value == "FORMAT_IP" || value == "ADD_GEO_LOCALISATION" || value == "CAPITALIZE" || value == "UNCAPITALIZE" || value == "LOWER_CASE" || value == "UPPER_CASE" || value == "SWAP_CASE" ||value == "TRIM" || value == "FORMAT_EMAIL") {
           this.disable();
           this.viewKeyField = true;
         } else {
