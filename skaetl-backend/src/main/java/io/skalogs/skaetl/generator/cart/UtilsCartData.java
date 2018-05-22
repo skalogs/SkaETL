@@ -119,13 +119,13 @@ public class UtilsCartData {
             "yandex.com"
     };
     private final String[] tabIp = new String[]{
-            "80.93.80.0",
-            "85.192.192.0",
-            "93.57.56.0",
-            "77.241.80.0",
-            "217.15.224.0",
-            "78.159.200.0",
-            "85.235.128.0"
+            "80.93.80",
+            "85.192.192",
+            "93.57.56",
+            "77.241.80",
+            "217.15.224",
+            "78.159.200",
+            "85.235.128"
     };
 
     private final Producer<String, String> producer;
@@ -149,7 +149,7 @@ public class UtilsCartData {
     }
 
     public String generateIp(){
-        return tabIp[RANDOM.nextInt(tabIp.length)];
+        return tabIp[RANDOM.nextInt(tabIp.length)]+"."+RANDOM.nextInt(200);
     }
 
     public List<String> generateCustomer(Integer nbCustomer) {
