@@ -70,4 +70,11 @@ public class GeneratorController {
                           @PathParam("timeToGenerateInMinute") Integer timeToGenerateInMinute ) {
         generatorCartService.generateData(nbCustomer, nbShowByMinute, nbAddToCardByMinute, nbPaySuccessByMinute, nbPayNotSuccessByMinute, timeToGenerateInMinute);
     }
+
+    @ResponseStatus(CREATED)
+    @GetMapping("/inputSpecificCard")
+    public void inputSpecificCard(@PathParam("nbCustomer") Integer nbCustomer) {
+        generatorCartService.generateSpecificUsecase(nbCustomer);
+    }
+
 }

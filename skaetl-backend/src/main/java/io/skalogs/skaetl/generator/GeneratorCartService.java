@@ -197,7 +197,7 @@ public class GeneratorCartService {
                 .groupBy("customerEmail_ue")
                 .having("> 1")
                 .windowType(WindowType.TUMBLING)
-                .size(2)
+                .size(10)
                 .sizeUnit(TimeUnit.MINUTES)
                 .processOutputs(Lists.newArrayList(toEsOutput()))
                 .build());
@@ -208,6 +208,18 @@ public class GeneratorCartService {
                 .aggFunction("COUNT-DISTINCT(codeDiscount)")
                 .where("type = \"payment\" ")
                 .groupBy("customerEmail_ue")
+                .having("> 1")
+                .windowType(WindowType.TUMBLING)
+                .size(10)
+                .sizeUnit(TimeUnit.MINUTES)
+                .processOutputs(Lists.newArrayList(toEsOutput()))
+                .build());
+        processMetrics.add(ProcessMetric.builder()
+                .idProcess("CART_USAGE_CODE_DISCOUNT")
+                .name("Cart - Usage code discount DISCOUNT-201805")
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .aggFunction("COUNT(codeDiscount)")
+                .where("type = \"payment\" AND codeDiscount =\"DISCOUNT-201805\"")
                 .having("> 1")
                 .windowType(WindowType.TUMBLING)
                 .size(10)
@@ -257,9 +269,15 @@ public class GeneratorCartService {
                 log.error("InterruptedException ",e);
             }
         }
+    }
+
+    public void generateSpecificUsecase(Integer nbCustomer){
+        List<String> listCustomer = utilsCartData.generateCustomer(nbCustomer);
         //Specific usecase
         //Same user different ip, Buy Or Incident
-        utilsCartData.generateScriptPaySameCustomerDifferentIp(timeToGenerateInMinute/2,utilsCartData.getUser(listCustomer));
+        utilsCartData.generateScriptPaySameCustomerDifferentIp(0,utilsCartData.getUser(listCustomer));
+        //Same user different codeDiscount
+        utilsCartData.generateScriptPaySameCustomerDifferentDiscount(0,utilsCartData.getUser(listCustomer));
     }
 
 }
