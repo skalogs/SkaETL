@@ -127,12 +127,16 @@ public class UtilsCartData {
             "78.159.200",
             "85.235.128"
     };
-
+    private final String codeDiscount10 = "DISCOUNT-10";
+    private final String codeDiscount15 = "DISCOUNT-15";
+    private final String codeDiscountOther = "DISCOUNT-201805";
     private final Producer<String, String> producer;
     private final String topic;
     private final ObjectMapper mapper = new ObjectMapper();
 
     private Random RANDOM = new Random();
+
+
 
     public UtilsCartData(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
         producer = kafkaUtils.kafkaProducer();
@@ -186,7 +190,7 @@ public class UtilsCartData {
                 .build());
     }
     //{type: "payment", customerEmail: ,totalItemPrice:, idPayment: , discount: discount }
-    private void generatePayment(int minute, String customer, String ip, Double totalPrice, Integer discount) {
+    private void generatePayment(int minute, String customer, String ip, Double totalPrice, Integer discount, String codeDiscount) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
         sendToKafka(topic,GenerateCartData.builder()
@@ -196,6 +200,7 @@ public class UtilsCartData {
                 .totalItemPrice(totalPrice)
                 .idPayment(UUID.randomUUID().toString())
                 .discount(discount)
+                .codeDiscount(codeDiscount)
                 .timestamp(df.format(newDate))
                 .build());
     }
@@ -240,7 +245,7 @@ public class UtilsCartData {
 
     public void generateScriptPaySucess(int nbPay, int minute, String customer, String ip, int nbProduct) {
         for (int j = 0; j < nbPay; j++) {
-            generateScenarioPaySuccess(minute, customer, ip, nbProduct);
+            generateScenarioPaySuccess(minute, customer, ip, nbProduct,null);
         }
     }
 
@@ -251,9 +256,14 @@ public class UtilsCartData {
     }
 
     public void generateScriptPaySameCustomerDifferentIp(int minute, String customer){
-        generateScenarioPaySuccess(minute,customer,generateIp(),2);
+        generateScenarioPaySuccess(minute,customer,generateIp(),2, null);
         generateScenarioPayNotSuccess(minute+5,customer,generateIp(),4);
-        generateScenarioPaySuccess(minute+8,customer,generateIp(),1);
+        generateScenarioPaySuccess(minute+8,customer,generateIp(),1,null);
+    }
+
+    public void generateScriptPaySameCustomerDifferentDiscount(int minute, String customer){
+        generateScenarioPaySuccess(minute,customer,generateIp(),2, codeDiscount15);
+        generateScenarioPaySuccess(minute+5,customer,generateIp(),2, codeDiscountOther);
     }
 
     private void generateScenarioAddToCart(int minute, String customer, String ip, int nbProduct) {
@@ -270,7 +280,7 @@ public class UtilsCartData {
         }
     }
 
-    private void generateScenarioPaySuccess(int minute, String customer, String ip, int nbProduct) {
+    private void generateScenarioPaySuccess(int minute, String customer, String ip, int nbProduct, String codeDiscount) {
         Double totalPrice = Double.valueOf(0);
         for (int i = 0; i < nbProduct; i++) {
             CartProduct c = tabProduct[RANDOM.nextInt(tabProduct.length)];
@@ -281,15 +291,25 @@ public class UtilsCartData {
             c.setStock(c.getStock()-quantity);
             generateStock(minute + i +1,customer,c.getName(),0);
         }
-        int discountRandom = RANDOM.nextInt(5);
         Integer discount = null;
-        if(discountRandom == 1){
+        if(codeDiscount == null) {
+            int discountRandom = RANDOM.nextInt(8);
+            if (discountRandom == 1) {
+                discount = 10;
+                codeDiscount = codeDiscount10;
+            }
+            if (discountRandom == 3) {
+                discount = 15;
+                codeDiscount = codeDiscount15;
+            }
+        } else if(codeDiscount.equals(codeDiscount10)){
             discount = 10;
+        } else if(codeDiscount.equals(codeDiscount15)){
+            discount = 15;
+        } else{
+            discount = 50;
         }
-        if(discountRandom == 3){
-            discount = 30;
-        }
-        generatePayment(minute+nbProduct+1,customer,ip,discount!=null ? totalPrice*discount/100 : totalPrice,discount);
+        generatePayment(minute+nbProduct+1,customer,ip,discount != null ? totalPrice*discount/100 : totalPrice,discount, codeDiscount);
         // Other search
         int otherShow = RANDOM.nextInt(nbProduct);
         for (int i = 0; i < otherShow; i++) {
