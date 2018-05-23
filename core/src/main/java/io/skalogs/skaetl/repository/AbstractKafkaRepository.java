@@ -1,6 +1,7 @@
 package io.skalogs.skaetl.repository;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Streams;
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.serdes.JsonNodeSerialializer;
@@ -21,11 +22,11 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class AbstractKafkaRepository<V> {
 
@@ -61,9 +62,7 @@ public abstract class AbstractKafkaRepository<V> {
     }
 
     public List<V> findAll() {
-        List<V> result = new ArrayList<>();
-        keyValueStore.all().forEachRemaining((consumer) -> result.add(consumer.value));
-        return result;
+        return Streams.stream(keyValueStore.all()).map(entry -> entry.value).filter(entry -> entry != null) .collect(Collectors.toList());
     }
 
     public V findByKey(String key) {
@@ -71,12 +70,13 @@ public abstract class AbstractKafkaRepository<V> {
     }
 
     public void deleteByKey(String key) {
+
         producer.send(new ProducerRecord<>(repositoryName, key, null));
         producer.flush();
     }
 
     public void deleteAll(){
-        keyValueStore.all().forEachRemaining(stringVKeyValue -> deleteByKey(stringVKeyValue.key) );
+        keyValueStore.all().forEachRemaining(stringVKeyValue -> deleteByKey(stringVKeyValue.key));
     }
 
     private Materialized<String, V, KeyValueStore<Bytes, byte[]>> materialize(Serde<V> valueSerde) {
