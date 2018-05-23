@@ -61,13 +61,13 @@ public class MetricImporter {
 
         List<KafkaStreams> streams = new ArrayList<>();
         for (String idProcessConsumer : processMetric.getSourceProcessConsumers()) {
-            streams.add(feedMergeTopic(idProcessConsumer,processMetric.getFromTopic()));
+            streams.add(feedMergeTopic(idProcessConsumer,processMetric.getFromTopic(),processMetric.getIdProcess()));
         }
 
         if (!processMetric.getSourceProcessConsumersB().isEmpty()) {
             kafkaAdminService.buildTopic(processMetric.getFromTopicB());
             for (String idProcessConsumer : processMetric.getSourceProcessConsumersB()) {
-                streams.add(feedMergeTopic(idProcessConsumer, processMetric.getFromTopicB()));
+                streams.add(feedMergeTopic(idProcessConsumer, processMetric.getFromTopicB(), processMetric.getIdProcess()));
             }
         }
 
@@ -83,12 +83,12 @@ public class MetricImporter {
         runningMetricProcessors.put(processMetricDefinition, streams);
     }
 
-    private KafkaStreams feedMergeTopic(String id, String mergeTopic) {
+    private KafkaStreams feedMergeTopic(String id, String mergeTopic, String destId) {
 
         StreamsBuilder builder = new StreamsBuilder();
         Properties properties = createProperties(kafkaConfiguration.getBootstrapServers());
         String inputTopic = id + TOPIC_TREAT_PROCESS;
-        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, inputTopic + "merger-stream");
+        properties.put(StreamsConfig.APPLICATION_ID_CONFIG, inputTopic + "merger-stream-" + destId);
 
         KStream<String, JsonNode> stream = builder.stream(inputTopic, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
         stream.to(mergeTopic, Produced.with(Serdes.String(),GenericSerdes.jsonNodeSerde()));
