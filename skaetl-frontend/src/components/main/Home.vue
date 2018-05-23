@@ -94,10 +94,12 @@
   </v-layout row>
 
   <v-layout wrap row>
-    <v-card style="height : 400px; width: 1350px" >
-      <v-card-title class="table-title">Consumer traffic</v-card-title>
+    <v-card width="100%">
+      <v-card-title class="table-title">Consumer processes traffic</v-card-title>
       <v-card-media>
-        <line-chart :chart-data="dataCharts.dataProcess" :options="optionsGlobal" :width="1350" :height="270"></line-chart>
+        <div class="chart-container">
+          <line-chart :chart-data="dataCharts.dataProcess" :options="optionsGlobal"/>
+        </div>
       </v-card-media>
       <v-card-actions>
         <v-btn color="primary" flat v-on:click.native="openGrafana">I want to see more...</v-btn>
@@ -339,6 +341,11 @@
     white-space: nowrap;
     font-weight: bold;
   }
+  .chart-container {
+    position: relative;
+    margin: auto;
+    width: 90vw;
+  }
 </style>
 
 <script>
@@ -390,18 +397,14 @@
              { text : 'Configuration name',align : 'center',value : 'name'},
              { text : 'Configuration status',align : 'center',value : 'status'}
            ],
-           optionsGlobal: {responsive: true,maintainAspectRatio: false,
+           optionsGlobal: {maintainAspectRatio: false,
                                    legend: {
                                        position: 'bottom',
                                        labels: {fontColor: "black",
                                                 fontSize: 11,
-                                                boxWidth: 15,
-
-                                               }
+                                                boxWidth: 15}
                                    },
-                                   hover: {
-                                       mode: 'label'
-                                   },
+                                   hover: {mode: 'label'},
                                    scales: {
                                        xAxes: [{
                                                display: true,
@@ -409,7 +412,9 @@
                                                scaleLabel: {
                                                    display: true,
                                                    fontStyle: 'bold'
-                                               },ticks: {fontColor: "black"}
+                                               },
+                                               ticks: {fontColor: "black"},
+                                               gridLines: {display: true}
                                            }],
                                        yAxes: [{
                                                display: true,
@@ -423,11 +428,12 @@
                                                  display: true,
                                                  labelString: "Message processed",
                                                  fontColor: "black"
-                                               }
+                                               },
+                                               gridLines: {display: true}
                                            }]
                                    }
                                 },
-           dataCharts: {"dataProcess": '',"dataMetric": '',"dataWorker": '',"dataConfiguration" :''},
+           dataCharts: {"dataProcess": ''},
            listProcess: [],
            listMetricProcess: [],
            metricProcess: new Map()
