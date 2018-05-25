@@ -30,10 +30,11 @@ public class LookupListTransformatorTest {
 
         lookupListTransformator.apply(null,
                 ParameterTransformation.builder()
+                        .keyField("project")
                         .mapLookup(mapTest)
                         .build(),
                 jsonValue, value);
-        assertThat(jsonValue.get("messageSend").asText()).isEqualTo("new value of message");
+        assertThat(jsonValue.get("messageSend").asText()).isEqualTo("gni");
         assertThat(jsonValue.get("project").asText()).isEqualTo("new value of project");
         assertThat(jsonValue.get("type").asText()).isEqualTo("type");
     }
