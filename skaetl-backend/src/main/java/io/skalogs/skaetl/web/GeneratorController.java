@@ -1,9 +1,6 @@
 package io.skalogs.skaetl.web;
 
-import io.skalogs.skaetl.generator.GeneratorCartService;
-import io.skalogs.skaetl.generator.GeneratorErrorService;
-import io.skalogs.skaetl.generator.GeneratorRetryService;
-import io.skalogs.skaetl.generator.GeneratorService;
+import io.skalogs.skaetl.generator.*;
 import io.skalogs.skaetl.web.domain.PayloadTopic;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
@@ -20,6 +17,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class GeneratorController {
 
     private final GeneratorCartService generatorCartService;
+    private final GeneratorCreditService generatorCreditService;
     private final GeneratorService generatorService;
     private final GeneratorErrorService generatorErrorService;
     private final GeneratorRetryService generatorRetryService;
@@ -75,6 +73,15 @@ public class GeneratorController {
     @GetMapping("/inputSpecificCard")
     public void inputSpecificCard(@PathParam("nbCustomer") Integer nbCustomer) {
         generatorCartService.generateSpecificUsecase(nbCustomer);
+    }
+
+    @ResponseStatus(CREATED)
+    @GetMapping("/inputCredit")
+    public void inputCredit(@PathParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
+                            @PathParam("nbView") Integer nbView,
+                            @PathParam("nbCredit") Integer nbCredit,
+                            @PathParam("nbRandomRq") Integer nbRandomRq) {
+        generatorCreditService.generateData(timeToGenerateInMinute,nbView,nbCredit,nbRandomRq);
     }
 
 }
