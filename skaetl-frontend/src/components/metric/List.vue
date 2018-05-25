@@ -29,6 +29,10 @@
                      v-on:click.native="deactivateProcess(props.item.id)">ERROR
                 <v-icon right>error_outline</v-icon>
               </v-btn>
+              <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'DEGRADED'"
+                     v-on:click.native="deactivateProcess(props.item.id)">DEGRADED
+                <v-icon right>error_outline</v-icon>
+              </v-btn>
               <v-btn color="red" style="width: 120px" small v-on:click.native="deleteProcess(props.item.id)">delete
                 <v-icon right>delete</v-icon>
               </v-btn>

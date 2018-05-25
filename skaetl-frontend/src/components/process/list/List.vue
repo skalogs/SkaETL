@@ -20,6 +20,7 @@
                       <v-btn color="success" style="width: 120px" small v-if="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" v-on:click.native="activateProcess(props.item.id)">Activate<v-icon right>touch_app</v-icon></v-btn>
                       <v-btn color="pink darken-2" style="width: 120px" small v-if="props.item.statusProcess == 'ENABLE'" v-on:click.native="deactivateProcess(props.item.id)">Deactivate<v-icon right>close</v-icon></v-btn>
                       <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'ERROR'" v-on:click.native="deactivateProcess(props.item.id)" >Error<v-icon right>error_outline</v-icon></v-btn>
+                      <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'DEGRADED'" v-on:click.native="deactivateProcess(props.item.id)">DEGRADED<v-icon right>error_outline</v-icon></v-btn>
                       <v-btn color="red" style="width: 120px" small v-on:click.native="deleteProcess(props.item.id)">delete<v-icon right>delete</v-icon></v-btn>
                 </td>
                 <td class="text-xs subheading">{{props.item.processDefinition.name}}</td>

@@ -57,7 +57,23 @@ public class RegistryService {
                 .status(StatusWorker.OK)
                 .statusConsumerList(registryWorker.getStatusConsumerList())
                 .build());
+
         worker.labels(StatusWorker.OK.name()).inc();
+        flagAssignedTaskAsDegraded(registryWorker);
+    }
+
+    private void flagAssignedTaskAsDegraded(RegistryWorker registryWorker) {
+        consumerStateRepository.findAll()
+                .stream()
+                .filter(e -> e.getRegistryWorkers().contains(registryWorker.getFQDN()))
+                .forEach(consumerState -> flagAssignedTaskAsDegraded(consumerState,registryWorker));
+    }
+
+    private void flagAssignedTaskAsDegraded(ConsumerState consumerState,RegistryWorker registryWorker) {
+        log.info("Marking {} as degraded", consumerState.getProcessDefinition());
+        consumerState.getRegistryWorkers().remove(registryWorker.getFQDN());
+        ConsumerState newState = consumerState.withStatusProcess(StatusProcess.DEGRADED);
+        consumerStateRepository.save(newState);
     }
 
     public void refresh(RegistryWorker registryWorker) {
@@ -139,8 +155,9 @@ public class RegistryService {
                 .filter(e -> e.getStatus() == StatusWorker.OK)
                 .filter(e -> !alreadyAssignedWorkers.contains(e.getFQDN()))
                 .collect(Collectors.toList());
+        int skip = availableWorkers.size() - 1 > 0 ? random.nextInt(availableWorkers.size() - 1) : 0;
         return availableWorkers.stream()
-                .skip(random.nextInt(availableWorkers.size() - 1))
+                .skip(skip)
                 .findFirst().orElseThrow(() -> new Exception("No Worker Available"));
     }
 
@@ -233,7 +250,7 @@ public class RegistryService {
 
     private void rescheduleConsumersInError() {
         consumerStateRepository.findAll().stream()
-                .filter(consumerState -> consumerState.getStatusProcess() == StatusProcess.ERROR)
+                .filter(consumerState -> consumerState.getStatusProcess() == StatusProcess.ERROR || consumerState.getStatusProcess() == StatusProcess.DEGRADED)
                 .forEach(this::rescheduleProcessDefinition);
     }
 
