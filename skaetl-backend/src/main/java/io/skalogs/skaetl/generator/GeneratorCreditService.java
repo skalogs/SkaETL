@@ -112,7 +112,7 @@ public class GeneratorCreditService {
 
     private InputDataCredit generateScenarioMicroServiceCreateCreditValidationProduct(String product, String requestId){
         String codeResponse = "200";
-        if(utilsCreditData.random(30) == 1){
+        if(utilsCreditData.random(100) == 1){
             product = "unknown";
             codeResponse = "404";
         }
