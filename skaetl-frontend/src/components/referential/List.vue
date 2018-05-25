@@ -15,8 +15,8 @@
                   <v-btn color="warning" style="width: 120px" small v-on:click.native="editReferential(props.item.id)">Edit<v-icon right>edit</v-icon></v-btn>
                   <v-btn color="success" style="width: 120px" small text-color="white" v-if="props.item.statusProcess == 'INIT' || props.item.statusProcess == 'DISABLE'" v-on:click.native="activateReferential(props.item.id)">Activate<v-icon right>touch_app</v-icon></v-btn>
                   <v-btn color="pink darken-2" style="width: 120px" small text-color="white" v-if="props.item.statusProcess == 'ENABLE'" v-on:click.native="deactivateReferential(props.item.id)">DeActivate<v-icon right>close</v-icon></v-btn>
-                  <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'ERROR'" v-on:click.native="activateReferential(props.item.idConfiguration)">ERROR<v-icon right>error_outline</v-icon></v-btn>
-                  <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'DEGRADED'" v-on:click.native="deactivateProcess(props.item.idConfiguration)">DEGRADED<v-icon right>error_outline</v-icon></v-btn>
+                  <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'ERROR'" v-on:click.native="deactivateReferential(props.item.idConfiguration)">ERROR<v-icon right>error_outline</v-icon></v-btn>
+                  <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'DEGRADED'" v-on:click.native="deactivateReferential(props.item.idConfiguration)">DEGRADED<v-icon right>error_outline</v-icon></v-btn>
                   <v-btn color="red" style="width: 120px" small v-on:click.native="deleteReferential(props.item.id)">delete<v-icon right>delete</v-icon></v-btn>
            </td>
            <td class="text-xs-center">{{props.item.processDefinition.name}}</td>
