@@ -226,7 +226,7 @@ public class UtilsCreditData {
                     .timestamp(df.format(newDate))
                     .requestId(inputDataCredit.getRequestId())
                     .timeRequestMs(inputDataCredit.getTimeWS().toString())
-                    .codeResponse(inputDataCredit.getCodeResponse())
+                    .codeResponse(inputDataCredit.getCodeResponseWS())
                     .uri(inputDataCredit.getUriWS())
                     .typeRequest(inputDataCredit.getTypeRequestWS())
                     .email(inputDataCredit.getEmail())
