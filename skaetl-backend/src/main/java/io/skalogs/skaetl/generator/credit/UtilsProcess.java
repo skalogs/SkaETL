@@ -178,19 +178,7 @@ public class UtilsProcess {
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.FORMAT_LONG)
                     .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeGlobal")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeDB")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeBL")
+                            .keyField("timeRequestMs")
                             .build())
                     .build());
 
@@ -233,31 +221,20 @@ public class UtilsProcess {
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.FORMAT_LONG)
                     .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeGlobal")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeDB")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeBL")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeWS")
+                            .keyField("timeRequestMs")
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.FORMAT_EMAIL)
                     .parameterTransformation(ParameterTransformation.builder()
                             .keyField("email")
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.LOOKUP_LIST)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .keyField("productName")
+                            .mapLookup(mapProduct)
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
@@ -302,7 +279,37 @@ public class UtilsProcess {
                             .composeField(ProcessKeyValue.builder().key("project").value("demo-credit").build())
                             .build())
                     .build());
-
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.FORMAT_EMAIL)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .keyField("email")
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.LOOKUP_LIST)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .keyField("productName")
+                            .mapLookup(mapProduct)
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.HASH)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .processHashData(ProcessHashData.builder().typeHash(TypeHash.SHA256).field("firstName").build())
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.HASH)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .processHashData(ProcessHashData.builder().typeHash(TypeHash.SHA256).field("lastName").build())
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.FORMAT_LONG)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .keyField("timeRequestMs")
+                            .build())
+                    .build());
             processService.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess(idProcessFrontData)
                     .name("demo credit front")
