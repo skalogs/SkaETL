@@ -60,25 +60,7 @@ public class UtilsProcess {
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.FORMAT_LONG)
                     .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeGlobal")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeDB")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeBL")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeWS")
+                            .keyField("timeRequestMs")
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
@@ -131,19 +113,7 @@ public class UtilsProcess {
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.FORMAT_LONG)
                     .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeGlobal")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeDB")
-                            .build())
-                    .build());
-            listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
-                    .parameterTransformation(ParameterTransformation.builder()
-                            .keyField("timeBL")
+                            .keyField("timeRequestMs")
                             .build())
                     .build());
 
