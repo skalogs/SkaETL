@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -132,10 +133,14 @@ public class RegistryService {
 
     // Internal apis
     private RegistryWorker getWorkerAvailable(WorkerType workerType, Set<String> alreadyAssignedWorkers) throws Exception{
-        return workerRepository.findAll().stream()
+        Random random = new Random();
+        List<RegistryWorker> availableWorkers = workerRepository.findAll().stream()
                 .filter(e -> e.getWorkerType() == workerType)
                 .filter(e -> e.getStatus() == StatusWorker.OK)
                 .filter(e -> !alreadyAssignedWorkers.contains(e.getFQDN()))
+                .collect(Collectors.toList());
+        return availableWorkers.stream()
+                .skip(random.nextInt(availableWorkers.size() - 1))
                 .findFirst().orElseThrow(() -> new Exception("No Worker Available"));
     }
 
