@@ -25,7 +25,7 @@ public class GeneratorCreditService {
     public void generateData(Integer timeToGenerateInMinute, Integer nbView, Integer nbCredit, Integer nbRandomRq) {
         utilsProcess.createAllProcess();
         try {
-            for(int i = 0 ; i< timeToGenerateInMinute ;i++) {
+            for(int i = 0 ; i < timeToGenerateInMinute ;i++) {
                 generateDataForEndToEndView(i, nbView);
                 generateDataForEndToEndCreateCredit(i, nbCredit);
                 generateRandonRq(i,nbRandomRq,generateScenarioMicroServiceProvider(utilsCreditData.getProvider(), UUID.randomUUID().toString()));
@@ -40,13 +40,13 @@ public class GeneratorCreditService {
 
     private void generateRandonRq(int minute, Integer nbRandomRq, InputDataCredit inputDataCredit){
         int nbCreateRq = utilsCreditData.random(nbRandomRq);
-        for(int i = 0 ; i<nbCreateRq ; i++) {
+        for(int i = 0 ; i < nbCreateRq ; i++) {
             utilsCreditData.generateScriptGlobalBackendRequest(minute, inputDataCredit);
         }
     }
 
     private void generateDataForEndToEndView(int minute, Integer nbView){
-        for(int i = 0 ; i< nbView ;i++) {
+        for(int i = 0 ; i < nbView ;i++) {
             ClientData clientData = utilsCreditData.getClient();
             String product = utilsCreditData.getProduct();
             String provider = utilsCreditData.getProvider();
@@ -61,7 +61,7 @@ public class GeneratorCreditService {
     }
 
     private void generateDataForEndToEndCreateCredit(int minute, Integer nbCredit){
-        for(int i = 0 ; i< nbCredit ;i++) {
+        for(int i = 0 ; i < nbCredit ;i++) {
             Integer amount = 500 + utilsCreditData.random(19) * 1000;
             Integer creditDuration = utilsCreditData.getDuration();
             String product = utilsCreditData.getProduct();
