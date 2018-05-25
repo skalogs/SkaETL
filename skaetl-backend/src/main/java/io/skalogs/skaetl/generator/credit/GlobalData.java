@@ -10,6 +10,7 @@ import lombok.Setter;
 @Builder
 public class GlobalData {
     private String type;
+    private String microService;
     private String timestamp;
     private String timeRequestMs;
     private String requestId;

@@ -199,7 +199,8 @@ public class UtilsCreditData {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
         sendToKafka(inputDataCredit.getTopic(), GlobalData.builder()
-                .type("backend-"+inputDataCredit.getType())
+                .type("backend-microservice")
+                .microService(inputDataCredit.getType())
                 .timestamp(df.format(newDate))
                 .requestId(inputDataCredit.getRequestId())
                 .timeRequestMs(inputDataCredit.getTimeGlobal().toString())
@@ -222,6 +223,7 @@ public class UtilsCreditData {
             Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
             sendToKafka(inputDataCredit.getTopic(), WebServiceData.builder()
                     .type("webservice")
+                    .microService(inputDataCredit.getType())
                     .name(inputDataCredit.getNameWS())
                     .timestamp(df.format(newDate))
                     .requestId(inputDataCredit.getRequestId())
@@ -243,6 +245,7 @@ public class UtilsCreditData {
             Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
             sendToKafka(inputDataCredit.getTopic(), BusinessLayerData.builder()
                     .type("serviceBL")
+                    .microService(inputDataCredit.getType())
                     .service(inputDataCredit.getServiceBL())
                     .requestId(inputDataCredit.getRequestId())
                     .timestamp(df.format(newDate))
@@ -263,6 +266,7 @@ public class UtilsCreditData {
             Date newDate = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
             sendToKafka(inputDataCredit.getTopic(), CreditDBData.builder()
                     .type("requestDB")
+                    .microService(inputDataCredit.getType())
                     .service(inputDataCredit.getServiceBL())
                     .requestId(inputDataCredit.getRequestId())
                     .timestamp(df.format(newDate))

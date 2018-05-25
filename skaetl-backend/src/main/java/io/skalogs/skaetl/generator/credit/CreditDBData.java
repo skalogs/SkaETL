@@ -10,6 +10,7 @@ import lombok.Setter;
 @Builder
 public class CreditDBData {
     private String type;
+    private String microService;
     private String timestamp;
     private String typeRequest;
     private String database;
