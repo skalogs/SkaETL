@@ -195,7 +195,7 @@ public class UtilsProcess {
                     .build());
 
             listProcessTransformation.add(ProcessTransformation.builder()
-                    .typeTransformation(TypeValidation.FORMAT_LONG)
+                    .typeTransformation(TypeValidation.LOOKUP_LIST)
                     .parameterTransformation(ParameterTransformation.builder()
                             .keyField("productName")
                             .mapLookup(mapProduct)
