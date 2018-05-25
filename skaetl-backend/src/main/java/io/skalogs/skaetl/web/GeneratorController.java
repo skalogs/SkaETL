@@ -59,8 +59,8 @@ public class GeneratorController {
     }
 
     @ResponseStatus(CREATED)
-    @GetMapping("/inputCard")
-    public void inputCard(@PathParam("nbCustomer") Integer nbCustomer,
+    @GetMapping("/inputCart")
+    public void inputCart(@PathParam("nbCustomer") Integer nbCustomer,
                           @PathParam("nbShowByMinute") Integer nbShowByMinute,
                           @PathParam("nbAddToCardByMinute") Integer nbAddToCardByMinute,
                           @PathParam("nbPaySuccessByMinute") Integer nbPaySuccessByMinute,
@@ -70,8 +70,8 @@ public class GeneratorController {
     }
 
     @ResponseStatus(CREATED)
-    @GetMapping("/inputSpecificCard")
-    public void inputSpecificCard(@PathParam("nbCustomer") Integer nbCustomer) {
+    @GetMapping("/inputSpecificCart")
+    public void inputSpecificCart(@PathParam("nbCustomer") Integer nbCustomer) {
         generatorCartService.generateSpecificUsecase(nbCustomer);
     }
 
