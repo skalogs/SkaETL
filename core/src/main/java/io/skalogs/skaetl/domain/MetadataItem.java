@@ -13,4 +13,5 @@ import lombok.NoArgsConstructor;
 public class MetadataItem {
     public String key;
     public String value;
+    public String timestamp;
 }

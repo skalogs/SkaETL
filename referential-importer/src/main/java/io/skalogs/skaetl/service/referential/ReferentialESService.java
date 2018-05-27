@@ -25,6 +25,7 @@ public class ReferentialESService {
     private final String bootstrapServer;
     public static String TOPIC_REFERENTIAL_ES = "topicReferentialEs";
     public static String TOPIC_REFERENTIAL_NOTIFICATION_ES = "topicReferentialNotification";
+    public static String TOPIC_REFERENTIAL_VALIDATION_ES = "topicReferentialValidation";
 
     public ReferentialESService(KafkaConfiguration kafkaConfiguration,JsonNodeToElasticSearchProcessor elasticSearchProcessor, KafkaAdminService kafkaAdminService) {
         this.elasticSearchProcessor = elasticSearchProcessor;
@@ -36,6 +37,7 @@ public class ReferentialESService {
     private void createStreamEs() {
         createStreamReferential(TOPIC_REFERENTIAL_ES,"REFERENTIAL#ELASTICSEARCH");
         createStreamReferential(TOPIC_REFERENTIAL_NOTIFICATION_ES,"REFERENTIAL-NOTIFICATION#ELASTICSEARCH");
+        createStreamReferential(TOPIC_REFERENTIAL_VALIDATION_ES,"REFERENTIAL-VALIDATION#ELASTICSEARCH");
     }
 
     private void createStreamReferential(String topic, String nameStream) {

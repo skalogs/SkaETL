@@ -30,4 +30,12 @@ public class ProcessReferential extends ProcessDefinition {
     private Boolean isNotificationChange = false;
     @Builder.Default
     private String fieldChangeNotification = "";
+    @Builder.Default
+    private Integer timeValidationInSec = 0;
+    @Builder.Default
+    private Boolean isValidationTimeAllField = false;
+    @Builder.Default
+    private Boolean isValidationTimeField = false;
+    @Builder.Default
+    private String fieldChangeValidation = "";
 }
