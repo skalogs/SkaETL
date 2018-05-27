@@ -36,4 +36,9 @@ public class ManageController {
         return referentialImporter.statusExecutor();
     }
 
+    @GetMapping("/flush")
+    public void flush() {
+        referentialImporter.flush();
+    }
+
 }
