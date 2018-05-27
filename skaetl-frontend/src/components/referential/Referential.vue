@@ -117,17 +117,17 @@
                 <v-layout row>
                   <v-flex xs6 sm6 md6>
                     <v-layout row>
-                      <v-checkbox label="Validity event" v-model="itemToEdit.isValidationTimeAllField"></v-checkbox>
-                      <v-text-field v-show="itemToEdit.isValidationTimeAllField" label="time (sec)" v-model="itemToEdit.timeValidationInSec"></v-text-field>
+                      <v-checkbox :disabled="itemToEdit.isValidationTimeField" label="Validity event" v-model="itemToEdit.isValidationTimeAllField"></v-checkbox>
+                      <v-text-field :disabled="itemToEdit.isValidationTimeField" v-show="itemToEdit.isValidationTimeAllField" label="time (sec)" v-model="itemToEdit.timeValidationInSec"></v-text-field>
                     </v-layout>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs6 sm6 md6>
                     <v-layout row>
-                      <v-checkbox label="Validity field" v-model="itemToEdit.isValidationTimeField"></v-checkbox>
-                      <v-text-field v-show="itemToEdit.isValidationTimeField" label="time (sec)" v-model="itemToEdit.timeValidationInSec"></v-text-field>
-                      <v-text-field v-show="itemToEdit.isValidationTimeField" label="field" v-model="itemToEdit.fieldChangeValidation"></v-text-field>
+                      <v-checkbox :disabled="itemToEdit.isValidationTimeAllField" label="Validity field" v-model="itemToEdit.isValidationTimeField"></v-checkbox>
+                      <v-text-field :disabled="itemToEdit.isValidationTimeAllField" v-show="itemToEdit.isValidationTimeField" label="time (sec)" v-model="itemToEdit.timeValidationInSec"></v-text-field>
+                      <v-text-field :disabled="itemToEdit.isValidationTimeAllField" v-show="itemToEdit.isValidationTimeField" label="field" v-model="itemToEdit.fieldChangeValidation"></v-text-field>
                     </v-layout>
                   </v-flex>
                 </v-layout>
