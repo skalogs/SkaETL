@@ -41,7 +41,6 @@ public class ReferentialImporter {
     private final KafkaAdminService kafkaAdminService;
     private final KafkaConfiguration kafkaConfiguration;
     private final ProcessConfiguration processConfiguration;
-    private final ReferentialESService referentialESService;
     private final Map<ProcessReferential, List<KafkaStreams>> runningProcessReferential = new HashMap();
     private final Map<ProcessReferential, List<KafkaStreams>> runningMergeProcess = new HashMap();
     public static final String TOPIC_PARSED_PROCESS = "parsedprocess";
@@ -92,7 +91,7 @@ public class ReferentialImporter {
     private void buildStreamMerge(ProcessReferential processReferential, String topicMerge) {
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, JsonNode> streamToRef = builder.stream(topicMerge, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
-        streamToRef.process(() -> new ReferentialProcessor(processReferential, referentialESService, kafkaConfiguration));
+        streamToRef.process(() -> new ReferentialProcessor(processReferential, kafkaConfiguration));
         KafkaStreams stream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "#" + TOPIC_MERGE_REFERENTIAL, kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(stream::close));
         runningProcessReferential.get(processReferential).add(stream);
