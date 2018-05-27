@@ -6,6 +6,7 @@ import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.GrokService;
 import io.skalogs.skaetl.service.ProcessService;
+import io.skalogs.skaetl.service.ReferentialService;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
@@ -34,6 +35,7 @@ public class GeneratorService {
     private final Producer<String, String> producer;
     private final GrokService grokService;
     private final ProcessService processService;
+    private final ReferentialService referentialService;
     private final String topic;
     private final ObjectMapper mapper = new ObjectMapper();
     private Random RANDOM = new Random();
@@ -71,6 +73,30 @@ public class GeneratorService {
     }
 
 
+    private void createReferential(String idProcessConsumer){
+        //Track db_ip
+        //validation -> if no activity during 60*30 sec -> produce a message for inactivity
+        //notification -> if database_type change -> produce a message for change
+        referentialService.updateReferential(ProcessReferential.builder()
+                .name("referentialNetwork")
+                .idProcess("demoReferentialNetwork")
+                .referentialKey("db_ip")
+                .listIdProcessConsumer(Lists.newArrayList(idProcessConsumer))
+                .listAssociatedKeys(Lists.newArrayList("database_ip"))
+                .listMetadata(Lists.newArrayList("os_server","database_type","patch_version"))
+                .isNotificationChange(true)
+                .fieldChangeNotification("database_type")
+                .isValidationTimeAllField(true)
+                .timeValidationInSec(60*30)
+                .build());
+        try {
+            Thread.sleep(2000);
+            referentialService.activateProcess((ProcessReferential) referentialService.findReferential("demoReferentialNetwork"));
+        }catch (Exception e){
+            log.error("Exception {}",e);
+        }
+    }
+
     private void createAndActiveProcessConsumer(String topic){
         if(processService.findProcess("idProcess"+topic) == null) {
             processService.saveOrUpdate(ProcessConsumer.builder()
@@ -90,6 +116,7 @@ public class GeneratorService {
 
     public void createRandomNetwork(Integer nbElem) {
         createAndActiveProcessConsumer("processtopicnetwork");
+        createReferential("idProcessprocesstopicnetwork");
         for (int i = 0; i < nbElem; i++) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             Date newDate = addMinutesAndSecondsToTime(i, RANDOM.nextInt(50), new Date());
@@ -252,12 +279,13 @@ public class GeneratorService {
         }
     }
 
-    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService, ProcessService processService ) {
+    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService, ProcessService processService, ReferentialService referentialService) {
         producer = kafkaUtils.kafkaProducer();
         topic = kafkaConfiguration.getTopic();
         this.grokService = grokService;
         this.processService = processService;
         this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
         this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
+        this.referentialService = referentialService;
     }
 }
