@@ -158,9 +158,9 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
             MetadataItem itemOld = getItem(processReferential.getFieldChangeNotification(), referential.getMetadataItemSet());
             MetadataItem itemNew = getItem(processReferential.getFieldChangeNotification(), referentialNew.getMetadataItemSet());
             if (itemNew != null && itemOld == null) {
-                notificationReferentialToKafka(referential, referentialNew.getTimestamp(), "0", processReferential.getFieldChangeNotification(), referentialNew.getValue());
+                notificationReferentialToKafka(referential, referentialNew.getTimestamp(), "0", processReferential.getFieldChangeNotification(), itemNew.getValue());
             } else if (itemNew != null && !itemOld.getValue().equals(itemNew.getValue())) {
-                notificationReferentialToKafka(referential, referentialNew.getTimestamp(), String.valueOf(differenceTime(referential.getTimestamp(),referentialNew.getTimestamp())), processReferential.getFieldChangeNotification(), referentialNew.getValue());
+                notificationReferentialToKafka(referential, referentialNew.getTimestamp(), String.valueOf(differenceTime(referential.getTimestamp(),referentialNew.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue());
             }
         }
     }
