@@ -139,8 +139,7 @@ public class ReferentialImporter {
         sendToRegistry("refresh");
     }
 
-    //@Scheduled(initialDelay = 1 * 60 * 1000, fixedRate = 5 * 60 * 1000)
-    @Scheduled(initialDelay = 5 * 1000, fixedRate = 20 * 1000)
+    @Scheduled(initialDelay = 1 * 60 * 1000, fixedRate = 5 * 60 * 1000)
     public void flush(){
         runningService.values().stream().forEach(
                 referentialServices -> referentialServices.stream()
