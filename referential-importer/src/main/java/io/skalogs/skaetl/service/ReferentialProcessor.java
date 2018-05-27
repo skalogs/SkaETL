@@ -51,11 +51,10 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode>{
     }
 
     private Referential createReferential(String keyTrack, JsonNode jsonNode) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Referential ref = Referential.builder()
                 .key(processReferential.getReferentialKey())
                 .value(jsonNode.path(keyTrack).asText())
-                .timestamp(df.format(new Date()))
+                .timestamp(jsonNode.path("timestamp").asText())
                 .metadataItemSet(buildMetadata(jsonNode))
                 .idProcessReferential(processReferential.getIdProcess())
                 .nameProcessReferential(processReferential.getName())

@@ -29,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class GeneratorService {
 
+    private final String host;
+    private final String port;
     private final Producer<String, String> producer;
     private final GrokService grokService;
     private final ProcessService processService;
@@ -73,7 +75,8 @@ public class GeneratorService {
         if(processService.findProcess("idProcess"+topic) == null) {
             processService.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcess" + topic)
-                    .processInput(ProcessInput.builder().topicInput(topic).host("kafka.kafka").port("9092").build())
+                    .name("idProcess" + topic)
+                    .processInput(ProcessInput.builder().topicInput(topic).host(this.host).port(this.port).build())
                     .processOutput(Lists.newArrayList(
                             ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
                     .build());
@@ -254,5 +257,7 @@ public class GeneratorService {
         topic = kafkaConfiguration.getTopic();
         this.grokService = grokService;
         this.processService = processService;
+        this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
+        this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
     }
 }
