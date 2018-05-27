@@ -171,7 +171,10 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         try {
             Date dateOld = df.parse(oldTimestamp);
             Date dateNew = df.parse(newTimestamp);
-            diffInSeconds = TimeUnit.SECONDS.convert(Math.abs(dateNew.getTime() - dateOld.getTime()),TimeUnit.MILLISECONDS);
+            long diffInMs = dateNew.getTime() - dateOld.getTime();
+            if(diffInMs>0) {
+                diffInSeconds = TimeUnit.SECONDS.convert(diffInMs, TimeUnit.MILLISECONDS);
+            }
         }catch (Exception e){
             log.error("Error in diff between old {} and new {}",oldTimestamp,newTimestamp);
         }
