@@ -3,7 +3,6 @@ package io.skalogs.skaetl.web;
 import io.skalogs.skaetl.domain.ProcessReferential;
 import io.skalogs.skaetl.domain.StatusConsumer;
 import io.skalogs.skaetl.service.ReferentialImporter;
-import io.skalogs.skaetl.service.referential.ReferentialESService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +18,6 @@ import static org.springframework.http.HttpStatus.CREATED;
 public class ManageController {
 
     private final ReferentialImporter referentialImporter;
-    private final ReferentialESService referentialESService;
 
     @ResponseStatus(CREATED)
     @PostMapping("/activate")
@@ -36,12 +34,6 @@ public class ManageController {
     @GetMapping("/status")
     public List<StatusConsumer> status() {
         return referentialImporter.statusExecutor();
-    }
-
-    @ResponseStatus(CREATED)
-    @PostMapping("/forceFlush")
-    public void forceFlush() {
-        referentialESService.forceFlush();
     }
 
 }

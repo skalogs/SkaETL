@@ -92,7 +92,7 @@ public class ReferentialImporter {
     private void buildStreamMerge(ProcessReferential processReferential, String topicMerge) {
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, JsonNode> streamToRef = builder.stream(topicMerge, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
-        streamToRef.process(() -> new ReferentialProcessor(processReferential, referentialESService));
+        streamToRef.process(() -> new ReferentialProcessor(processReferential, referentialESService, kafkaConfiguration));
         KafkaStreams stream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "#" + TOPIC_MERGE_REFERENTIAL, kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(stream::close));
         runningProcessReferential.get(processReferential).add(stream);
