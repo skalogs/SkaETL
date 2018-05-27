@@ -61,14 +61,13 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
     }
 
     private Set<MetadataItem> buildMetadata(JsonNode jsonNode) {
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         return processReferential.getListMetadata().stream()
                 .filter(metadata -> jsonNode.has(metadata))
                 .filter(metadata -> !jsonNode.get(metadata).asText().equals("null"))
                 .map(metadata -> MetadataItem.builder()
                         .key(metadata)
                         .value(jsonNode.path(metadata).asText())
-                        .timestamp(df.format(new Date()))
+                        .timestamp(jsonNode.path("timestamp").asText())
                         .build())
                 .collect(Collectors.toCollection(HashSet::new));
     }
@@ -122,7 +121,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
 
     private void validationTimeField(ProcessReferential processReferential, Referential referential){
         MetadataItem item = getItem(processReferential.getFieldChangeValidation(), referential.getMetadataItemSet());
-        if(item !=null && StringUtils.isNotBlank(item.getTimestamp())) {
+        if(item !=null) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             long diffInSec = differenceTime(item.getTimestamp(), df.format(new Date()));
             if (diffInSec > processReferential.getTimeValidationInSec()) {
@@ -161,7 +160,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
             if (itemNew != null && itemOld == null) {
                 notificationReferentialToKafka(referential, referentialNew.getTimestamp(), "0", processReferential.getFieldChangeNotification(), itemNew.getValue());
             } else if (itemNew != null && !itemOld.getValue().equals(itemNew.getValue())) {
-                notificationReferentialToKafka(referential, referentialNew.getTimestamp(), String.valueOf(differenceTime(referential.getTimestamp(),referentialNew.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue());
+                notificationReferentialToKafka(referential, referentialNew.getTimestamp(), String.valueOf(differenceTime(itemNew.getTimestamp(),itemOld.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue());
             }
         }
     }
