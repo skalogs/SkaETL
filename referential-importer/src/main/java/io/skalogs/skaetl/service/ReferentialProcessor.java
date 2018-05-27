@@ -7,7 +7,6 @@ import io.skalogs.skaetl.domain.MetadataItem;
 import io.skalogs.skaetl.domain.ProcessReferential;
 import io.skalogs.skaetl.domain.Referential;
 import io.skalogs.skaetl.serdes.JsonNodeSerialializer;
-import io.skalogs.skaetl.service.referential.ReferentialESService;
 import io.skalogs.skaetl.utils.JSONUtils;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.processor.AbstractProcessor;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -24,13 +22,11 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static io.skalogs.skaetl.service.referential.ReferentialESService.TOPIC_REFERENTIAL_ES;
-import static io.skalogs.skaetl.service.referential.ReferentialESService.TOPIC_REFERENTIAL_NOTIFICATION_ES;
-import static io.skalogs.skaetl.service.referential.ReferentialESService.TOPIC_REFERENTIAL_VALIDATION_ES;
+import static io.skalogs.skaetl.service.referential.ReferentialESService.*;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
-public class ReferentialProcessor extends AbstractProcessor<String, JsonNode>{
+public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> implements ReferentialService{
 
     private final ProcessReferential processReferential;
     private final Producer<String, JsonNode> referentialProducer;
@@ -77,9 +73,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode>{
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
-
-    @Scheduled(initialDelay = 1 * 60 * 1000, fixedRate = 5 * 60 * 1000)
-    public void persist() {
+    public void flush() {
         synchronized (this) {
             log.info("Persist Referential size {}", referentialMap.values().size());
             referentialMap.values().stream()

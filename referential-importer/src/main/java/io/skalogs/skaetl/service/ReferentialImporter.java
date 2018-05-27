@@ -43,6 +43,7 @@ public class ReferentialImporter {
     private final ProcessConfiguration processConfiguration;
     private final Map<ProcessReferential, List<KafkaStreams>> runningProcessReferential = new HashMap();
     private final Map<ProcessReferential, List<KafkaStreams>> runningMergeProcess = new HashMap();
+    private final Map<ProcessReferential, List<ReferentialService>> runningService = new HashMap();
     public static final String TOPIC_PARSED_PROCESS = "parsedprocess";
     public static final String TOPIC_MERGE_REFERENTIAL = "mergereferential";
 
@@ -57,6 +58,7 @@ public class ReferentialImporter {
             kafkaAdminService.buildTopic(topicMerge);
             runningMergeProcess.put(processReferential, new ArrayList<>());
             runningProcessReferential.put(processReferential, new ArrayList<>());
+            runningService.put(processReferential, new ArrayList<>());
             processReferential.getListIdProcessConsumer().stream().forEach(consumerId -> feedStream(consumerId, processReferential, topicMerge));
             // treat the merge topic
             log.info("creating {} Process Referential", processReferential.getName());
@@ -86,12 +88,15 @@ public class ReferentialImporter {
         runningProcessReferential.get(processReferential).stream()
                 .forEach(stream -> stream.close());
         runningProcessReferential.remove(processReferential);
+        runningService.remove(processReferential);
     }
 
     private void buildStreamMerge(ProcessReferential processReferential, String topicMerge) {
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, JsonNode> streamToRef = builder.stream(topicMerge, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
-        streamToRef.process(() -> new ReferentialProcessor(processReferential, kafkaConfiguration));
+        ReferentialProcessor referentialProcessor = new ReferentialProcessor(processReferential, kafkaConfiguration);
+        streamToRef.process(() -> referentialProcessor);
+        runningService.get(processReferential).add(referentialProcessor);
         KafkaStreams stream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "#" + TOPIC_MERGE_REFERENTIAL, kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(stream::close));
         runningProcessReferential.get(processReferential).add(stream);
@@ -134,5 +139,12 @@ public class ReferentialImporter {
         sendToRegistry("refresh");
     }
 
+    //@Scheduled(initialDelay = 1 * 60 * 1000, fixedRate = 5 * 60 * 1000)
+    @Scheduled(initialDelay = 5 * 1000, fixedRate = 20 * 1000)
+    public void flush(){
+        runningService.values().stream().forEach(
+                referentialServices -> referentialServices.stream()
+                        .forEach(referentialService -> referentialService.flush()));
+    }
 }
 
