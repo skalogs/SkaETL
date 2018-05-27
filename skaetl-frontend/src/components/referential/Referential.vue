@@ -105,15 +105,40 @@
                   </v-flex>
                   <v-btn color="primary" v-on:click.native="addMetadata()" >Add<v-icon>add</v-icon></v-btn>
                 </v-layout>
-              <v-layout row>
+                <v-layout row>
                    <v-flex xs2 sm2 md2>
-                   <v-layout row>
-                      <v-flex v-for="item in itemToEdit.listMetadata">
-                         <v-chip color="orange" text-color="white" close @input="deleteMetadata(item)">{{item}}</v-chip>
-                      </v-flex>
-                   </v-layout>
+                     <v-layout row>
+                        <v-flex v-for="item in itemToEdit.listMetadata">
+                           <v-chip color="orange" text-color="white" close @input="deleteMetadata(item)">{{item}}</v-chip>
+                        </v-flex>
+                     </v-layout>
                    </v-flex>
-              </v-layout>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs6 sm6 md6>
+                    <v-layout row>
+                      <v-checkbox label="Validity event" v-model="itemToEdit.isValidationTimeAllField"></v-checkbox>
+                      <v-text-field :disabled="!itemToEdit.isValidationTimeAllField" label="time (sec)" v-model="itemToEdit.fieldChangeValidation"></v-text-field>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs6 sm6 md6>
+                    <v-layout row>
+                      <v-checkbox label="Validity field" v-model="itemToEdit.isValidationTimeField"></v-checkbox>
+                      <v-text-field :disabled="!itemToEdit.isValidationTimeField" label="time (sec)" v-model="itemToEdit.fieldChangeValidation"></v-text-field>
+                      <v-text-field :disabled="!itemToEdit.isValidationTimeField" label="field" v-model="itemToEdit.fieldChangeValidation"></v-text-field>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
+                <v-layout row>
+                  <v-flex xs6 sm6 md6>
+                    <v-layout row>
+                      <v-checkbox label="Notification on change event" v-model="itemToEdit.isNotificationChange"></v-checkbox>
+                      <v-text-field :disabled="!itemToEdit.isNotificationChange" label="field" v-model="itemToEdit.fieldChangeNotification"></v-text-field>
+                    </v-layout>
+                  </v-flex>
+                </v-layout>
               </v-card-text>
               <v-card-actions>
                 <v-btn color="primary" style="width: 120px" @click.native="previousStep()"><v-icon>navigate_before</v-icon>Previous</v-btn>
@@ -141,7 +166,19 @@
         idReferential: '',
         newMetadata: '',
         newEntry: '',
-        itemToEdit: {"idReferential":"","listAssociatedKeys":[],"name":"","referentialKey":"","listIdProcessConsumer":[],"listMetadata":[]},
+        itemToEdit: {"idReferential":"",
+                     "listAssociatedKeys":[],
+                     "name":"",
+                     "referentialKey":"",
+                     "listIdProcessConsumer":[],
+                     "listMetadata":[],
+                     "isNotificationChange": false,
+                     "fieldChangeNotification":"",
+                     "timeValidationInSec": 0,
+                     "isValidationTimeAllField": false,
+                     "isValidationTimeField": false,
+                     "fieldChangeValidation": ""
+                    },
         viewError: false,
         msgError: '',
         listProcess: [],
