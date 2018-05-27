@@ -145,6 +145,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         for (MetadataItem itemRef : referential.getMetadataItemSet()) {
             if (itemRef.getKey().equals(itemNew.getKey())) {
                 itemRef.setValue(itemNew.getValue());
+                itemRef.setTimestamp(referential.getTimestamp());
                 noTreat = false;
             }
         }
