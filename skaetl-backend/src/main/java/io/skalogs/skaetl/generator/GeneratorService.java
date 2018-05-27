@@ -84,10 +84,10 @@ public class GeneratorService {
                 .listIdProcessConsumer(Lists.newArrayList(idProcessConsumer))
                 .listAssociatedKeys(Lists.newArrayList("database_ip"))
                 .listMetadata(Lists.newArrayList("os_server","database_type","patch_version"))
-                .isNotificationChange(true)
-                .fieldChangeNotification("database_type")
                 .isValidationTimeAllField(true)
                 .timeValidationInSec(60*30)
+                .isNotificationChange(true)
+                .fieldChangeNotification("database_type")
                 .build());
         try {
             Thread.sleep(2000);
