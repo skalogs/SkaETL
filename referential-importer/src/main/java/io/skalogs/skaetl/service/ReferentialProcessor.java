@@ -31,13 +31,11 @@ import static java.util.stream.Collectors.toList;
 public class ReferentialProcessor extends AbstractProcessor<String, JsonNode>{
 
     private final ProcessReferential processReferential;
-    private final ReferentialESService referentialESService;
     private final Producer<String, JsonNode> referentialProducer;
     private Map<String, Referential> referentialMap = new HashMap<>();
 
-    public ReferentialProcessor(ProcessReferential processReferential, ReferentialESService referentialESService,KafkaConfiguration kafkaConfiguration) {
+    public ReferentialProcessor(ProcessReferential processReferential,KafkaConfiguration kafkaConfiguration) {
         this.processReferential = processReferential;
-        this.referentialESService = referentialESService;
         this.referentialProducer = KafkaUtils.kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, JsonNodeSerialializer.class);
     }
 
