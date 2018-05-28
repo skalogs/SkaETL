@@ -5,7 +5,9 @@ import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.config.ProcessConfiguration;
 import io.skalogs.skaetl.domain.*;
+import io.skalogs.skaetl.serdes.GenericDeserializer;
 import io.skalogs.skaetl.serdes.GenericSerdes;
+import io.skalogs.skaetl.serdes.GenericSerializer;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +18,8 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
+import org.apache.kafka.streams.state.StoreBuilder;
+import org.apache.kafka.streams.state.Stores;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -73,7 +77,7 @@ public class ReferentialImporter {
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, JsonNode> streamToMerge = builder.stream(topicSource, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
         streamToMerge.to(topicMerge, Produced.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
-        KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "#" + consumerId + "#merge-topic", kafkaConfiguration.getBootstrapServers()));
+        KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "_" + consumerId + "-_merge-topic", kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         runningMergeProcess.get(processReferential).add(streams);
         streams.start();
@@ -96,11 +100,20 @@ public class ReferentialImporter {
 
     private void buildStreamMerge(ProcessReferential processReferential, String topicMerge) {
         StreamsBuilder builder = new StreamsBuilder();
+
+        StoreBuilder referentialStore = Stores
+                .keyValueStoreBuilder(Stores.persistentKeyValueStore(ReferentialProcessor.REFERENTIAL),
+                        Serdes.String(),
+                        Serdes.serdeFrom(new GenericSerializer<Referential>(), new GenericDeserializer(Referential.class)))
+                .withLoggingEnabled(new HashMap<>());
+        builder.addStateStore(referentialStore);
+
         KStream<String, JsonNode> streamToRef = builder.stream(topicMerge, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
+
         ReferentialProcessor referentialProcessor = new ReferentialProcessor(processReferential, kafkaConfiguration);
-        streamToRef.process(() -> referentialProcessor);
+        streamToRef.process(() -> referentialProcessor,ReferentialProcessor.REFERENTIAL);
         runningService.get(processReferential).add(referentialProcessor);
-        KafkaStreams stream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "#" + TOPIC_MERGE_REFERENTIAL, kafkaConfiguration.getBootstrapServers()));
+        KafkaStreams stream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "_" + TOPIC_MERGE_REFERENTIAL, kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(stream::close));
         runningProcessReferential.get(processReferential).add(stream);
         stream.start();
@@ -142,7 +155,6 @@ public class ReferentialImporter {
         sendToRegistry("refresh");
     }
 
-    @Scheduled(initialDelay = 1 * 60 * 1000, fixedRate = 5 * 60 * 1000)
     public void flush() {
         runningService.values().stream().forEach(
                 referentialServices -> referentialServices.stream()
