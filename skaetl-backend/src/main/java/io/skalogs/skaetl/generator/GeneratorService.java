@@ -107,6 +107,7 @@ public class GeneratorService {
                             ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
                     .build());
             try {
+                Thread.sleep(2000);
                 processService.activateProcess(processService.findProcess("idProcess" + topic));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer idProcess" + topic);
