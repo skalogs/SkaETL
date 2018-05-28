@@ -72,7 +72,11 @@
          }
    },
    mounted() {
-    this.listCapture= [];
+      this.listCapture= [];
+      this.topicInput = this.$route.query.topic;
+      this.hostInput = this.$route.query.hostInput;
+      this.portInput = this.$route.query.portInput;
+      this.offsetInput = this.$route.query.offsetInput;
    },
    methods: {
         reset(){

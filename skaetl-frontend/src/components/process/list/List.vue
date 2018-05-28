@@ -129,7 +129,7 @@
              { text: 'Filter',align: 'center', value: 'processDefinition.filter', width: '15%' },
              { text: 'Output', align: 'center',value: 'processDefinition.output',width: '8%' }
            ],
-           process : {"processInput" : {"host":"", "topicInput":"", "port":""}, "name":""},
+           process : {"processInput" : {"host":"", "topicInput":"", "port":""}, "name":"", "idProcess": ""},
            listCapture: [],
            idProcessDialog: '',
          }
@@ -146,34 +146,18 @@
         visualize(){
           this.$router.push('/process/network');
         },
+        getBootStrapServers(){
+          return this.process.processInput.host +':'+ this.process.processInput.port
+        },
         launchCaptureKafka(){
-             var payload = {"idProcess" : this.idProcessDialog};
-             this.$http.post('/simulate/raw/captureInput', payload).then(response => {
-                this.listCapture = response.data;
-                if(response.data.length === 0){
-                   this.viewMessageCaptureDialog= true;
-                   this.messageCaptureDialog= 'No result';
-                }
-             }, response => {
-                this.viewErrorDialog=true;
-                this.msgErrorDialog = "Error during call service";
-             });
+             console.log('gnii '+this.process);
+             this.$router.push('/process/live?topic='+this.process.idProcess+'parsedprocess&hostInput='+this.process.processInput.host+'&portInput='+this.process.processInput.port+'&offsetInput=latest');
         },
         launchCaptureKafkaAfterTransformation(){
-             var payload = {"idProcess" : this.idProcessDialog};
-             this.$http.post('/simulate/raw/captureTransformation', payload).then(response => {
-                this.listCapture = response.data;
-                if(response.data.length === 0){
-                   this.viewMessageCapture= true;
-                   this.messageCapture= 'No result';
-                }
-             }, response => {
-                this.viewError=true;
-                this.msgError = "Error during call service";
-             });
+             this.$router.push('/process/live?topic='+this.process.idProcess+'treatprocess&hostInput='+this.process.processInput.host+'&portInput='+this.process.processInput.port+'&offsetInput=latest');
         },
         liveProcess(idProcess){
-            this.$http.get('/process/findProcess', {params: {idProcess: this.idProcess}}).then(response => {
+            this.$http.get('/process/findProcess', {params: {idProcess: idProcess}}).then(response => {
                this.process=response.data;
                this.idProcessDialog=idProcess;
                this.dialogLive= true;
