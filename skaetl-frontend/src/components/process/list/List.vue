@@ -150,7 +150,6 @@
           return this.process.processInput.host +':'+ this.process.processInput.port
         },
         launchCaptureKafka(){
-             console.log('gnii '+this.process);
              this.$router.push('/process/live?topic='+this.process.idProcess+'parsedprocess&hostInput='+this.process.processInput.host+'&portInput='+this.process.processInput.port+'&offsetInput=latest');
         },
         launchCaptureKafkaAfterTransformation(){
