@@ -74,19 +74,23 @@ public class ReferentialImporter {
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, JsonNode> streamToMerge = builder.stream(topicSource, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
         streamToMerge.to(topicMerge, Produced.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
-        KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() +"#" +consumerId + "#merge-topic", kafkaConfiguration.getBootstrapServers()));
+        KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "#" + consumerId + "#merge-topic", kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         runningMergeProcess.get(processReferential).add(streams);
         streams.start();
     }
 
     public void deactivate(ProcessReferential processReferential) {
-        log.info("deactivating {} Process Merge", processReferential.getName());
-        runningMergeProcess.get(processReferential).stream()
-                .forEach(stream -> stream.close());
-        log.info("deactivating {} Process Referential", processReferential.getName());
-        runningProcessReferential.get(processReferential).stream()
-                .forEach(stream -> stream.close());
+        if (runningMergeProcess.containsKey(processReferential)) {
+            log.info("deactivating {} Process Merge", processReferential.getName());
+            runningMergeProcess.get(processReferential).stream()
+                    .forEach(stream -> stream.close());
+        }
+        if (runningProcessReferential.containsKey(processReferential)) {
+            log.info("deactivating {} Process Referential", processReferential.getName());
+            runningProcessReferential.get(processReferential).stream()
+                    .forEach(stream -> stream.close());
+        }
         runningProcessReferential.remove(processReferential);
         runningService.remove(processReferential);
     }
@@ -140,7 +144,7 @@ public class ReferentialImporter {
     }
 
     @Scheduled(initialDelay = 1 * 60 * 1000, fixedRate = 5 * 60 * 1000)
-    public void flush(){
+    public void flush() {
         runningService.values().stream().forEach(
                 referentialServices -> referentialServices.stream()
                         .forEach(referentialService -> referentialService.flush()));
