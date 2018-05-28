@@ -53,7 +53,7 @@ public class UtilsProcess {
                 .referentialKey("Client")
                 .listIdProcessConsumer(Lists.newArrayList(idProcessCreditData))
                 .listAssociatedKeys(Lists.newArrayList("email"))
-                .listMetadata(Lists.newArrayList("statusCredit","creditDuration","productName"))
+                .listMetadata(Lists.newArrayList("statusCredit","creditDuration","productName","user"))
                 .isValidationTimeField(true)
                 .fieldChangeValidation("statusCredit")
                 .timeValidationInSec(24*60*60)
