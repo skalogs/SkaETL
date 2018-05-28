@@ -6,7 +6,6 @@ import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.config.ProcessConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.serdes.GenericSerdes;
-import io.skalogs.skaetl.service.referential.ReferentialESService;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
