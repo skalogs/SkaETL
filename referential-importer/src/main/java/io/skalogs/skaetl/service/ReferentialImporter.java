@@ -82,7 +82,7 @@ public class ReferentialImporter {
 
     public void deactivate(ProcessReferential processReferential) {
         log.info("deactivating {} Process Merge", processReferential.getName());
-        runningMergeProcess.get(processReferential.getIdProcess()).stream()
+        runningMergeProcess.get(processReferential).stream()
                 .forEach(stream -> stream.close());
         log.info("deactivating {} Process Referential", processReferential.getName());
         runningProcessReferential.get(processReferential).stream()
