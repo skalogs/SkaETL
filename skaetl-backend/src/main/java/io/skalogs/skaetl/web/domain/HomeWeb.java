@@ -25,6 +25,10 @@ public class HomeWeb {
     @Builder.Default
     private Long numberProcessInit = new Long(0);
     @Builder.Default
+    private Long numberProcessDegraded = new Long(0);
+    @Builder.Default
+    private Long numberProcessCreation = new Long(0);
+    @Builder.Default
     private List<StatProcess> listStatProcess = new ArrayList<>();
 
     @Builder.Default
@@ -49,6 +53,10 @@ public class HomeWeb {
     @Builder.Default
     private Long numberMetricInit = new Long(0);
     @Builder.Default
+    private Long numberMetricCreation = new Long(0);
+    @Builder.Default
+    private Long numberMetricDegraded = new Long(0);
+    @Builder.Default
     private List<StatMetric> listStatMetric = new ArrayList<>();
 
     @Builder.Default
@@ -61,6 +69,10 @@ public class HomeWeb {
     private Long numberReferentialError = new Long(0);
     @Builder.Default
     private Long numberReferentialInit = new Long(0);
+    @Builder.Default
+    private Long numberReferentialDegraded = new Long(0);
+    @Builder.Default
+    private Long numberReferentialCreation = new Long(0);
     @Builder.Default
     private List<StatReferential> listStatReferential = new ArrayList<>();
 

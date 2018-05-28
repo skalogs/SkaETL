@@ -28,7 +28,9 @@
           Active: {{home.numberProcessActive}}<br>
           Inactive: {{home.numberProcessDeActive}}<br>
           Error: {{home.numberProcessError }}<br>
-          Init: {{home.numberProcessInit }}
+          Degraded: {{home.numberProcessDegraded }}<br>
+          Init: {{home.numberProcessInit }}<br>
+          Creation: {{home.numberProcessCreation }}
         </span>
       </v-tooltip>
 
@@ -43,7 +45,9 @@
           Active: {{home.numberMetricActive}}<br>
           Inactive: {{home.numberMetricDeActive}}<br>
           Error: {{home.numberMetricError }}<br>
-          Init: {{home.numberMetricInit }}
+          Degraded: {{home.numberMetricDegraded }}<br>
+          Init: {{home.numberMetricInit }}<br>
+          Creation: {{home.numberMetricCreation }}
         </span>
       </v-tooltip>
 
@@ -58,7 +62,9 @@
           Active: {{home.numberReferentialActive}}<br>
           Inactive: {{home.numberReferentialDeActive}}<br>
           Error: {{home.numberReferentialError }}<br>
-          Init: {{home.numberReferentialInit }}
+          Degraded: {{home.numberReferentialDegraded }}<br>
+          Init: {{home.numberReferentialInit }}<br>
+          Creation: {{home.numberReferentialCreation }}
         </span>
       </v-tooltip>
 
@@ -206,7 +212,7 @@
             <template slot="items" slot-scope="props">
               <td width="1%"><v-icon>cached</v-icon></td>
 
-                <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
+                <td v-if="props.item.statusProcess == 'ERROR' || props.item.statusProcess == 'DEGRADED'" class="text-xs-left">
                   <v-badge color="red">
                     <v-icon slot="badge">error</v-icon>
                     <span class="process-name">{{props.item.processDefinition.name}}</span>
@@ -220,7 +226,7 @@
                   </v-badge>
                 </td>
 
-                <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
+                <td v-if="props.item.statusProcess == 'INIT' || props.item.statusProcess == 'CREATION'" class="text-xs-left">
                   <v-badge color="blue lighten-2">
                     <v-icon slot="badge">power_settings_new</v-icon>
                     <span class="process-name">{{props.item.processDefinition.name}}</span>
@@ -261,7 +267,7 @@
               <template slot="items" slot-scope="props">
                 <td width="1%"><v-icon>widgets</v-icon></td>
 
-                <td v-if="props.item.statusProcess == 'ERROR'" class="text-xs-left">
+                <td v-if="props.item.statusProcess == 'ERROR' || props.item.statusProcess == 'DEGRADED'" class="text-xs-left">
                   <v-badge color="red darken-1">
                     <v-icon slot="badge" dark>report_problem</v-icon>
                     <span class="process-name">{{props.item.processDefinition.name}}</span>
@@ -275,7 +281,7 @@
                   </v-badge>
                 </td>
 
-                <td v-if="props.item.statusProcess == 'INIT'" class="text-xs-left">
+                <td v-if="props.item.statusProcess == 'INIT' || props.item.statusProcess == 'CREATION'" class="text-xs-left">
                   <v-badge color="blue lighten-2">
                     <v-icon slot="badge">power_settings_new</v-icon>
                     <span class="process-name">{{props.item.processDefinition.name}}</span>
