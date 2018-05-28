@@ -20,8 +20,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jackson.version>2.9.1</jackson.version>
         <spring.boot.version>1.5.8.RELEASE</spring.boot.version>
-        <springfox-swagger-ui.version>2.6.1</springfox-swagger-ui.version>
-        <springfox-swagger2.version>2.6.1</springfox-swagger2.version>
         <elasticsearch.version>6.0.1</elasticsearch.version>
         <kafka-clients.version>1.0.0</kafka-clients.version>
     </properties>
