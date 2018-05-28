@@ -64,6 +64,7 @@ public class GeneratorCreditService {
             Integer creditDuration = utilsCreditData.getDuration();
             String product = utilsCreditData.getProduct();
             ClientData clientData = utilsCreditData.getClient();
+            String provider = utilsCreditData.getProvider();
             String requestId = UUID.randomUUID().toString();
             Integer timeTotalRequest = 0;
             timeTotalRequest += utilsCreditData.generateScriptGlobalBackendRequest(minute, generateScenarioMicroServiceCreateCreditValidationClient(amount, creditDuration, product, clientData, requestId));
@@ -96,7 +97,6 @@ public class GeneratorCreditService {
                 .requestId(requestId)
                 .typeRequest("POST")
                 .codeResponse(codeResponse)
-                .provider(utilsCreditData.getProvider())
                 .serviceBL("validationCreditService")
                 .database("CREDIT_PROD")
                 .typeDB("INSERT")
