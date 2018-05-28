@@ -47,6 +47,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
     }
 
     private Referential createReferential(String keyTrack, JsonNode jsonNode) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Referential ref = Referential.builder()
                 .key(processReferential.getReferentialKey())
                 .value(jsonNode.path(keyTrack).asText())
@@ -56,11 +57,13 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
                 .nameProcessReferential(processReferential.getName())
                 .project("REFERENTIAL")
                 .type(processReferential.getName())
+                .timestampETL(df.format(new Date()))
                 .build();
         return ref;
     }
 
     private Set<MetadataItem> buildMetadata(JsonNode jsonNode) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         return processReferential.getListMetadata().stream()
                 .filter(metadata -> jsonNode.has(metadata))
                 .filter(metadata -> !jsonNode.get(metadata).asText().equals("null"))
@@ -68,6 +71,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
                         .key(metadata)
                         .value(jsonNode.path(metadata).asText())
                         .timestamp(jsonNode.path("timestamp").asText())
+                        .timestampETL(df.format(new Date()))
                         .build())
                 .collect(Collectors.toCollection(HashSet::new));
     }
@@ -110,7 +114,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
 
     private void validationTimeAllField(ProcessReferential processReferential, Referential referential){
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        long diffInSec = differenceTime(referential.getTimestamp(),df.format(new Date()));
+        long diffInSec = differenceTime(referential.getTimestampETL(),df.format(new Date()));
         if(diffInSec>processReferential.getTimeValidationInSec()){
             ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
             jsonNode.put("timeExceeded",diffInSec);
@@ -123,7 +127,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         MetadataItem item = getItem(processReferential.getFieldChangeValidation(), referential.getMetadataItemSet());
         if(item !=null) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-            long diffInSec = differenceTime(item.getTimestamp(), df.format(new Date()));
+            long diffInSec = differenceTime(item.getTimestampETL(), df.format(new Date()));
             if (diffInSec > processReferential.getTimeValidationInSec()) {
                 ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
                 jsonNode.put("timeExceeded", diffInSec);
@@ -141,10 +145,12 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
 
     private void updateRefMetadata(Referential referential, MetadataItem itemNew) {
         Boolean noTreat = true;
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         for (MetadataItem itemRef : referential.getMetadataItemSet()) {
             if (itemRef.getKey().equals(itemNew.getKey())) {
                 itemRef.setValue(itemNew.getValue());
                 itemRef.setTimestamp(referential.getTimestamp());
+                itemRef.setTimestampETL(df.format(new Date()));
                 noTreat = false;
             }
         }

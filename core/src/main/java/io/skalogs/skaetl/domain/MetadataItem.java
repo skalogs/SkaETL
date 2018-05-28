@@ -14,4 +14,5 @@ public class MetadataItem {
     public String key;
     public String value;
     public String timestamp;
+    public String timestampETL;
 }

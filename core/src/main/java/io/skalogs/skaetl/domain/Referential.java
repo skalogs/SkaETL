@@ -23,4 +23,5 @@ public class Referential {
     @Builder.Default
     public RetentionLevel retentionLevel = RetentionLevel.year;
     public Set<MetadataItem> metadataItemSet = new HashSet<MetadataItem>();
+    public String timestampETL;
 }
