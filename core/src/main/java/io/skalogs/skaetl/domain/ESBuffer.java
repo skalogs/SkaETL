@@ -69,7 +69,6 @@ public class ESBuffer {
 
     public BulkResponse flush() throws IOException {
         MDC.put("flush_es_long", String.valueOf(values.size()));
-        log.info("EsFlush {}", values.size());
         MDC.remove("flush_es_long");
         if (values.size() > 0) {
             return elasticsearchClient.bulk(bulk);

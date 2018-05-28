@@ -32,7 +32,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
         esWriteEs.labels(getApplicationId()!=null ? getApplicationId() : "retryApplication", project, type).inc();
         esBuffer.add(date, project, type, retentionLevel, valueAsString);
         if (esBuffer.needFlush()) {
-            log.debug("Flushing {}", esBuffer.values().size());
+            log.info("{} Flushing {}", context().applicationId(), esBuffer.values().size());
             try {
                 BulkResponse bulkItemResponses = esBuffer.flush();
                 if (bulkItemResponses != null && bulkItemResponses.hasFailures()) {
