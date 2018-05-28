@@ -21,6 +21,7 @@ public class GeneratorCreditService {
 
     public void generateData(Integer timeToGenerateInMinute, Integer nbView, Integer nbCredit, Integer nbRandomRq) {
         utilsProcess.createAllProcess();
+        utilsProcess.createAllReferential();
         try {
             for(int i = 0 ; i < timeToGenerateInMinute ;i++) {
                 generateDataForEndToEndView(i, nbView);
@@ -74,7 +75,7 @@ public class GeneratorCreditService {
             Integer gap = utilsCreditData.random(5);
             Integer minToValidate = minute + 30;
             if(gap == 2){
-                minToValidate = minute + 3 * 24 * 60;
+                minToValidate = minute + 2 * 24 * 60;
             }
             utilsCreditData.generateScriptGlobalBackendRequest(minToValidate, generateScenarioMicroServiceValidationCredit(amount, creditDuration, product, clientData, requestId));
         }

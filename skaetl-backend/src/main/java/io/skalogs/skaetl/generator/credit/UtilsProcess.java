@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.ProcessService;
+import io.skalogs.skaetl.service.ReferentialService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class UtilsProcess {
 
     private final ProcessService processService;
+    private final ReferentialService referentialService;
     private final String host;
     private final String port;
 
@@ -27,8 +29,9 @@ public class UtilsProcess {
 
     private final HashMap<String,String> mapProduct;
 
-    public UtilsProcess(ProcessService processService, UtilsCreditData utilsCreditData, KafkaConfiguration kafkaConfiguration) {
+    public UtilsProcess(ProcessService processService, UtilsCreditData utilsCreditData, KafkaConfiguration kafkaConfiguration, ReferentialService referentialService) {
         this.processService = processService;
+        this.referentialService = referentialService;
         this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
         this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
         this.mapProduct = new HashMap<>();
@@ -38,6 +41,35 @@ public class UtilsProcess {
         this.mapProduct.put("ECOLO","credit renovation ecologique");
         this.mapProduct.put("REVOL","credit revolving");
 
+    }
+
+    private void createReferentialCredit(){
+        //Track db_ip
+        //validation -> if no activity on status credit 1 day -> produce a message for inactivity
+        //notification -> if statusCredit change -> produce a message for change
+        referentialService.updateReferential(ProcessReferential.builder()
+                .name("referentialCreditStatus")
+                .idProcess("demoReferentialCreditStatus")
+                .referentialKey("Client")
+                .listIdProcessConsumer(Lists.newArrayList(idProcessCreditData))
+                .listAssociatedKeys(Lists.newArrayList("email"))
+                .listMetadata(Lists.newArrayList("statusCredit","creditDuration","productName"))
+                .isValidationTimeField(true)
+                .fieldChangeValidation("statusCredit")
+                .timeValidationInSec(24*60*60)
+                .isNotificationChange(true)
+                .fieldChangeNotification("statusCredit")
+                .build());
+        try {
+            Thread.sleep(2000);
+            referentialService.activateProcess((ProcessReferential) referentialService.findReferential("demoReferentialCreditStatus"));
+        }catch (Exception e){
+            log.error("Exception {}",e);
+        }
+    }
+
+    public void createAllReferential(){
+        createReferentialCredit();
     }
 
     public void createAllProcess(){
