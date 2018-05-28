@@ -1,9 +1,6 @@
 package io.skalogs.skaetl.generator;
 
-import io.skalogs.skaetl.generator.credit.ClientData;
-import io.skalogs.skaetl.generator.credit.InputDataCredit;
-import io.skalogs.skaetl.generator.credit.UtilsCreditData;
-import io.skalogs.skaetl.generator.credit.UtilsProcess;
+import io.skalogs.skaetl.generator.credit.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -73,7 +70,51 @@ public class GeneratorCreditService {
             timeTotalRequest += utilsCreditData.generateScriptGlobalBackendRequest(minute, generateScenarioMicroServiceCreateCredit(amount, creditDuration, product, clientData, requestId));
             Integer timeFront = timeTotalRequest + utilsCreditData.random(20);
             utilsCreditData.generateScriptGlobalFrontEndRequest(minute, "front-create-credit", "/view/demandeCredit", "POST", "200", amount, creditDuration, product, clientData, requestId, timeFront);
+            //Validation Credit
+            Integer gap = utilsCreditData.random(5);
+            Integer minToValidate = minute + 30;
+            if(gap == 2){
+                minToValidate = minute + 3 * 24 * 60;
+            }
+            utilsCreditData.generateScriptGlobalBackendRequest(minToValidate, generateScenarioMicroServiceValidationCredit(amount, creditDuration, product, clientData, requestId));
         }
+    }
+
+    private InputDataCredit generateScenarioMicroServiceValidationCredit(Integer amount, Integer creditDuration,String product, ClientData clientData, String requestId){
+        String codeResponse = "200";
+        if(utilsCreditData.random(30) == 1){
+            product = "unknown";
+            codeResponse = "404";
+        }
+        Integer timeDB= utilsCreditData.random(100);
+        Integer timeBL = utilsCreditData.random(10)+timeDB;
+        Integer timeGlobal = utilsCreditData.random(2)+timeBL;
+        return InputDataCredit.builder()
+                .apiName("validation-credit")
+                .uri("/credit/validation")
+                .requestId(requestId)
+                .typeRequest("POST")
+                .codeResponse(codeResponse)
+                .provider(utilsCreditData.getProvider())
+                .serviceBL("validationCreditService")
+                .database("CREDIT_PROD")
+                .typeDB("INSERT")
+                .requestDB("INSERT INTO (....)")
+                .productName(product)
+                .timeGlobal(timeGlobal)
+                .timeDB(timeDB)
+                .timeBL(timeBL)
+                .codeResponseWS(codeResponse)
+                .amount(amount)
+                .creditDuration(creditDuration)
+                .firstName(clientData.getFirstName())
+                .lastName(clientData.getLastName())
+                .email(clientData.getEmail())
+                .type("credit")
+                .topic("credit")
+                .statusCredit(StatusCredit.VALIDATE)
+                .user(utilsCreditData.getUser())
+                .build();
     }
 
     private InputDataCredit generateScenarioMicroServiceCreateCreditValidationClient(Integer amount, Integer creditDuration,String product, ClientData clientData, String requestId){
@@ -100,6 +141,7 @@ public class GeneratorCreditService {
                 .creditDuration(creditDuration)
                 .timeGlobal(timeGlobal)
                 .timeBL(timeBL)
+                .timeWS(timeWS)
                 .nameWS("service validation client")
                 .typeRequestWS("POST")
                 .uriWS("/security/validationCustomer")
@@ -129,6 +171,7 @@ public class GeneratorCreditService {
                 .productName(product)
                 .timeGlobal(timeGlobal)
                 .timeBL(timeBL)
+                .timeWS(timeWS)
                 .nameWS("service validation product")
                 .typeRequestWS("POST")
                 .uriWS("/getProduct")
@@ -164,6 +207,7 @@ public class GeneratorCreditService {
                 .timeGlobal(timeGlobal)
                 .timeDB(timeDB)
                 .timeBL(timeBL)
+                .timeWS(timeWS)
                 .nameWS("service validation client")
                 .typeRequestWS("POST")
                 .uriWS("/security/validationCustomer")
@@ -175,6 +219,7 @@ public class GeneratorCreditService {
                 .email(clientData.getEmail())
                 .type("credit")
                 .topic("credit")
+                .statusCredit(StatusCredit.INPROGRESS)
                 .build();
     }
 

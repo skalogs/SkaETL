@@ -34,4 +34,6 @@ public class InputDataCredit {
     private Integer amount;
     private Integer creditDuration;
     private String topic;
+    private StatusCredit statusCredit;
+    private String user;
 }

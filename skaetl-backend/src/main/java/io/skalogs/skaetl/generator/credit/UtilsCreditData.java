@@ -104,6 +104,13 @@ public class UtilsCreditData {
             "PARTENAIRE 2"
     };
 
+    private final String[] tabUser = new String[]{
+            "u24589",
+            "u10451",
+            "u10852",
+            "u29214"
+    };
+
     private final String[] tabDomain = new String[]{
             "yahoo.com",
             "gmail.com",
@@ -145,6 +152,10 @@ public class UtilsCreditData {
 
     public String getProvider(){
         return tabProvider[RANDOM.nextInt(tabProvider.length)];
+    }
+
+    public String getUser(){
+        return tabUser[RANDOM.nextInt(tabUser.length)];
     }
 
     private Date addMinutesAndSecondsToTime(int minutesToAdd, int secondsToAdd, Date date) {
@@ -214,6 +225,7 @@ public class UtilsCreditData {
                 .amount(inputDataCredit.getAmount())
                 .creditDuration(inputDataCredit.getCreditDuration())
                 .productName(inputDataCredit.getProductName())
+                .statusCredit(inputDataCredit.getStatusCredit().name())
                 .build());
     }
 
