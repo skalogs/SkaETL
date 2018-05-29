@@ -4,7 +4,7 @@
 
 The fields listed below __must be added to each event/document__ in order for it to be integrated.  Events missing these fields will be rejected.
 
-* `@timestamp`: must be an ISO 8601 link:http://en.wikipedia.org/wiki/ISO_8601[datetime]
+* `timestamp`: must be an ISO 8601 link:http://en.wikipedia.org/wiki/ISO_8601[datetime]
 * `project`: Name of your project
 * `type`: Event/Document Type, often based on the log/application generating the event.
 ** For ex.: apache_logs, tomcat_logs...).
