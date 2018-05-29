@@ -26,7 +26,7 @@
           <small>Optional</small>
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="7" v-bind:complete="wizardStep > 7" :editable="wizardStep > 2">Output</v-stepper-step>
+        <v-stepper-step step="7" v-bind:complete="wizardStep > 7" :editable="wizardStep > 2">Outputs / Notifications</v-stepper-step>
       </v-stepper-header>
 
       <v-stepper-header v-if="editMode">

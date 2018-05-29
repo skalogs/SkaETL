@@ -33,7 +33,7 @@
           <small>Optional</small>
         </v-stepper-step>
         <v-divider></v-divider>
-        <v-stepper-step step="9" v-bind:complete="metricWizardStep > 7" :editable="metricWizardStep > 4">Destination
+        <v-stepper-step step="9" v-bind:complete="metricWizardStep > 7" :editable="metricWizardStep > 4">Outputs / Notifications
         </v-stepper-step>
       </v-stepper-header>
 
