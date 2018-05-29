@@ -32,7 +32,7 @@ Metrics are exposed in Prometheus format.
 == Client Information and Links
 
 === Web Interfaces
-* <<kibana.adoc#,kibana>> : SERVICE_KIBANA_ENDPOINT
+* <<kibana.adoc#,kibana>> : link:SERVICE_KIBANA_ENDPOINT[SERVICE_KIBANA_ENDPOINT]
 
 === Data Forwarders
 * <<dataforwarder.adoc#logstash,logstash>> - Log Parser and Forwarder
@@ -46,7 +46,7 @@ Metrics are exposed in Prometheus format.
 
 == Client APIs
 
-* elasticsearch-api : SERVICE_ELASTICSEARCH_ENDPOINT
+* elasticsearch-api : link:SERVICE_ELASTICSEARCH_ENDPOINT[SERVICE_ELASTICSEARCH_ENDPOINT]
 
 == Support
-Need help ? Contact us at SERVICE_SUPPORT_EMAIL
+Need help ? Contact us at mailto:SERVICE_SUPPORT_EMAIL[SERVICE_SUPPORT_EMAIL]
