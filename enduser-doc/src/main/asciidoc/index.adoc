@@ -40,7 +40,6 @@ Metrics are exposed in Prometheus format.
 
 ==== Kafka Information - Data Gateway and Pipeline
 * kafka brokers : SERVICE_KAFKA_ENDPOINT:9092
-* Event topic name : `SERVICE_KAFKA_EVENT_TOPIC`
 
 === Additional Information
 * https://www.elastic.co/[Elastic Stack]

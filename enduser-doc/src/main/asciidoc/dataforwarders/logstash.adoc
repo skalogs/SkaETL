@@ -103,7 +103,7 @@ Logstash events can come from multiple sources, so as with filters, it’s impor
 input {
  kafka {
   bootstrap_servers => "SERVICE_KAFKA_ENDPOINT:9092"
-   topic_id => "SERVICE_KAFKA_EVENT_TOPIC"
+   topic_id => "my-topic"
    codec => "json"
  }
 }
