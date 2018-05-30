@@ -7,10 +7,20 @@
           <v-icon>refresh</v-icon>
         </v-btn>
       </v-flex>
-    </v-layout row wrap>
+    </v-layout>
     <v-layout row wrap>
-      <v-flex xs12 sm12 md12>
-        <v-data-table v-bind:headers="headers" :items="listProcess" hide-actions>
+      <v-card xs12 sm12 md12>
+        <v-card-title>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table v-bind:headers="headers" :items="listProcess" :search="search">
           <template slot="items" slot-scope="props">
             <td>
               <v-btn color="warning" style="width: 120px" small v-on:click.native="editProcess(props.item.id)">Edit
@@ -68,16 +78,16 @@
             </td>
           </template>
         </v-data-table>
-      </v-flex>
-    </v-layout row wrap>
+      </v-card>
+    </v-layout>
     <v-layout row wrap>
       <v-flex xs12 sm12 md12>
         <v-alert v-model="viewError" xs12 sm12 md12 color="error" icon="warning" value="true" dismissible>
           {{ msgError }}
         </v-alert>
       </v-flex>
-    </v-layout row wrap>
-  </v-container fluid grid-list-md>
+    </v-layout>
+  </v-container>
 </template>
 
 
@@ -85,6 +95,7 @@
   export default {
     data() {
       return {
+        search: '',
         listProcess: [],
         input: {},
         uiCreate: '',

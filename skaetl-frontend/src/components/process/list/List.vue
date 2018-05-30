@@ -10,72 +10,82 @@
        </v-flex>
     </v-layout>
     <v-layout row wrap>
-      <v-flex xs12 sm12 md12>
-          <v-data-table v-bind:headers="headers" :items="listProcess" hide-actions >
-            <template slot="items" slot-scope="props">
-                <td>
-                      <v-btn color="warning" style="width: 120px" small v-on:click.native="editProcess(props.item.id)">Edit<v-icon right>edit</v-icon></v-btn>
-                      <v-btn color="orange lighten-2" style="width: 120px" small v-on:click.native="liveProcess(props.item.id)">Live !</v-btn>
-                      <v-btn color="teal lighten-2" style="width: 120px" small v-on:click.native="nextProcess(props.item.id)">action</v-btn>
-                      <v-btn color="success" style="width: 120px" small v-if="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" v-on:click.native="activateProcess(props.item.id)">Activate<v-icon right>touch_app</v-icon></v-btn>
-                      <v-btn color="pink darken-2" style="width: 120px" small v-if="props.item.statusProcess == 'ENABLE'" v-on:click.native="deactivateProcess(props.item.id)">Deactivate<v-icon right>close</v-icon></v-btn>
-                      <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'ERROR'" v-on:click.native="deactivateProcess(props.item.id)" >Error<v-icon right>error_outline</v-icon></v-btn>
-                      <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'DEGRADED'" v-on:click.native="deactivateProcess(props.item.id)">DEGRADED<v-icon right>error_outline</v-icon></v-btn>
-                      <v-btn color="red" style="width: 120px" small v-on:click.native="deleteProcess(props.item.id)">delete<v-icon right>delete</v-icon></v-btn>
-                </td>
-                <td class="text-xs subheading">{{props.item.processDefinition.name}}</td>
-                <td class="text-xs-center">
-                    <v-flex xs12>
-                       <v-chip color="purple lighten-2" small>{{props.item.processDefinition.processInput.host}}:{{props.item.processDefinition.processInput.port}}({{props.item.processDefinition.processInput.topicInput}})</v-chip>
-                    </v-flex>
-                </td>
-                <td class="text-xs-center">
-                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="parseritem in props.item.processDefinition.processParser">
-                    <v-flex class="pa-0 ma-0">
-                       <v-chip color="blue-grey lighten-3" small>{{parseritem.typeParser}}</v-chip>
-                    </v-flex>
+      <v-card xs12 sm12 md12>
+        <v-card-title>
+          <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            append-icon="search"
+            label="Search"
+            single-line
+            hide-details
+          ></v-text-field>
+        </v-card-title>
+        <v-data-table v-bind:headers="headers" :items="listProcess" :search="search" >
+          <template slot="items" slot-scope="props">
+              <td>
+                    <v-btn color="warning" style="width: 120px" small v-on:click.native="editProcess(props.item.id)">Edit<v-icon right>edit</v-icon></v-btn>
+                    <v-btn color="orange lighten-2" style="width: 120px" small v-on:click.native="liveProcess(props.item.id)">Live !</v-btn>
+                    <v-btn color="teal lighten-2" style="width: 120px" small v-on:click.native="nextProcess(props.item.id)">action</v-btn>
+                    <v-btn color="success" style="width: 120px" small v-if="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" v-on:click.native="activateProcess(props.item.id)">Activate<v-icon right>touch_app</v-icon></v-btn>
+                    <v-btn color="pink darken-2" style="width: 120px" small v-if="props.item.statusProcess == 'ENABLE'" v-on:click.native="deactivateProcess(props.item.id)">Deactivate<v-icon right>close</v-icon></v-btn>
+                    <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'ERROR'" v-on:click.native="deactivateProcess(props.item.id)" >Error<v-icon right>error_outline</v-icon></v-btn>
+                    <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'DEGRADED'" v-on:click.native="deactivateProcess(props.item.id)">DEGRADED<v-icon right>error_outline</v-icon></v-btn>
+                    <v-btn color="red" style="width: 120px" small v-on:click.native="deleteProcess(props.item.id)">delete<v-icon right>delete</v-icon></v-btn>
+              </td>
+              <td class="text-xs subheading">{{props.item.processDefinition.name}}</td>
+              <td class="text-xs-center">
+                  <v-flex xs12>
+                     <v-chip color="purple lighten-2" small>{{props.item.processDefinition.processInput.host}}:{{props.item.processDefinition.processInput.port}}({{props.item.processDefinition.processInput.topicInput}})</v-chip>
                   </v-flex>
-                </td>
-                <td class="text-xs-center">
-                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="transformationitem in props.item.processDefinition.processTransformation">
-                    <v-flex class="pa-0 ma-0">
-                       <v-chip color="blue-grey lighten-3" small>{{formatTransformation(transformationitem)}}</v-chip>
-                    </v-flex>
+              </td>
+              <td class="text-xs-center">
+                <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="parseritem in props.item.processDefinition.processParser">
+                  <v-flex class="pa-0 ma-0">
+                     <v-chip color="blue-grey lighten-3" small>{{parseritem.typeParser}}</v-chip>
                   </v-flex>
-                </td>
-                <td class="text-xs-center">
-                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="validationitem in props.item.processDefinition.processValidation">
-                    <v-flex class="pa-0 ma-0">
-                       <v-chip color="blue-grey lighten-3" small>{{formatValidation(validationitem)}}</v-chip>
-                    </v-flex>
+                </v-flex>
+              </td>
+              <td class="text-xs-center">
+                <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="transformationitem in props.item.processDefinition.processTransformation">
+                  <v-flex class="pa-0 ma-0">
+                     <v-chip color="blue-grey lighten-3" small>{{formatTransformation(transformationitem)}}</v-chip>
                   </v-flex>
-                </td>
+                </v-flex>
+              </td>
+              <td class="text-xs-center">
+                <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="validationitem in props.item.processDefinition.processValidation">
+                  <v-flex class="pa-0 ma-0">
+                     <v-chip color="blue-grey lighten-3" small>{{formatValidation(validationitem)}}</v-chip>
+                  </v-flex>
+                </v-flex>
+              </td>
 
-                <td class="text-xs-center">
-                  <v-flex xs12 sm12 md12 v-for="filteritem in props.item.processDefinition.processFilter">
-                    <v-flex xs10>
-                       <v-chip color="deep-orange lighten-3" small>{{filteritem.name}}</v-chip>
-                    </v-flex>
+              <td class="text-xs-center">
+                <v-flex xs12 sm12 md12 v-for="filteritem in props.item.processDefinition.processFilter">
+                  <v-flex xs10>
+                     <v-chip color="deep-orange lighten-3" small>{{filteritem.name}}</v-chip>
                   </v-flex>
-                </td>
-                <td class="text-xs-center">
-                  <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="outputitem in props.item.processDefinition.processOutput">
-                    <v-flex class="pa-0 ma-0">
-                       <v-chip color="blue-grey lighten-3" small>{{outputitem.typeOutput}}</v-chip>
-                    </v-flex>
+                </v-flex>
+              </td>
+              <td class="text-xs-center">
+                <v-flex  class="pa-0 ma-0" xs12 sm12 md12 v-for="outputitem in props.item.processDefinition.processOutput">
+                  <v-flex class="pa-0 ma-0">
+                     <v-chip color="blue-grey lighten-3" small>{{outputitem.typeOutput}}</v-chip>
                   </v-flex>
-                </td>
-            </template>
-          </v-data-table>
-        </v-flex>
-    </v-layout row wrap>
+                </v-flex>
+              </td>
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-layout>
     <v-layout row wrap>
       <v-flex xs12 sm12 md12 >
         <v-alert v-model="viewError" xs12 sm12 md12  color="error" icon="warning" value="true" dismissible>
              {{ msgError }}
         </v-alert>
        </v-flex>
-    </v-layout row wrap>
+    </v-layout>
 
     <v-dialog v-model="dialogLive">
       <v-layout row>
@@ -86,7 +96,6 @@
       <v-layout row>
         <tree-view :data="listCapture" :options="{maxDepth: 1,rootObjectKey: 'data'}"></tree-view>
       </v-layout>
-      </v-flex>
       <v-layout row wrap>
         <v-flex xs12 sm12 md12 >
           <v-alert v-model="viewErrorDialog" xs12 sm12 md12  color="error" icon="warning" value="true" dismissible>
@@ -99,7 +108,7 @@
       </v-layout>
     </v-dialog>
 
- </v-container fluid grid-list-md>
+ </v-container>
 </template>
 
 
@@ -107,6 +116,7 @@
   export default{
     data () {
          return {
+           search: '',
            listProcess: [],
            idProcess: '',
            input: {},
