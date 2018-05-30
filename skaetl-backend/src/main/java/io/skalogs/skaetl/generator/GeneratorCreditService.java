@@ -149,6 +149,7 @@ public class GeneratorCreditService {
                 .uriWS("/security/validationCustomer")
                 .codeResponseWS(codeResponse)
                 .type("credit")
+                .statusCredit(null)
                 .topic("credit")
                 .build();
     }
@@ -179,6 +180,7 @@ public class GeneratorCreditService {
                 .uriWS("/getProduct")
                 .codeResponseWS(codeResponse)
                 .type("credit")
+                .statusCredit(null)
                 .topic("credit")
                 .build();
     }
@@ -221,6 +223,7 @@ public class GeneratorCreditService {
                 .email(clientData.getEmail())
                 .type("credit")
                 .topic("credit")
+                .statusCredit(null)
                 .statusCredit(StatusCredit.INPROGRESS)
                 .build();
     }
@@ -256,6 +259,7 @@ public class GeneratorCreditService {
                 .uriWS("/security/validationCustomer")
                 .codeResponseWS(codeResponse)
                 .type("customer")
+                .statusCredit(null)
                 .topic("customer")
                 .build();
     }
@@ -285,6 +289,7 @@ public class GeneratorCreditService {
                 .timeBL(timeBL)
                 .type("product")
                 .topic("product")
+                .statusCredit(null)
                 .build();
     }
 
@@ -313,6 +318,7 @@ public class GeneratorCreditService {
                 .timeBL(timeBL)
                 .type("provider")
                 .topic("provider")
+                .statusCredit(null)
                 .build();
     }
 }
