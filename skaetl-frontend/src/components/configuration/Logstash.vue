@@ -1,36 +1,27 @@
 <template>
-  <v-container fluid grid-list-md >
-   <v-layout row wrap>
-        <v-flex xs12 sm12 md12>
-         <v-btn color="primary" v-on:click.native="generateLogstash">Generate Configuration Logstash</v-btn>
+  <v-container fluid grid-list-md>
+    <v-card>
+      <v-card-title primary-title><h3 class="headline mb-0">Logstash configuration</h3></v-card-title>
+      <v-card-text>
+        <v-text-field box textarea append-icon="file_copy" id="command" :append-icon-cb="copyClipboardCommand" name="logstashCmd"  label="Command"  v-model="commandLogstash"></v-text-field>
+        <v-text-field box textarea append-icon="file_copy" id="conf"    :append-icon-cb="copyClipboardConf"    name="logstashConf" label="Configuration" v-model="confLogstash"></v-text-field>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="primary" href="/configuration/list">Return to configuration list<v-icon right>list</v-icon></v-btn>
+      </v-card-actions>
+    </v-card>
 
-        </v-flex>
-   </v-layout>
-  <v-tabs v-model="active" color="primary" slider-color="yellow">
-          <v-tab :key="1" ripple>
-            Configuration
-          </v-tab>
-          <v-tab :key="2" ripple>
-            Command
-          </v-tab>
-          <v-tab-item :key="1">
-              <v-flex xs12 sm12 md12>
-               <v-text-field name="logstashConf" label="Configuration" textarea v-model="confLogstash"></v-text-field>
-              </v-flex>
-          </v-tab-item>
-          <v-tab-item :key="2" >
-              <v-flex xs12 sm12 md12>
-               <v-text-field name="logstashCmd" label="Command" textarea v-model="commandLogstash"></v-text-field>
-              </v-flex>
-          </v-tab-item>
-  </v-tabs>
-  <v-layout row wrap>
+    <v-snackbar :timeout=2000 color="success" :vertical="false" v-model="snackbar" top :multi-line="false">
+      The text has been copied in clipboard
+    </v-snackbar>
+
+    <v-layout row wrap>
       <v-flex xs12 sm12 md12 >
         <v-alert v-model="viewError" xs12 sm12 md12  color="error" icon="warning" value="true" dismissible>
              {{ msgError }}
         </v-alert>
-       </v-flex>
-  </v-layout row wrap>
+      </v-flex>
+    </v-layout row wrap>
   </v-container>
 </template>
 
@@ -45,11 +36,13 @@
            msgError: '',
            viewError: false,
            fluxLogstash: '',
-           tab: []
+           tab: [],
+           snackbar: false
          }
    },
    mounted() {
             this.idConfiguration = this.$route.query.idConfiguration;
+            this.generateLogstash();
    },
    methods: {
         generateLogstash(){
@@ -60,8 +53,21 @@
                this.viewError=true;
              this.msgError = "Error during call service";
            });
-
-      }
+        },
+        copyClipboardCommand() {
+          var field = document.getElementById('command');
+          field.focus();
+          field.select();
+          document.execCommand('copy');
+          this.snackbar=true;
+        },
+        copyClipboardConf() {
+          var field = document.getElementById('conf');
+          field.focus();
+          field.select();
+          document.execCommand('copy');
+          this.snackbar=true;
+        }
     }
   }
 </script>
