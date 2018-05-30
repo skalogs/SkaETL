@@ -14,7 +14,7 @@
           ></v-text-field>
         </v-card-title>
 
-        <v-data-table v-bind:headers="headers" :items="listConfig" item-key="name" :search="search">
+        <v-data-table v-bind:headers="headers" :items="listConfig" item-key="name" :search="search" :hide-actions="listConfig.length >= 4 ? false : true">
           <template slot="items" slot-scope="props">
               <td>
                     <v-btn color="warning" style="width: 120px" small v-on:click.native="editConfig(props.item.idConfiguration)">Edit<v-icon right>edit</v-icon></v-btn>
