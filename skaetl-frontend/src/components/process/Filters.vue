@@ -10,6 +10,8 @@
       <v-flex xs12 sm6 md6>
         <v-text-field label="Name" v-model="currentFilter.name"></v-text-field>
         <v-text-field label="criteria (SQL Like)" v-model="currentFilter.criteria"></v-text-field>
+        <v-checkbox label="Active Fail Topic Forward " v-model="currentFilter.activeFailForward"></v-checkbox>
+        <v-text-field v-if="currentFilter.activeFailForward" label="Topic Fail Filter" v-model="currentFilter.failForwardTopic" required></v-text-field>
       </v-flex>
       <v-layout row wrap>
         <v-flex xs12 sm12 md12>

@@ -9,9 +9,10 @@ import lombok.*;
 @Builder
 @ToString
 public class ProcessFilter {
-    //usecase de base
-    //TODO EL ou truc basic (><!=&|) ?
     private String criteria;
     private String name;
     private String idFilter;
+    @Builder.Default
+    private Boolean activeFailForward = false;
+    private String failForwardTopic;
 }

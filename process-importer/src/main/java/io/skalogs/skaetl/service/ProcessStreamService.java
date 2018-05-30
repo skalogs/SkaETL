@@ -27,8 +27,8 @@ public class ProcessStreamService extends AbstractStreamProcess {
     private final EmailService emailService;
     private final SnmpService snmpService;
 
-    public ProcessStreamService(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, ProcessConsumer processConsumer, List<GenericFilter> genericFilters, ESErrorRetryWriter esErrorRetryWriter, JsonNodeToElasticSearchProcessor elasticSearchProcessor, EmailService emailService, SnmpService snmpService) {
-        super(genericValidator, transformValidator, genericParser, processConsumer);
+    public ProcessStreamService(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, ProcessConsumer processConsumer, List<GenericFilter> genericFilters, ESErrorRetryWriter esErrorRetryWriter, JsonNodeToElasticSearchProcessor elasticSearchProcessor, EmailService emailService, SnmpService snmpService) {
+        super(genericValidator, transformValidator, genericParser, genericFilterService, processConsumer);
         this.esErrorRetryWriter = esErrorRetryWriter;
         this.elasticSearchProcessor = elasticSearchProcessor;
         this.genericFilters = genericFilters;
@@ -124,12 +124,15 @@ public class ProcessStreamService extends AbstractStreamProcess {
 
     private Boolean processFilter(ValidateData item) {
         for (GenericFilter genericFilter : genericFilters) {
-            if (!genericFilter.filter(item.jsonValue)) {
-                return false;
-            }
+           FilterResult filterResult = genericFilter.filter(item.jsonValue);
+           if(filterResult != null && !filterResult.getFilter()){
+                if(filterResult.getProcessFilter().getActiveFailForward()){
+                    getGenericFilterService().treatParseResult(filterResult.getProcessFilter(),item.jsonValue);
+                }
+               return false;
+           }
         }
         return true;
-
     }
 
     public void createStreamEs(String inputTopic) {

@@ -28,6 +28,7 @@ public abstract class AbstractGenericImporter {
     private final GenericValidator genericValidator;
     private final GenericTransformator genericTransformator;
     private final GenericParser genericParser;
+    private final GenericFilterService genericFilterService;
     private final ProcessConfiguration processConfiguration;
     private final ExternalHTTPService externalHTTPService;
 

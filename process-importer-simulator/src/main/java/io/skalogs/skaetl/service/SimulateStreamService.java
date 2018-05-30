@@ -28,8 +28,8 @@ import static io.skalogs.skaetl.utils.KafkaUtils.createKStreamProperties;
 public class SimulateStreamService extends AbstractStreamProcess {
     private final List<GenericFilter> genericFilters;
 
-    public SimulateStreamService(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, ProcessConsumer processConsumer, List<GenericFilter> genericFilters) {
-        super(genericValidator, transformValidator, genericParser, processConsumer);
+    public SimulateStreamService(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, ProcessConsumer processConsumer, List<GenericFilter> genericFilters) {
+        super(genericValidator, transformValidator, genericParser, genericFilterService, processConsumer);
         this.genericFilters = genericFilters;
     }
 
@@ -92,7 +92,7 @@ public class SimulateStreamService extends AbstractStreamProcess {
 
     private Boolean processFilter(ValidateData item) {
         for (GenericFilter genericFilter : genericFilters) {
-            if (!genericFilter.filter(item.jsonValue)) {
+            if (!genericFilter.filter(item.jsonValue).getFilter()) {
                 return false;
             }
         }

@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.rules.codegeneration.filters;
 
+import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.RuleFilterLexer;
 import io.skalogs.skaetl.rules.RuleFilterParser;
 import io.skalogs.skaetl.rules.codegeneration.RuleToJava;
@@ -18,20 +19,22 @@ import static io.skalogs.skaetl.rules.codegeneration.RuleToJava.nullSafePredicat
 @Component
 public class RuleFilterToJava {
 
-    public RuleCode convert(String name, String dsl) {
+    public RuleCode convert(String name, String dsl, ProcessFilter processFilter) {
         checkNotNull(name);
         checkNotNull(dsl);
         RuleFilterVisitorImpl ruleFilterVisitor = new RuleFilterVisitorImpl();
         ruleFilterVisitor.visit(parser(dsl).parse());
         try {
-            return templating(name, dsl, ruleFilterVisitor);
+            return templating(name, dsl, ruleFilterVisitor, processFilter);
         } catch (Exception e) {
             throw new TemplatingException(e);
         }
     }
 
 
-    private RuleCode templating(String name, String dsl, RuleFilterVisitorImpl ruleFilterVisitor) {
+
+
+    private RuleCode templating(String name, String dsl, RuleFilterVisitorImpl ruleFilterVisitor,ProcessFilter processFilter) {
         String camelCaseName = RuleToJava.toCamelCase(name);
         String ruleClassName = StringUtils.replace(camelCaseName, "\"", "") + "Filter";
         String packageName = "io.skalogs.skaetl.rules.generated";
@@ -43,6 +46,7 @@ public class RuleFilterToJava {
                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                 "import javax.annotation.Generated;\n" +
                 "import com.fasterxml.jackson.databind.JsonNode;\n" +
+                "import io.skalogs.skaetl.domain.ProcessFilter;\n" +
                 "import io.skalogs.skaetl.rules.filters.GenericFilter;\n" +
                 "\n" +
                 "/*\n" +
@@ -51,10 +55,15 @@ public class RuleFilterToJava {
                 "@Generated(\"etlFilter\")\n" +
                 "public class " + ruleClassName + " extends GenericFilter {\n" +
                 "    @Override\n" +
+                "    public ProcessFilter getProcessFilter(){\n"+
+                "        return ProcessFilter.builder().activeFailForward("+processFilter.getActiveFailForward()+").failForwardTopic(\""+processFilter.getFailForwardTopic()+"\").build();\n"+
+                "    }\n"+
+                "    @Override\n" +
                 "    protected boolean doFilter(JsonNode jsonValue) {\n" +
                 "        return " + nullSafePredicate(ruleFilterVisitor.getFilter()) + ";\n" +
                 "    }\n" +
                 "}";
+
 
         return new RuleCode(ruleClassName, dsl, packageName + "." + ruleClassName, javaCode);
     }

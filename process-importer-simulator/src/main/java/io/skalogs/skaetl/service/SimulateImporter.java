@@ -24,8 +24,8 @@ public class SimulateImporter extends AbstractGenericImporter {
     private final RuleFilterExecutor ruleExecutor;
     private final KafkaAdminService kafkaAdminService;
 
-    public SimulateImporter(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, RuleFilterExecutor ruleExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService) {
-        super(genericValidator, transformValidator, genericParser, processConfiguration, externalHTTPService);
+    public SimulateImporter(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, RuleFilterExecutor ruleExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService) {
+        super(genericValidator, transformValidator, genericParser, genericFilterService, processConfiguration, externalHTTPService);
         this.ruleExecutor = ruleExecutor;
         this.kafkaAdminService = kafkaAdminService;
     }
@@ -36,12 +36,13 @@ public class SimulateImporter extends AbstractGenericImporter {
         log.info("Create process importer {}", processConsumer.getName());
         List<GenericFilter> genericFilters = new ArrayList<>();
         for (ProcessFilter processFilter : processConsumer.getProcessFilter()) {
-            genericFilters.add(ruleExecutor.instanciate(processFilter.getName(), processFilter.getCriteria()));
+            genericFilters.add(ruleExecutor.instanciate(processFilter.getName(), processFilter.getCriteria(), processFilter));
         }
         SimulateStreamService simulateStreamService = new SimulateStreamService(
                 getGenericValidator(),
                 getGenericTransformator(),
                 getGenericParser(),
+                getGenericFilterService(),
                 processConsumer,
                 genericFilters);
         getListConsumer().add(simulateStreamService);

@@ -19,6 +19,7 @@ public abstract class AbstractStreamProcess implements Runnable {
     private final GenericValidator genericValidator;
     private final GenericTransformator genericTransformator;
     private final GenericParser genericParser;
+    private final GenericFilterService genericFilterService;
     private final ProcessConsumer processConsumer;
     private final AtomicBoolean closed = new AtomicBoolean(false);
     private final HashMap<String, KafkaStreams> mapStreams = new HashMap<>();

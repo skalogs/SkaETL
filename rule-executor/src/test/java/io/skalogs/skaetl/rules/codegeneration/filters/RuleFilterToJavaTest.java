@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.rules.codegeneration.filters;
 
+import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.codegeneration.CodeGenerationUtils;
 import io.skalogs.skaetl.rules.codegeneration.SyntaxErrorListener;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
@@ -16,7 +17,7 @@ public class RuleFilterToJavaTest {
     public void checkJavaClassName() {
         RuleFilterToJava ruleToJava = new RuleFilterToJava();
         String dsl = "myfield >=3";
-        RuleCode rule = ruleToJava.convert("my simple rule", dsl);
+        RuleCode rule = ruleToJava.convert("my simple rule", dsl,ProcessFilter.builder().build());
         assertThat(rule.getName()).isEqualTo("MySimpleRuleFilter");
         assertThat(rule.getRuleClassName()).isEqualTo("io.skalogs.skaetl.rules.generated.MySimpleRuleFilter");
     }
@@ -25,7 +26,9 @@ public class RuleFilterToJavaTest {
     public void simple() {
         RuleFilterToJava ruleToJava = new RuleFilterToJava();
         String dsl = "myfield >=3";
-        RuleCode rule = ruleToJava.convert("Simple", dsl);
+        Boolean activeFailForward = true;
+        String failForwardTopic= "topicTest";
+        RuleCode rule = ruleToJava.convert("Simple", dsl, ProcessFilter.builder().activeFailForward(activeFailForward).failForwardTopic(failForwardTopic).build());
         assertThat(rule)
                 .isEqualTo(new RuleCode("SimpleFilter",
                         dsl,
@@ -38,6 +41,7 @@ public class RuleFilterToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import com.fasterxml.jackson.databind.JsonNode;\n" +
+                                "import io.skalogs.skaetl.domain.ProcessFilter;\n" +
                                 "import io.skalogs.skaetl.rules.filters.GenericFilter;\n" +
                                 "\n" +
                                 "/*\n" +
@@ -45,6 +49,10 @@ public class RuleFilterToJavaTest {
                                 "*/\n" +
                                 "@Generated(\"etlFilter\")\n" +
                                 "public class SimpleFilter extends GenericFilter {\n" +
+                                "    @Override\n" +
+                                "    public ProcessFilter getProcessFilter(){\n"+
+                                "        return ProcessFilter.builder().activeFailForward("+activeFailForward+").failForwardTopic(\""+failForwardTopic+"\").build();\n"+
+                                "    }\n"+
                                 "    @Override\n" +
                                 "    protected boolean doFilter(JsonNode jsonValue) {\n" +
                                 "        return isGreaterThanOrEqual(get(jsonValue,\"myfield\"),3);\n" +
@@ -57,7 +65,9 @@ public class RuleFilterToJavaTest {
     public void mutipleConditions() {
         RuleFilterToJava ruleToJava = new RuleFilterToJava();
         String dsl = "myfield >=3 AND toto = \"something\"";
-        RuleCode rule = ruleToJava.convert("Multiple_Conditions", dsl);
+        Boolean activeFailForward = true;
+        String failForwardTopic= "topicTest";
+        RuleCode rule = ruleToJava.convert("Multiple_Conditions", dsl, ProcessFilter.builder().activeFailForward(activeFailForward).failForwardTopic(failForwardTopic).build());
         assertThat(rule)
                 .isEqualTo(new RuleCode("MultipleConditionsFilter",
                         dsl,
@@ -70,6 +80,7 @@ public class RuleFilterToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import com.fasterxml.jackson.databind.JsonNode;\n" +
+                                "import io.skalogs.skaetl.domain.ProcessFilter;\n" +
                                 "import io.skalogs.skaetl.rules.filters.GenericFilter;\n" +
                                 "\n" +
                                 "/*\n" +
@@ -77,6 +88,10 @@ public class RuleFilterToJavaTest {
                                 "*/\n" +
                                 "@Generated(\"etlFilter\")\n" +
                                 "public class MultipleConditionsFilter extends GenericFilter {\n" +
+                                "    @Override\n" +
+                                "    public ProcessFilter getProcessFilter(){\n"+
+                                "        return ProcessFilter.builder().activeFailForward("+activeFailForward+").failForwardTopic(\""+failForwardTopic+"\").build();\n"+
+                                "    }\n"+
                                 "    @Override\n" +
                                 "    protected boolean doFilter(JsonNode jsonValue) {\n" +
                                 "        return isGreaterThanOrEqual(get(jsonValue,\"myfield\"),3) && isEqualTo(get(jsonValue,\"toto\"),\"something\");\n" +
@@ -89,7 +104,7 @@ public class RuleFilterToJavaTest {
     public void wrongSyntax() {
         RuleFilterToJava ruleToJava = new RuleFilterToJava();
         String dsl = "UNKNOWNFUNCTION(myfield, anotherfield)";
-        ruleToJava.convert("MyMinRule", dsl);
+        ruleToJava.convert("MyMinRule", dsl,ProcessFilter.builder().build());
     }
 
     @Test
@@ -97,7 +112,7 @@ public class RuleFilterToJavaTest {
     public void generateCode() {
         RuleFilterToJava ruleToJava = new RuleFilterToJava();
         String dsl = "myfield >=3 AND toto = \"something\"";
-        RuleCode multipleConditions = ruleToJava.convert("MultipleConditions", dsl);
+        RuleCode multipleConditions = ruleToJava.convert("MultipleConditions", dsl,ProcessFilter.builder().build());
         File home = new File("target/generated-test-sources");
         CodeGenerationUtils.write(multipleConditions, home);
     }

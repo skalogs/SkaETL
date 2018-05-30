@@ -1,6 +1,7 @@
 package io.skalogs.skaetl.rules.filters;
 
 
+import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
 import io.skalogs.skaetl.rules.codegeneration.filters.RuleFilterToJava;
 import lombok.AllArgsConstructor;
@@ -14,8 +15,8 @@ public class RuleFilterExecutor {
 
     private final RuleFilterToJava ruleFilterToJava;
 
-    public GenericFilter instanciate(String name, String dsl) {
-        return instanciate(ruleFilterToJava.convert(name, dsl));
+    public GenericFilter instanciate(String name, String dsl, ProcessFilter processFilter) {
+        return instanciate(ruleFilterToJava.convert(name, dsl, processFilter));
     }
 
     private GenericFilter instanciate(RuleCode ruleCode) {

@@ -1,6 +1,7 @@
 package io.skalogs.skaetl.rules.codegeneration;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.codegeneration.filters.RuleFilterToJava;
 import io.skalogs.skaetl.rules.filters.GenericFilter;
 import io.skalogs.skaetl.rules.filters.RuleFilterExecutor;
@@ -16,10 +17,10 @@ public class RuleExecutorTest {
 
     @Test
     public void shouldCompile() {
-        GenericFilter myCompileFilter = ruleExecutor.instanciate("myCompileFilter", "key1 >= 3");
+        GenericFilter myCompileFilter = ruleExecutor.instanciate("myCompileFilter", "key1 >= 3", ProcessFilter.builder().build());
         String test = "{\"key1\": 100}";
         JsonNode jsonObject = createJsonNode(test);
-        assertThat(myCompileFilter.filter(jsonObject)).isTrue();
+        assertThat(myCompileFilter.filter(jsonObject).getFilter()).isTrue();
     }
 
 }

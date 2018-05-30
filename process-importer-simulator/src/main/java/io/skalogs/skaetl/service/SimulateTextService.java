@@ -54,10 +54,10 @@ public class SimulateTextService {
     private Boolean processFilter(ValidateData item, ProcessConsumer processConsumer) {
         List<GenericFilter> genericFilters = new ArrayList<>();
         for (ProcessFilter processFilter : processConsumer.getProcessFilter()) {
-            genericFilters.add(ruleExecutor.instanciate(processFilter.getName(), processFilter.getCriteria()));
+            genericFilters.add(ruleExecutor.instanciate(processFilter.getName(), processFilter.getCriteria(), processFilter));
         }
         for (GenericFilter genericFilter : genericFilters) {
-            if (!genericFilter.filter(item.jsonValue)) {
+            if (!genericFilter.filter(item.jsonValue).getFilter()) {
                 return false;
             }
         }

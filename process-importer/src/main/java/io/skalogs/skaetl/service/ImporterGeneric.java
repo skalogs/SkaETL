@@ -36,8 +36,8 @@ public class ImporterGeneric extends AbstractGenericImporter {
         sendToRegistry("addService");
     }
 
-    public ImporterGeneric(ESErrorRetryWriter esErrorRetryWriter, GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, RuleFilterExecutor ruleFilterExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService, ApplicationContext applicationContext, EmailService emailService, SnmpService snmpService) {
-        super(genericValidator, transformValidator, genericParser, processConfiguration, externalHTTPService);
+    public ImporterGeneric(ESErrorRetryWriter esErrorRetryWriter, GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, RuleFilterExecutor ruleFilterExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService, ApplicationContext applicationContext, EmailService emailService, SnmpService snmpService) {
+        super(genericValidator, transformValidator, genericParser, genericFilterService, processConfiguration, externalHTTPService);
         this.ruleFilterExecutor = ruleFilterExecutor;
         this.esErrorRetryWriter = esErrorRetryWriter;
         this.kafkaAdminService = kafkaAdminService;
@@ -63,12 +63,13 @@ public class ImporterGeneric extends AbstractGenericImporter {
         log.info("Create process importer {}", processConsumer.getName());
         List<GenericFilter> genericFilters = new ArrayList<>();
         for (ProcessFilter processFilter : processConsumer.getProcessFilter()) {
-            genericFilters.add(ruleFilterExecutor.instanciate(processFilter.getName(), processFilter.getCriteria()));
+            genericFilters.add(ruleFilterExecutor.instanciate(processFilter.getName(), processFilter.getCriteria(), processFilter));
         }
         ProcessStreamService processStreamService = new ProcessStreamService(
                 getGenericValidator(),
                 getGenericTransformator(),
                 getGenericParser(),
+                getGenericFilterService(),
                 processConsumer,
                 genericFilters,
                 esErrorRetryWriter,
