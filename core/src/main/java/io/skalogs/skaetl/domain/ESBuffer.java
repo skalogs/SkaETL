@@ -4,6 +4,7 @@ import com.google.common.base.Stopwatch;
 import io.skalogs.skaetl.config.ESBufferConfiguration;
 import io.skalogs.skaetl.config.ESConfiguration;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;
@@ -39,7 +40,7 @@ public class ESBuffer {
         reset();
     }
 
-    public void add(Date timestamp, String project, String type, RetentionLevel retentionLevel, String value) {
+    public void add(Date timestamp, String project, String type, RetentionLevel retentionLevel, String value, String id) {
         sizeInBytes += value.length();
 
         String pattern = "yyyy-MM-dd";
@@ -47,10 +48,11 @@ public class ESBuffer {
         String index = esConfiguration.getCustomIndexPrefix() + "-" + project + "-" + type + "-" + String.format("%04d", retentionLevel.nbDays) + "-" + simpleDateFormat.format(timestamp);
         values.add(value);
         log.debug("value add to bulk queue{}", value);
+        String elasticSearchId = StringUtils.isNotBlank(id) ? generateId(id) : generateId(value);
         bulk.add(
                 new IndexRequest(index.toLowerCase())
                         .type(project + "-" + type)
-                        .id(generateId(value))
+                        .id(elasticSearchId)
                         .source(value, XContentType.JSON));
     }
 

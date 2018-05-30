@@ -26,7 +26,8 @@ public class MetricsElasticsearchProcessor extends AbstractElasticsearchProcesso
     public void process(Keys key, MetricResult value) {
         try {
             String valueAsString = JSONUtils.getInstance().asJsonString(value);
-            processToElasticsearch(value.getTimestamp(), value.getProject(), "metrics", retentionLevel, valueAsString);
+            String metricId = value.getRuleName() + value.getTimestamp() + value.getKeys().hashCode();
+            processToElasticsearch(value.getTimestamp(), value.getProject(), "metrics", retentionLevel, valueAsString, metricId);
         } catch (JsonProcessingException e) {
             log.error("Couldn't transform value as metric " + key, e);
         }

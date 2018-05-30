@@ -29,8 +29,13 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
             .register();
 
     protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, String valueAsString) {
-        esWriteEs.labels(getApplicationId()!=null ? getApplicationId() : "retryApplication", project, type).inc();
-        esBuffer.add(date, project, type, retentionLevel, valueAsString);
+        processToElasticsearch(date, project, type, retentionLevel, valueAsString, null);
+
+    }
+
+    protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, String valueAsString, String id) {
+        esWriteEs.labels(getApplicationId() != null ? getApplicationId() : "retryApplication", project, type).inc();
+        esBuffer.add(date, project, type, retentionLevel, valueAsString, id);
         if (esBuffer.needFlush()) {
             log.info("{} Flushing {}", context().applicationId(), esBuffer.values().size());
             try {
