@@ -4,7 +4,6 @@ import io.skalogs.skaetl.generator.credit.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.Random;
 import java.util.UUID;
 
 @Component
@@ -12,16 +11,19 @@ import java.util.UUID;
 public class GeneratorCreditService {
 
     private final UtilsCreditData utilsCreditData;
-    private final UtilsProcess utilsProcess;
+    private final UtilsCreditProcess utilsProcess;
+    private final UtilsCreditMetrics utilsCreditMetrics;
 
-    public GeneratorCreditService(UtilsProcess utilsProcess, UtilsCreditData utilsCreditData) {
+    public GeneratorCreditService(UtilsCreditProcess utilsProcess, UtilsCreditData utilsCreditData, UtilsCreditMetrics utilsCreditMetrics) {
         this.utilsCreditData = utilsCreditData;
         this.utilsProcess = utilsProcess;
+        this.utilsCreditMetrics = utilsCreditMetrics;
     }
 
     public void generateData(Integer timeToGenerateInMinute, Integer nbView, Integer nbCredit, Integer nbRandomRq) {
         utilsProcess.createAllProcess();
         utilsProcess.createAllReferential();
+        utilsCreditMetrics.createAllMetrics();
         try {
             for(int i = 0 ; i < timeToGenerateInMinute ;i++) {
                 generateDataForEndToEndView(i, nbView);

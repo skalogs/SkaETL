@@ -14,7 +14,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-public class UtilsProcess {
+public class UtilsCreditProcess {
 
     private final ProcessService processService;
     private final ReferentialService referentialService;
@@ -29,7 +29,7 @@ public class UtilsProcess {
 
     private final HashMap<String,String> mapProduct;
 
-    public UtilsProcess(ProcessService processService, UtilsCreditData utilsCreditData, KafkaConfiguration kafkaConfiguration, ReferentialService referentialService) {
+    public UtilsCreditProcess(ProcessService processService, UtilsCreditData utilsCreditData, KafkaConfiguration kafkaConfiguration, ReferentialService referentialService) {
         this.processService = processService;
         this.referentialService = referentialService;
         this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
@@ -227,6 +227,12 @@ public class UtilsProcess {
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.FORMAT_LONG)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .keyField("amount")
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.FORMAT_EMAIL)
                     .parameterTransformation(ParameterTransformation.builder()
                             .keyField("email")
@@ -279,6 +285,12 @@ public class UtilsProcess {
                     .typeTransformation(TypeValidation.ADD_FIELD)
                     .parameterTransformation(ParameterTransformation.builder()
                             .composeField(ProcessKeyValue.builder().key("project").value("demo-credit").build())
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.FORMAT_LONG)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .keyField("timeRequestMs")
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
