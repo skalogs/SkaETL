@@ -59,6 +59,8 @@ public class ImporterGeneric extends AbstractGenericImporter {
 
         processConsumer.getProcessParser().stream()
                 .forEach(processParser -> kafkaAdminService.buildTopic(processParser.getFailForwardTopic()));
+        processConsumer.getProcessFilter().stream()
+                .forEach(processFilter -> kafkaAdminService.buildTopic(processFilter.getFailForwardTopic()));
         getExternalHTTPService().buildCache(processConsumer);
         log.info("Create process importer {}", processConsumer.getName());
         List<GenericFilter> genericFilters = new ArrayList<>();
