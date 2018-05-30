@@ -155,7 +155,7 @@
         viewHash: false,
         replaceValue: '',
         replaceNewValue: '',
-
+        listLookup: []
       }
     },
     methods: {
