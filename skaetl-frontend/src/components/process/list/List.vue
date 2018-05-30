@@ -4,9 +4,9 @@
       <v-card xs12 sm12 md12>
         <v-card-title>
           <v-btn color="primary" v-on:click.native="newConfig">Create Consumer</v-btn>
-          <v-btn color="orange" v-on:click.native="visualize">Visualise<v-icon right>wifi</v-icon></v-btn>
+          <v-btn :disabled="listProcess.length > 0 ? false : true" color="orange" v-on:click.native="visualize">Visualise<v-icon right>wifi</v-icon></v-btn>
           <v-tooltip right>
-            <v-btn slot="activator" flat v-on:click.native="refreshAction" icon color="blue lighten-2">
+            <v-btn :disabled="listProcess.length > 0 ? false : true" slot="activator" flat v-on:click.native="refreshAction" icon color="blue lighten-2">
               <v-icon>refresh</v-icon>
             </v-btn>
             <span>Refresh the list</span>
