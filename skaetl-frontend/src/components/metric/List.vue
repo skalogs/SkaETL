@@ -17,7 +17,7 @@
             hide-details
           ></v-text-field>
         </v-card-title>
-        <v-data-table v-bind:headers="headers" :items="listProcess" :search="search" :hide-actions="listProcess.length >= 4 ? false : true">
+        <v-data-table v-bind:headers="headers" :items="listProcess" :search="search" :hide-actions="listProcess.length > 5 ? false : true">
           <template slot="items" slot-scope="props">
             <td>
               <v-btn color="warning" style="width: 120px" small v-on:click.native="editProcess(props.item.id)">Edit
