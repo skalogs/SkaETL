@@ -99,7 +99,7 @@
       <v-data-table :headers="headers" :items="processTransformations" hide-actions>
         <template slot="items" slot-scope="props">
           <td>{{props.item.typeTransformation}}</td>
-          <td>{{props.item.parameterTransformation.composeField.key}}</td>
+          <td>{{formatField(props.item)}}</td>
           <td class="justify-center layout px-0">
             <v-btn icon class="mx-0" @click="editItem(props.item)">
               <v-icon color="teal">edit</v-icon>
@@ -202,6 +202,15 @@
       isKeyField() {
         var value = this.editedItem.typeTransformation;
         return value == "DELETE_FIELD" || value == "FORMAT_BOOLEAN" || value == "FORMAT_GEOPOINT" || value == "FORMAT_DOUBLE" || value == "FORMAT_LONG" || value == "FORMAT_IP" || value == "ADD_GEO_LOCALISATION" || value == "CAPITALIZE" || value == "UNCAPITALIZE" || value == "LOWER_CASE" || value == "UPPER_CASE" || value == "SWAP_CASE" || value == "TRIM" || value == "FORMAT_EMAIL";
+      },
+      formatField(item) {
+        if (item.typeTransformation == "ADD_FIELD" || item.typeTransformation == "RENAME_FIELD") {
+          return item.parameterTransformation.composeField.key;
+        } else if (item.typeTransformation == "HASH") {
+          return item.parameterTransformation.processHashData.field;
+        } else {
+          return item.parameterTransformation.keyField;
+        }
       },
       close() {
         this.dialog = false;
