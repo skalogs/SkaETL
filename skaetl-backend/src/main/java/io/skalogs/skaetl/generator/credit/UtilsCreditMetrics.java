@@ -28,7 +28,7 @@ public class UtilsCreditMetrics {
     public List<ProcessMetric> createFront(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
         processMetrics.add(ProcessMetric.builder()
-                .idProcess("Average Response")
+                .idProcess("FRONT_RESPONSE_TIME")
                 .name("Average Response Time")
                 .sourceProcessConsumers(Lists.newArrayList(idProcessFrontData))
                 .aggFunction("AVG(timeRequestMs_long)")
@@ -45,7 +45,7 @@ public class UtilsCreditMetrics {
     public List<ProcessMetric> createProduct(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
         processMetrics.add(ProcessMetric.builder()
-                .idProcess("CODE_ERROR")
+                .idProcess("CODE_ERROR_PRODUCT")
                 .name("Number of Error Product")
                 .sourceProcessConsumers(Lists.newArrayList(idProcessProductData))
                 .aggFunction("COUNT(*)")
@@ -61,7 +61,7 @@ public class UtilsCreditMetrics {
     public List<ProcessMetric> createProvider(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
         processMetrics.add(ProcessMetric.builder()
-                .idProcess("CODE_ERROR")
+                .idProcess("CODE_ERROR_PROVIDER")
                 .name("Number of Error Provider")
                 .sourceProcessConsumers(Lists.newArrayList(idProcessProviderData))
                 .aggFunction("COUNT(*)")
@@ -78,7 +78,7 @@ public class UtilsCreditMetrics {
     public List<ProcessMetric> createCustomer(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
         processMetrics.add(ProcessMetric.builder()
-                .idProcess("CODE_ERROR")
+                .idProcess("CODE_ERROR_CUSTOMER")
                 .name("Number of Error Customer")
                 .sourceProcessConsumers(Lists.newArrayList(idProcessCustomerData))
                 .aggFunction("COUNT(*)")
