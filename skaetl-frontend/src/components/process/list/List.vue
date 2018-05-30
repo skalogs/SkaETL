@@ -4,9 +4,12 @@
        <v-flex xs12 sm6 md4>
           <v-btn color="primary" v-on:click.native="newConfig">Create Consumer</v-btn>
           <v-btn color="orange" v-on:click.native="visualize">Visualise<v-icon right>wifi</v-icon></v-btn>
-          <v-btn flat  v-on:click.native="refreshAction" icon color="blue lighten-2">
-                <v-icon>refresh</v-icon>
-          </v-btn>
+          <v-tooltip right>
+            <v-btn slot="activator" flat v-on:click.native="refreshAction" icon color="blue lighten-2">
+              <v-icon>refresh</v-icon>
+            </v-btn>
+            <span>Refresh the list</span>
+          </v-tooltip>
        </v-flex>
     </v-layout>
     <v-layout row wrap>
