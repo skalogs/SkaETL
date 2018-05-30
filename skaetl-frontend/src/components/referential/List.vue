@@ -3,10 +3,13 @@
      <v-layout row wrap>
          <v-flex xs6 sm6 md6>
             <v-btn color="primary" v-on:click.native="addView">Create Referential</v-btn>
-            <v-btn color="orange" v-on:click.native="kibana">Visualise Referential</v-btn>
-            <v-btn flat  v-on:click.native="load" icon color="blue lighten-2">
-                  <v-icon>refresh</v-icon>
-            </v-btn>
+            <v-btn color="orange" v-on:click.native="kibana">Visualise Referential<v-icon right>wifi</v-icon></v-btn>
+            <v-tooltip right>
+              <v-btn slot="activator" flat v-on:click.native="load" icon color="blue lighten-2">
+                <v-icon>refresh</v-icon>
+              </v-btn>
+              <span>Refresh the list</span>
+            </v-tooltip>
          </v-flex>
      </v-layout>
      <v-data-table v-bind:headers="headers" :items="listReferential" hide-actions >
