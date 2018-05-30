@@ -3,7 +3,7 @@
     <v-layout row wrap>
        <v-flex xs12 sm6 md4>
           <v-btn color="primary" v-on:click.native="newConfig">Create Consumer</v-btn>
-          <v-btn color="orange" v-on:click.native="visualize">Visualise</v-btn>
+          <v-btn color="orange" v-on:click.native="visualize">Visualise<v-icon right>wifi</v-icon></v-btn>
           <v-btn flat  v-on:click.native="refreshAction" icon color="blue lighten-2">
                 <v-icon>refresh</v-icon>
           </v-btn>

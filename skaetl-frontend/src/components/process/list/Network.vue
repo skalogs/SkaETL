@@ -1,47 +1,56 @@
 <template>
   <v-container fluid grid-list-md >
-     <d3-network :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"/>
-     <v-layout row >
+    <v-card>
+      <v-card-title class="card-title">Map of consumer processes</v-card-title>
+      <d3-network :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"/>
+      <v-layout row >
         <v-flex xs12 sm12 md12 >
           <v-alert v-model="viewError" xs12 sm12 md12  color="error" icon="warning" value="true" dismissible>
-               {{ msgError }}
+            {{ msgError }}
           </v-alert>
         </v-flex>
-     </v-layout>
+      </v-layout>
+      <v-card-actions>
+        <v-btn color="primary" flat href="/process/list">Return to consumer process list</v-btn>
+      </v-card-actions>
+    </v-card>
   </v-container>
-
 </template>
+
 <style>
-@import url('https://fonts.googleapis.com/css?family=PT+Sans');
-body{
-  font-family: 'PT Sans', sans-serif;
-  background-color: #eee;
-}
-.title{
-  position:absolute;
-  text-align: center;
-  left: 2em;
-}
-h1,a{
-  color: #1aad8d;
-  text-decoration: none;
-}
-
-ul.menu {
-  list-style: none;
-  position: absolute;
-  z-index: 100;
-  min-width: 20em;
-  text-align: left;
-}
-ul.menu li{
-  margin-top: 1em;
-  position: relative;
-}
-
-#m-end path, #m-start{
-  fill: rgba(18, 120, 98, 0.8);
-}
+  @import url('https://fonts.googleapis.com/css?family=PT+Sans');
+  body{
+    font-family: 'PT Sans', sans-serif;
+    background-color: #eee;
+  }
+  .title{
+    position:absolute;
+    text-align: center;
+    left: 2em;
+  }
+  h1,a{
+    color: #1aad8d;
+    text-decoration: none;
+  }
+  ul.menu {
+    list-style: none;
+    position: absolute;
+    z-index: 100;
+    min-width: 20em;
+    text-align: left;
+  }
+  ul.menu li{
+    margin-top: 1em;
+    position: relative;
+  }
+  #m-end path, #m-start{
+    fill: rgba(18, 120, 98, 0.8);
+  }
+  .card-title {
+    color: #757575;
+    font-size: 22px;
+    font-weight: bold;
+  }
 </style>
 
 <script>
@@ -80,7 +89,7 @@ ul.menu li{
     methods: {
       lcb (link) {
         link._svgAttrs = { 'marker-end': 'url(#m-end)',
-                         'marker-start': 'url(#m-start)'}
+                           'marker-start': 'url(#m-start)'}
         return link
       }
     }
