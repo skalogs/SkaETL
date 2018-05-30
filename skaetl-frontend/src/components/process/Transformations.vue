@@ -153,7 +153,6 @@
         viewLookupList: false,
         viewLookupExternal: false,
         viewHash: false,
-        listLookup: [],
         replaceValue: '',
         replaceNewValue: '',
 
@@ -182,6 +181,12 @@
         } else {
           this.disable();
         }
+      },
+      deleteItem(item){
+       this.listLookup=this.listLookup.filter(e => e !== item);
+      },
+      addItemToLookupList(){
+        this.listLookup.push({oldValue: this.replaceValue, newValue: this.replaceNewValue});
       },
       addTransformation() {
         if (this.viewLookupList) {
