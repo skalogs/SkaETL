@@ -3,8 +3,8 @@
     <v-card>
       <v-card-title primary-title><h3 class="headline mb-0">Logstash configuration</h3></v-card-title>
       <v-card-text>
-        <v-text-field box textarea append-icon="file_copy" id="command" :append-icon-cb="copyClipboardCommand" name="logstashCmd"  label="Command"  v-model="commandLogstash"></v-text-field>
-        <v-text-field box textarea append-icon="file_copy" id="conf"    :append-icon-cb="copyClipboardConf"    name="logstashConf" label="Configuration" v-model="confLogstash"></v-text-field>
+        <v-text-field rows=2 box textarea append-icon="file_copy" id="command" :append-icon-cb="copyClipboardCommand" name="logstashCmd" label="Command" v-model="commandLogstash"></v-text-field>
+        <v-text-field rows=10 box textarea append-icon="file_copy" id="conf" :append-icon-cb="copyClipboardConf" name="logstashConf" label="Configuration" v-model="confLogstash"></v-text-field>
       </v-card-text>
       <v-card-actions>
         <v-btn color="primary" href="/configuration/list">Return to configuration list<v-icon right>list</v-icon></v-btn>
@@ -24,7 +24,6 @@
     </v-layout row wrap>
   </v-container>
 </template>
-
 
 <script>
   export default{
