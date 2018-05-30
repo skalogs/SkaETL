@@ -1,13 +1,9 @@
 <template>
  <v-container fluid grid-list-md>
     <v-layout row wrap>
-       <v-flex xs12 sm6 md4>
-          <v-btn color="primary" v-on:click.native="newConfig">Create Config</v-btn>
-       </v-flex>
-    </v-layout>
-    <v-layout row wrap>
       <v-card xs12 sm12 md12>
         <v-card-title>
+          <v-btn color="primary" v-on:click.native="newConfig">Create Config</v-btn>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"

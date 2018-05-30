@@ -1,16 +1,13 @@
 <template>
   <v-container fluid grid-list-md>
     <v-layout row wrap>
-      <v-flex xs12 sm6 md4>
-        <v-btn color="primary" v-on:click.native="newProcess">Create Metric Process</v-btn>
-        <v-btn flat v-on:click.native="refreshAction" icon color="blue lighten-2">
-          <v-icon>refresh</v-icon>
-        </v-btn>
-      </v-flex>
-    </v-layout>
-    <v-layout row wrap>
       <v-card xs12 sm12 md12>
         <v-card-title>
+          <v-btn color="primary" v-on:click.native="newProcess">Create Metric Process</v-btn>
+          <v-btn flat v-on:click.native="refreshAction" icon color="blue lighten-2">
+            <v-icon>refresh</v-icon>
+          </v-btn>
+
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
