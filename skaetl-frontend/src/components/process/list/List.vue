@@ -220,9 +220,9 @@
         },
         formatTransformation(transformationItem) {
             if(transformationItem.typeTransformation == "ADD_FIELD" || transformationItem.typeTransformation == "RENAME_FIELD" ){
-              return transformationItem.typeTransformation + " " + transformationItem.parameterTransformation.composeField.key;
+              return transformationItem.typeTransformation + " on " + transformationItem.parameterTransformation.composeField.key;
             }else{
-               return transformationItem.typeTransformation + " " + transformationItem.parameterTransformation.keyField;
+               return transformationItem.typeTransformation + " on " + transformationItem.parameterTransformation.keyField;
             }
         },
         deleteProcess(idProcess) {

@@ -100,7 +100,7 @@
       <v-layout row wrap>
         <v-flex xs12 sm12 md12>
           <v-flex v-for="(transfoItem, index) in processTransformations">
-            <v-chip color="blue-grey lighten-3" small close v-on:input="removeTransformation(index)">{{index+1}} - {{transfoItem.typeTransformation}}</v-chip>
+            <v-chip color="blue-grey lighten-3" small close v-on:input="removeTransformation(index)">{{index+1}} - {{formatTransformation(transfoItem)}}</v-chip>
           </v-flex>
         </v-flex>
       </v-layout>
@@ -193,6 +193,13 @@
           this.currentTransformation.parameterTransformation.mapLookup = result;
         }
         this.processTransformations.push(_.cloneDeep(this.currentTransformation));
+      },
+      formatTransformation(transformationItem) {
+        if(transformationItem.typeTransformation == "ADD_FIELD" || transformationItem.typeTransformation == "RENAME_FIELD" ){
+          return transformationItem.typeTransformation + " on " + transformationItem.parameterTransformation.composeField.key;
+        }else{
+          return transformationItem.typeTransformation + " on " + transformationItem.parameterTransformation.keyField;
+        }
       },
       disable(){
         this.viewKeyField=false;
