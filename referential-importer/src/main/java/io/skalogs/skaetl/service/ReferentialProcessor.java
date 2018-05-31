@@ -183,7 +183,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
             if (itemNew != null && itemOld == null) {
                 notificationReferentialToKafka(referential, itemNew.getTimestamp(), "0", processReferential.getFieldChangeNotification(), itemNew.getValue());
             } else if (itemNew != null && !itemOld.getValue().equals(itemNew.getValue())) {
-                notificationReferentialToKafka(referential, itemNew.getTimestamp(), String.valueOf(differenceTime(itemNew.getTimestamp(), itemOld.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue());
+                notificationReferentialToKafka(referential, itemNew.getTimestamp(), String.valueOf(differenceTime(itemOld.getTimestamp(), itemNew.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue());
             }
         }
     }
