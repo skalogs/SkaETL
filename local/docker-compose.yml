@@ -53,6 +53,15 @@ services:
             interval: 10s
             timeout: 10s
             retries: 3
+  skaetl-frontend:
+    image: skalogs/skaetl-frontend:1.0.1-SNAPSHOT
+    environment:
+      - BACKEND=http://skaetlbackend:8090
+    ports:
+    - "8083:5555"
+    depends_on:
+    - skaetlbackend
+  # used to schedule process consumers (ingestion pipelines)
   importer:
     image: skalogs/process-importer:1.0.1-SNAPSHOT
     ports:
@@ -76,37 +85,7 @@ services:
     - kafka
     - elasticsearch
     - skaetlbackend
-  skaetl-frontend:
-    image: skalogs/skaetl-frontend:1.0.1-SNAPSHOT
-    environment:
-      - BACKEND=http://skaetlbackend:8090
-    ports:
-    - "8083:5555"
-    depends_on:
-    - skaetlbackend
-  simulate:
-    image: skalogs/process-importer-simulator:1.0.1-SNAPSHOT
-    environment:
-      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
-      - PROCESS_URL_REGISTRY=http://skaetlbackend:8090
-      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
-    ports:
-    - "8084:8084"
-    depends_on:
-    - zookeeper
-    - kafka
-  referential:
-    image: skalogs/referential-importer:1.0.1-SNAPSHOT
-    environment:
-      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
-      - PROCESS_URL_REGISTRY=http://skaetlbackend:8090
-      - SPRING_PROFILES_ACTIVE=prod
-      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
-    ports:
-    - "8082:8082"
-    depends_on:
-    - zookeeper
-    - kafka
+  # used to schedule metric consumers
   metric-importer:
     image: skalogs/metric-importer:1.0.1-SNAPSHOT
     environment:
@@ -130,6 +109,34 @@ services:
     - skaetlbackend
     ports:
     - "8081:8081"
+  # Used to build referentials
+  referential:
+    image: skalogs/referential-importer:1.0.1-SNAPSHOT
+    environment:
+      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
+      - PROCESS_URL_REGISTRY=http://skaetlbackend:8090
+      - SPRING_PROFILES_ACTIVE=prod
+      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
+    ports:
+    - "8082:8082"
+    depends_on:
+    - zookeeper
+    - kafka
+
+  # (Optionnal) Used only if you need to live debug/test your process consumers (ingestion pipelines)
+  simulate:
+    image: skalogs/process-importer-simulator:1.0.1-SNAPSHOT
+    environment:
+      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
+      - PROCESS_URL_REGISTRY=http://skaetlbackend:8090
+      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
+    ports:
+    - "8084:8084"
+    depends_on:
+    - zookeeper
+    - kafka
+
+  # (Optionnal) Retry handling to elasticsearch
   retry-importer:
     image: skalogs/retry-importer:1.0.1-SNAPSHOT
     environment:
@@ -153,6 +160,7 @@ services:
     - skaetlbackend
     ports:
     - "8086:8086"
+  # (Optionnal) Error handling to elasticsearch
   error-importer:
     image: skalogs/error-importer:1.0.1-SNAPSHOT
     environment:
