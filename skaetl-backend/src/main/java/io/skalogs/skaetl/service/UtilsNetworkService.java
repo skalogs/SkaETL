@@ -90,7 +90,7 @@ public class UtilsNetworkService {
 
         //add node Output
         for(ProcessOutput processOutput : processConsumer.getProcessOutput()){
-            mapNode.put(processOutput.getTypeOutput().name(),NetworkNodeWeb.builder()
+            mapNode.put(processConsumer.getName() + "-" + processOutput.getTypeOutput().name(), NetworkNodeWeb.builder()
                     .id(processConsumer.getName()+"-"+processOutput.getTypeOutput().name())
                     .name(processOutput.getTypeOutput().name()+"-"+processConsumer.getName())
                     .color(processOutput.getTypeOutput() == TypeOutput.KAFKA ? "orange" : "black")
