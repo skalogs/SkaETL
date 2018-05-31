@@ -34,7 +34,7 @@ public class UtilsCreditMetrics {
                 .aggFunction("AVG(timeRequestMs_long)")
                 .where("type = \"front\"")
                 .windowType(WindowType.TUMBLING)
-                .size(5)
+                .size(1)
                 .sizeUnit(TimeUnit.MINUTES)
                 .processOutputs(Lists.newArrayList(toEsOutput()))
                 .build());
