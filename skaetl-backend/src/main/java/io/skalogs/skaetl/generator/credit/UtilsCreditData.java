@@ -225,6 +225,7 @@ public class UtilsCreditData {
                 .amount(inputDataCredit.getAmount())
                 .creditDuration(inputDataCredit.getCreditDuration())
                 .productName(inputDataCredit.getProductName())
+                .provider(inputDataCredit.getProvider())
                 .statusCredit(inputDataCredit.getStatusCredit() != null ? inputDataCredit.getStatusCredit().name() : null)
                 .user(inputDataCredit.getUser())
                 .build());

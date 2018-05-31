@@ -68,10 +68,11 @@ public class GeneratorCreditService {
             String product = utilsCreditData.getProduct();
             ClientData clientData = utilsCreditData.getClient();
             String requestId = UUID.randomUUID().toString();
+            String provider = utilsCreditData.getProvider();
             Integer timeTotalRequest = 0;
             timeTotalRequest += utilsCreditData.generateScriptGlobalBackendRequest(minute, generateScenarioMicroServiceCreateCreditValidationClient(amount, creditDuration, product, clientData, requestId));
             timeTotalRequest += utilsCreditData.generateScriptGlobalBackendRequest(minute, generateScenarioMicroServiceCreateCreditValidationProduct(product, requestId));
-            timeTotalRequest += utilsCreditData.generateScriptGlobalBackendRequest(minute, generateScenarioMicroServiceCreateCredit(amount, creditDuration, product, clientData, requestId));
+            timeTotalRequest += utilsCreditData.generateScriptGlobalBackendRequest(minute, generateScenarioMicroServiceCreateCredit(amount, creditDuration, product, clientData, requestId, provider));
             Integer timeFront = timeTotalRequest + utilsCreditData.random(20);
             utilsCreditData.generateScriptGlobalFrontEndRequest(minute, "front-create-credit", "/view/demandeCredit", "POST", "200", amount, creditDuration, product, clientData, requestId, timeFront);
             //Validation Credit
@@ -80,11 +81,11 @@ public class GeneratorCreditService {
             if(gap == 2){
                 minToValidate = minute + 2 * 24 * 60;
             }
-            utilsCreditData.generateScriptGlobalBackendRequest(minToValidate, generateScenarioMicroServiceValidationCredit(amount, creditDuration, product, clientData, requestId));
+            utilsCreditData.generateScriptGlobalBackendRequest(minToValidate, generateScenarioMicroServiceValidationCredit(amount, creditDuration, product, clientData, requestId, provider));
         }
     }
 
-    private InputDataCredit generateScenarioMicroServiceValidationCredit(Integer amount, Integer creditDuration,String product, ClientData clientData, String requestId){
+    private InputDataCredit generateScenarioMicroServiceValidationCredit(Integer amount, Integer creditDuration,String product, ClientData clientData, String requestId, String provider){
         String codeResponse = "200";
         if(utilsCreditData.random(30) == 1){
             product = "unknown";
@@ -117,6 +118,7 @@ public class GeneratorCreditService {
                 .topic("credit")
                 .statusCredit(StatusCredit.VALIDATE)
                 .user(utilsCreditData.getUser())
+                .provider(provider)
                 .build();
     }
 
@@ -187,7 +189,7 @@ public class GeneratorCreditService {
     }
 
 
-    private InputDataCredit generateScenarioMicroServiceCreateCredit(Integer amount, Integer creditDuration,String product, ClientData clientData, String requestId){
+    private InputDataCredit generateScenarioMicroServiceCreateCredit(Integer amount, Integer creditDuration,String product, ClientData clientData, String requestId, String provider){
         String codeResponse = "200";
         if(utilsCreditData.random(30) == 1){
             product = "unknown";
@@ -203,7 +205,7 @@ public class GeneratorCreditService {
                 .requestId(requestId)
                 .typeRequest("POST")
                 .codeResponse(codeResponse)
-                .provider(utilsCreditData.getProvider())
+                .provider(provider)
                 .serviceBL("creditService")
                 .database("CREDIT_PROD")
                 .typeDB("INSERT")
