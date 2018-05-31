@@ -40,7 +40,6 @@ public class UtilsCreditProcess {
         this.mapProduct.put("TRAVA","credit travaux");
         this.mapProduct.put("ECOLO","credit renovation ecologique");
         this.mapProduct.put("REVOL","credit revolving");
-
     }
 
     private void createReferentialCredit(){

@@ -34,4 +34,6 @@ public class GlobalData {
     private Integer creditDuration ;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private String statusCredit;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private String user;
 }
