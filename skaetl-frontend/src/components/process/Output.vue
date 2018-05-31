@@ -7,10 +7,17 @@
       </div>
     </v-card-title>
     <v-card-text>
-      <v-flex xs6 sm6 md6>
-        <v-flex xs8 sm8 md8>
-          <v-layout row>
-            <v-select label="Output type" v-model="currentProcessOutput.typeOutput" v-bind:items="typeOut" item-text="name" item-value="name">
+      <v-dialog v-model="dialog" max-width="500px">
+        <v-btn color="success" slot="activator">add output
+          <v-icon>add</v-icon>
+        </v-btn>
+
+        <v-card>
+          <v-card-title>
+            <span class="headline">{{ formTitle }}</span>
+          </v-card-title>
+          <v-card-text>
+            <v-select label="Output type" v-model="editedItem.typeOutput" v-bind:items="typeOut" item-text="name" item-value="name">
               <template slot="item" slot-scope="typeOut">
                 <v-list-tile-content>
                   <v-list-tile-title v-html="typeOut.item.name"></v-list-tile-title>
@@ -18,64 +25,67 @@
                 </v-list-tile-content>
               </template>
             </v-select>
-          </v-layout>
-        </v-flex>
-        <v-flex xs8 sm8 md8>
-          <v-layout row v-show="viewOut()">
-            <v-text-field label="Topic Out" v-model="currentProcessOutput.parameterOutput.topicOut"></v-text-field>
-          </v-layout>
-        </v-flex>
-        <v-flex xs8 sm8 md8>
-          <v-layout row v-show="viewES()">
-            <v-select label="Retention" v-model="currentProcessOutput.parameterOutput.elasticsearchRetentionLevel"
-                      v-bind:items="typeRetention"/>
-          </v-layout>
-          <v-layout row v-show="viewEmail()">
-            <v-text-field label="Destination Email" v-model="currentProcessOutput.parameterOutput.email" required/>
-          </v-layout>
-        </v-flex>
-        <v-layout row>
-          <v-flex xs12>
-            <v-text-field v-show="viewSlack()" label="WebHook URL"
-                          v-model="currentProcessOutput.parameterOutput.webHookURL"></v-text-field>
-            <v-text-field v-show="viewSlack() || viewEmail()" label="Template"
-                          v-model="currentProcessOutput.parameterOutput.template" textarea>Template
-            </v-text-field>
-            <v-expansion-panel v-show="viewSlack() || viewEmail()">
-              <v-expansion-panel-content>
-                <div slot="header">Template language short description</div>
-                <v-card color="grey lighten-3">
-                  <v-card-text>
-                             If you want to insert a variable, you have to respect the following syntax: [[${variable_name}]]
-                             <br>For instance: "The customer IP is [[${client_ip}]] for ..."
-                             <br><br>
-                             On <b>Metric</b> template, the specific variables are:<br>
-                             <li/>[[${<b>result</b>}]] : The value of the Metric result
-                             <li/>[[${<b>rule_dsl</b>}]] : The request
-                             <li/>[[${<b>rule_name</b>}]] : The rule name
-                             <li/>[[${<b>project</b>}]] : The project name
-                             <br><br>
-                             On <b>Consumer</b> template, all the variables, present in the record, are authorised.
-                  </v-card-text>
-                </v-card></v-expansion-panel-content>
+              <v-layout row v-show="isKafkaTopic()">
+                <v-text-field label="Topic Out" v-model="editedItem.parameterOutput.topicOut"></v-text-field>
+              </v-layout>
+              <v-layout row v-show="isElasticsearch()">
+                <v-select label="Retention" v-model="editedItem.parameterOutput.elasticsearchRetentionLevel"
+                          v-bind:items="typeRetention"/>
+              </v-layout>
+              <v-layout row v-show="isEmail()">
+                <v-text-field label="Destination Email" v-model="editedItem.parameterOutput.email" required/>
+              </v-layout>
+
+              <v-text-field v-show="isSlack()" label="WebHook URL"
+                            v-model="editedItem.parameterOutput.webHookURL"></v-text-field>
+              <v-text-field v-show="isSlack() || isEmail()" label="Template"
+                            v-model="editedItem.parameterOutput.template" textarea>Template
+              </v-text-field>
+              <v-expansion-panel v-show="isSlack() || isEmail()">
+                <v-expansion-panel-content>
+                  <div slot="header">Template language short description</div>
+                  <v-card color="grey lighten-3">
+                    <v-card-text>
+                      If you want to insert a variable, you have to respect the following syntax: [[${variable_name}]]
+                      <br>For instance: "The customer IP is [[${client_ip}]] for ..."
+                      <br><br>
+                      On <b>Metric</b> template, the specific variables are:<br>
+                      <li/>[[${<b>result</b>}]] : The value of the Metric result
+                      <li/>[[${<b>rule_dsl</b>}]] : The request
+                      <li/>[[${<b>rule_name</b>}]] : The rule name
+                      <li/>[[${<b>project</b>}]] : The project name
+                      <br><br>
+                      On <b>Consumer</b> template, all the variables, present in the record, are authorised.
+                    </v-card-text>
+                  </v-card></v-expansion-panel-content>
               </v-expansion-panel>
-          </v-flex>
-        </v-layout>
-      </v-flex>
-      <v-layout row wrap>
-        <v-flex xs12 sm12 md12>
-          <v-flex v-for="(processOutItem, index) in processOutput">
-            <v-chip color="blue-grey lighten-3" small close v-on:input="removeOutput(index)">{{index+1}} - {{processOutItem.typeOutput}}</v-chip>
-          </v-flex>
-        </v-flex>
-      </v-layout>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="blue darken-1" flat @click.native="close">Cancel</v-btn>
+            <v-btn color="blue darken-1" flat @click.native="save">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card-text>
+    <v-data-table :headers="headers" :items="processOutput" hide-actions>
+      <template slot="items" slot-scope="props">
+        <td>{{props.item.typeOutput}}</td>
+        <td class="justify-center layout px-0">
+          <v-btn icon class="mx-0" @click="editItem(props.item)">
+            <v-icon color="teal">edit</v-icon>
+          </v-btn>
+          <v-btn icon class="mx-0" @click="deleteItem(props.item)">
+            <v-icon color="pink">delete</v-icon>
+          </v-btn>
+        </td>
+      </template>
+    </v-data-table>
     <v-card-actions>
       <v-btn color="primary" style="width: 120px" @click.native="$emit('previousStep')">
         <v-icon>navigate_before</v-icon>
         Previous
       </v-btn>
-      <v-btn color="success" style="width: 120px" @click.native="create()">Add Output<v-icon>add</v-icon></v-btn>
       <v-btn color="primary" style="width: 120px" :disabled="!processOutput.length>0" @click.native="$emit('saveProcess')">Save<v-icon>create</v-icon></v-btn>
     </v-card-actions>
   </v-card>
@@ -90,6 +100,11 @@
         required: true
       }
     },
+    computed: {
+      formTitle () {
+        return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
+      }
+    },
     data: function () {
       return {
         typeOut: [{ header: 'Outputs' },
@@ -102,36 +117,71 @@
                   {name: 'SNMP', type: 'notification dedicated'},
                   {name: 'SYSTEM_OUT', type: 'testing dedicated'}],
         typeRetention: ["week","month","quarter","year"],
-        currentProcessOutput: {"typeOutput": "ELASTICSEARCH",
-                               "parameterOutput": {"topicOut": "output-topic",
-                                                   "elasticsearchRetentionLevel":"week",
-                                                   "webHookURL":"",
-                                                   "template":"",
-                                                  }
-                              }
+        dialog: false,
+        editedItem: {
+          "typeOutput": "ELASTICSEARCH",
+          "parameterOutput": {
+            "topicOut": "output-topic",
+            "elasticsearchRetentionLevel": "week",
+            "webHookURL": "",
+            "template": "",
+          }
+        },
+        defaultItem: {
+          "typeOutput": "ELASTICSEARCH",
+          "parameterOutput": {
+            "topicOut": "output-topic",
+            "elasticsearchRetentionLevel": "week",
+            "webHookURL": "",
+            "template": "",
+          }
+        },
+        editedIndex: -1,
+        headers: [
+          { text: 'Type', value: 'typeOutput'},
+          { text: 'Actions', value: 'typeParser', sortable: false }
+        ],
+
       }
     },
     methods: {
-      create(){
-        this.processOutput.push(_.cloneDeep(this.currentProcessOutput));
+      isKafkaTopic() {
+        return this.editedItem.typeOutput == "KAFKA";
       },
-      removeOutput(index) {
-        this.processOutput.splice(index,1);
+      isElasticsearch() {
+        return this.editedItem.typeOutput == "ELASTICSEARCH";
       },
-      viewOut() {
-        return this.currentProcessOutput.typeOutput == "KAFKA";
+      isSlack() {
+        return this.editedItem.typeOutput == "SLACK";
       },
-      viewES() {
-        return this.currentProcessOutput.typeOutput == "ELASTICSEARCH";
+      isEmail() {
+        return this.editedItem.typeOutput == "EMAIL";
       },
-      viewSlack() {
-        return this.currentProcessOutput.typeOutput == "SLACK";
+      isSnmp() {
+        return this.editedItem.typeOutput == "SNMP";
       },
-      viewEmail() {
-        return this.currentProcessOutput.typeOutput == "EMAIL";
+      close () {
+        this.dialog = false;
+        this.editedItem = _.cloneDeep(this.defaultItem);
+        this.editedIndex = -1;
       },
-      viewSnmp() {
-        return this.currentProcessOutput.typeOutput == "SNMP";
+      editItem (item) {
+        this.editedIndex = this.processOutput.indexOf(item);
+        this.editedItem = _.cloneDeep(item);
+        this.dialog = true;
+      },
+      deleteItem (item) {
+        var index = this.processOutput.indexOf(item);
+        confirm('Are you sure you want to delete this item?') && this.processOutput.splice(index, 1);
+      },
+
+      save() {
+        if (this.editedIndex > -1) {
+          Object.assign(this.processOutput[this.editedIndex], this.editedItem);
+        } else {
+          this.processOutput.push(this.editedItem);
+        }
+        this.close();
       }
     }
   }
