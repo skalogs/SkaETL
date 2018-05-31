@@ -24,7 +24,7 @@
           <template slot="items" slot-scope="props">
               <td>
                     <v-btn color="warning" style="width: 120px" small v-on:click.native="editProcess(props.item.id)">Edit<v-icon right>edit</v-icon></v-btn>
-                    <v-btn color="orange lighten-2" style="width: 120px" small v-on:click.native="liveProcess(props.item.id)">Live !</v-btn>
+                    <v-btn color="orange lighten-2" style="width: 120px" small v-on:click.native="liveProcess(props.item.id)">Live<v-icon right>call_split</v-icon></v-btn>
                     <v-btn color="teal lighten-2" style="width: 120px" small v-on:click.native="nextProcess(props.item.id)">action</v-btn>
                     <v-btn color="success" style="width: 120px" small v-if="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" v-on:click.native="activateProcess(props.item.id)">Activate<v-icon right>touch_app</v-icon></v-btn>
                     <v-btn color="pink darken-2" style="width: 120px" small v-if="props.item.statusProcess == 'ENABLE'" v-on:click.native="deactivateProcess(props.item.id)">Deactivate<v-icon right>close</v-icon></v-btn>
@@ -86,25 +86,15 @@
        </v-flex>
     </v-layout>
 
-    <v-dialog v-model="dialogLive">
-      <v-layout row>
-          <v-btn color="primary" v-on:click.native="launchCaptureKafka()">Live After Parsing</v-btn>
-          <v-btn color="primary" v-on:click.native="launchCaptureKafkaAfterTransformation()">Live After Process</v-btn>
-          <v-btn color="red darken-1" flat @click.stop="dialogLive=false">Close</v-btn>
-      </v-layout>
-      <v-layout row>
-        <tree-view :data="listCapture" :options="{maxDepth: 1,rootObjectKey: 'data'}"></tree-view>
-      </v-layout>
-      <v-layout row wrap>
-        <v-flex xs12 sm12 md12 >
-          <v-alert v-model="viewErrorDialog" xs12 sm12 md12  color="error" icon="warning" value="true" dismissible>
-               {{ msgErrorDialog }}
-          </v-alert>
-          <v-alert v-model="viewMessageCaptureDialog" xs12 sm12 md12  color="info" icon="info" value="true" dismissible>
-              {{ messageCaptureDialog }}
-          </v-alert>
-        </v-flex>
-      </v-layout>
+    <v-dialog v-model="dialogLive" max-width="560px">
+      <v-card>
+        <v-card-title primary-title><h3>Select your Kafka live</h3></v-card-title>
+        <v-card-actions>
+          <v-btn color="primary" v-on:click.native="launchCaptureKafka()">Live After Parsing<v-icon right>call_split</v-icon></v-btn>
+          <v-btn color="primary" v-on:click.native="launchCaptureKafkaAfterTransformation()">Live After Process<v-icon right>call_split</v-icon></v-btn>
+          <v-btn color="error" @click.stop="dialogLive=false">Close<v-icon right>close</v-icon></v-btn>
+        </v-card-actions>
+      </v-card>
     </v-dialog>
 
  </v-container>
