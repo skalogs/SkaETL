@@ -80,9 +80,6 @@
         <v-icon>navigate_before</v-icon>
         Previous
       </v-btn>
-      <v-btn color="success" v-on:click.native="addValidation">add Validation
-        <v-icon>add</v-icon>
-      </v-btn>
       <v-btn color="primary" style="width: 120px" @click.native="$emit('nextStep')">Next
         <v-icon>navigate_next</v-icon>
       </v-btn>

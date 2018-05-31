@@ -166,13 +166,6 @@
         type: ["ADD_FIELD", "DELETE_FIELD", "RENAME_FIELD", "FORMAT_DATE", "FORMAT_BOOLEAN", "FORMAT_GEOPOINT",
           "FORMAT_DOUBLE", "FORMAT_LONG", "FORMAT_IP", "LOOKUP_LIST", "LOOKUP_EXTERNAL", "HASH", "ADD_GEO_LOCALISATION",
           "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL"],
-        viewMessageClient: false,
-        viewKeyField: false,
-        viewComposeField: false,
-        viewDateField: false,
-        viewLookupList: false,
-        viewLookupExternal: false,
-        viewHash: false,
         replaceValue: '',
         replaceNewValue: '',
         listLookup: []
@@ -214,7 +207,7 @@
       },
       close() {
         this.dialog = false;
-        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem = _.cloneDeep(this.defaultItem);
         this.editedIndex = -1;
         this.lookupList = [];
         this.replaceValue = '';
@@ -222,7 +215,7 @@
       },
       editItem(item) {
         this.editedIndex = this.processTransformations.indexOf(item);
-        this.editedItem = Object.assign({}, item);
+        this.editedItem = _.cloneDeep(item);
         this.dialog = true;
         for (var i = 0; i < this.editedItem.parameterTransformation.mapLookup.length; i++) {
             console.log(this.editedItem.parameterTransformation.mapLookup[i]);

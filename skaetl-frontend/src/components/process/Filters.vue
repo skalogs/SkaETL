@@ -49,7 +49,6 @@
         <v-icon>navigate_before</v-icon>
         Previous
       </v-btn>
-      <v-btn color="success" v-on:click.native="addFilter">add filter<v-icon>add</v-icon></v-btn>
       <v-btn color="primary" style="width: 120px" @click.native="$emit('nextStep')">Next
         <v-icon>navigate_next</v-icon>
       </v-btn>
@@ -87,12 +86,12 @@
     methods: {
       close () {
         this.dialog = false;
-        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem = _.cloneDeep(this.defaultItem);
         this.editedIndex = -1;
       },
       editItem (item) {
         this.editedIndex = this.processFilters.indexOf(item);
-        this.editedItem = Object.assign({}, item);
+        this.editedItem = _.cloneDeep(item);
         this.dialog = true;
       },
       deleteItem (item) {

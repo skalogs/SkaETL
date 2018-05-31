@@ -72,10 +72,6 @@
       return {
         dialog: false,
         typeParser: ["CEF", "NITRO", "GROK", "CSV"],
-        viewGrok: false,
-        viewCSV: false,
-        viewMessageClient: false,
-        messageClientCreated: '',
         editedItem: {},
         editedIndex: -1,
         headers: [
@@ -98,12 +94,12 @@
       },
       close () {
         this.dialog = false;
-        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedItem = _.cloneDeep(this.defaultItem);
         this.editedIndex = -1;
       },
       editItem (item) {
         this.editedIndex = this.processParsers.indexOf(item);
-        this.editedItem = Object.assign({}, item);
+        this.editedItem = _.cloneDeep(item);
         this.dialog = true;
       },
       deleteItem (item) {
