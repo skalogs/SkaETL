@@ -32,7 +32,7 @@ public class UtilsCreditMetrics {
                 .name("Average Response Time")
                 .sourceProcessConsumers(Lists.newArrayList(idProcessFrontData))
                 .aggFunction("AVG(timeRequestMs_long)")
-                .where("type != \"front\"")
+                .where("type = \"front\"")
                 .windowType(WindowType.TUMBLING)
                 .size(5)
                 .sizeUnit(TimeUnit.MINUTES)
