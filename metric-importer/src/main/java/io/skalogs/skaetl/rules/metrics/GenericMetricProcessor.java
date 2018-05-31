@@ -88,6 +88,7 @@ public abstract class GenericMetricProcessor {
         routeResult(result);
 
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "metric-" + processMetric.getIdProcess() + "-stream");
+        props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, MessageTimestampExtractor.class);
 
         final KafkaStreams streams = new KafkaStreams(builder.build(), props);
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
