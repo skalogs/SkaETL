@@ -74,7 +74,10 @@ public class MetricImporter {
         GenericMetricProcessor metricProcessor = ruleMetricExecutor.instanciate(processMetric);
         metricProcessor.setApplicationContext(applicationContext);
 
-        KafkaStreams metricStream = metricProcessor.buildStream(createProperties(kafkaConfiguration.getBootstrapServers()));
+        Properties properties = createProperties(kafkaConfiguration.getBootstrapServers());
+        properties.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 1 * 1024 * 1024L);
+        properties.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000);
+        KafkaStreams metricStream = metricProcessor.buildStream(properties);
         metricStream.start();
 
         streams.add(metricStream);
