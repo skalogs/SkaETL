@@ -107,18 +107,6 @@ services:
     depends_on:
     - zookeeper
     - kafka
-  referential:
-    image: skalogs/referential-importer:1.0.1-SNAPSHOT
-    environment:
-      - KAFKA_BOOTSTRAPSERVERS=kafka:9092
-      - PROCESS_URL_REGISTRY=http://skaetlbackend:8090
-      - SPRING_PROFILES_ACTIVE=prod
-      - ZOOKEEPER_BOOTSTRAP_SERVERS=zookeeper:2181/kafka
-    ports:
-    - "8082:8082"
-    depends_on:
-    - zookeeper
-    - kafka
   metric-importer:
     image: skalogs/metric-importer:1.0.1-SNAPSHOT
     environment:
