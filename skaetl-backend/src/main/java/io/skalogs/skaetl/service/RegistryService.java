@@ -122,8 +122,11 @@ public class RegistryService {
     }
 
     public void deactivate(ProcessDefinition processDefinition) {
-        ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess()).withProcessDefinition(processDefinition);
-        triggerAction(consumerState, "deactivate", StatusProcess.DISABLE, StatusProcess.DISABLE);
+        ConsumerState fromDB = consumerStateRepository.findByKey(processDefinition.getIdProcess());
+        if (fromDB == null) {
+            ConsumerState consumerState = fromDB.withProcessDefinition(processDefinition);
+            triggerAction(consumerState, "deactivate", StatusProcess.DISABLE, StatusProcess.DISABLE);
+        }
     }
 
     public void createOrUpdateProcessDefinition(ProcessDefinition processDefinition, WorkerType workerType, StatusProcess statusProcess) {
