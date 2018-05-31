@@ -12,7 +12,7 @@
     </v-card>
 
     <v-snackbar :timeout=2000 color="success" :vertical="false" v-model="snackbar" top :multi-line="false">
-      The text has been copied in clipboard
+      The text has been copied to the clipboard
     </v-snackbar>
 
     <v-layout row wrap>
