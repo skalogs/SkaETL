@@ -21,10 +21,11 @@ public class GeneratorCreditService {
     }
 
     public void generateData(Integer timeToGenerateInMinute, Integer nbView, Integer nbCredit, Integer nbRandomRq) {
-        utilsProcess.createAllProcess();
-        utilsProcess.createAllReferential();
-        utilsCreditMetrics.createAllMetrics();
         try {
+            utilsProcess.createAllProcess();
+            utilsProcess.createAllReferential();
+            utilsCreditMetrics.createAllMetrics();
+            Thread.sleep(5000);
             for(int i = 0 ; i < timeToGenerateInMinute ;i++) {
                 generateDataForEndToEndView(i, nbView);
                 generateDataForEndToEndCreateCredit(i, nbCredit);
