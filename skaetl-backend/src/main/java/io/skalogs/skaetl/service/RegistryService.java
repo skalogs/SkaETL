@@ -123,7 +123,7 @@ public class RegistryService {
 
     public void deactivate(ProcessDefinition processDefinition) {
         ConsumerState fromDB = consumerStateRepository.findByKey(processDefinition.getIdProcess());
-        if (fromDB == null) {
+        if (fromDB != null) {
             ConsumerState consumerState = fromDB.withProcessDefinition(processDefinition);
             triggerAction(consumerState, "deactivate", StatusProcess.DISABLE, StatusProcess.DISABLE);
         }
