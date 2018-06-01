@@ -27,15 +27,15 @@ function push() {
 }
 
 function buildAll() {
-#  build
-  for folder in etl-backend referential-importer ; do
+  build
+  for folder in process-importer retry-importer error-importer etl-backend referential-importer simulate enduser-doc ; do
       push $folder
   done
   echo build all finish !
 }
 
 if [ $1 ]; then
-#    time mvn clean package
+    time mvn clean package
     echo push skalogs/$1:${image_version}
     docker push skalogs/$1:${image_version}
     echo skalogs/$1:${image_version} is pushed
