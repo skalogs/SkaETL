@@ -28,7 +28,7 @@ function push() {
 
 function buildAll() {
 #  build
-  for folder in process-importer etl-backend referential-importer simulate ; do
+  for folder in etl-backend referential-importer ; do
       push $folder
   done
   echo build all finish !
