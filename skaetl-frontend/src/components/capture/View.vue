@@ -68,7 +68,7 @@
            topicInput: '',
            deserializer : 'org.apache.kafka.common.serialization.StringDeserializer',
            listCapture: [],
-           typeOffset: ["latest", "earliest"]
+           typeOffset: ["latest", "earliest","last"]
          }
    },
    mounted() {

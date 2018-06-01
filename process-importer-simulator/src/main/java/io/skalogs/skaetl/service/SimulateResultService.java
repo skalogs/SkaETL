@@ -9,13 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static io.skalogs.skaetl.domain.ProcessConstants.SIMULATE_OUTPUT;
 
@@ -55,7 +53,7 @@ public class SimulateResultService {
 
     private Boolean checkWindow(long start, Long windowTime, long sizeList, long maxSizeItems) {
         long current = System.currentTimeMillis();
-        if (current >= (start + windowTime.longValue()) ) {
+        if (current >= (start + windowTime.longValue())) {
             return false;
         }
         if (sizeList >= maxSizeItems) {
@@ -65,9 +63,21 @@ public class SimulateResultService {
     }
 
     public List<String> readKafkaRawData(String bootStrapServers, String topic, String maxRecords, String windowTime, String offReset, String deserializer) {
-        KafkaConsumer kafkaConsumer = kafkaUtils.kafkaConsumerString(offReset, bootStrapServers, "simulate-raw" + UUID.randomUUID().toString(), deserializer);
-        log.info("Subscribe Topic for {} with parameter offReset {} windowTime {} maxRecords {} ", topic, offReset, windowTime,maxRecords);
-        kafkaConsumer.subscribe(Arrays.asList(topic), new Rebalancer());
+        KafkaConsumer kafkaConsumer;
+        if (offReset.equalsIgnoreCase("last")) {
+            kafkaConsumer = kafkaUtils.kafkaConsumerString("latest", bootStrapServers, "simulate-raw" + UUID.randomUUID().toString(), deserializer);
+            kafkaConsumer.subscribe(Arrays.asList(topic), new Rebalancer());
+            kafkaConsumer.poll(1);
+            Set<TopicPartition> assignment = kafkaConsumer.assignment();
+            Map<TopicPartition, Long> offsetsPerPartition = kafkaConsumer.endOffsets(assignment);
+            offsetsPerPartition.entrySet().stream().forEach(e -> resetOffset(kafkaConsumer, e.getKey(), Math.max(e.getValue() - Long.valueOf(maxRecords), 0)));
+        } else {
+            kafkaConsumer = kafkaUtils.kafkaConsumerString(offReset, bootStrapServers, "simulate-raw" + UUID.randomUUID().toString(), deserializer);
+            kafkaConsumer.subscribe(Arrays.asList(topic), new Rebalancer());
+        }
+
+        log.info("Subscribe Topic for {} with parameter offReset {} windowTime {} maxRecords {} ", topic, offReset, windowTime, maxRecords);
+
         List<String> res = new ArrayList<>();
         long start = System.currentTimeMillis();
         try {
@@ -89,6 +99,11 @@ public class SimulateResultService {
             kafkaConsumer.close();
         }
         return res;
+    }
+
+    private void resetOffset(KafkaConsumer kafkaConsumer, TopicPartition topicPartition, long newPosition) {
+        log.error("Reseting partition position on {} partition {} to {}", topicPartition.topic(), topicPartition.partition(), newPosition);
+        kafkaConsumer.seek(topicPartition, newPosition);
     }
 
     public List<String> readKafkaString(String bootStrapServers, String topic, String maxRecords, String windowTime, String idProcess) {
