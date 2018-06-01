@@ -49,7 +49,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         super.init(context);
         referentialStateStore = (KeyValueStore<String, Referential>) context.getStateStore(REFERENTIAL);
 
-        context.schedule(10 * 1000, PunctuationType.WALL_CLOCK_TIME, (timestamp) -> flush());
+        context.schedule(5 * 60 * 1000, PunctuationType.WALL_CLOCK_TIME, (timestamp) -> flush());
     }
 
     @Override
@@ -113,6 +113,9 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         if (ref == null) {
             referentialStateStore.put(key, newReferential);
         } else {
+            //we must validate before update
+            validationTime(processReferential,ref);
+            //we must notificate before update
             notification(processReferential, ref, newReferential);
             referentialStateStore.put(key,
                     mergeMetadata(ref.withValue(newReferential.getValue()).withTimestamp(newReferential.getTimestamp()), newReferential.getMetadataItemSet()));
