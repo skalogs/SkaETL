@@ -1,6 +1,5 @@
 package io.skalogs.skaetl.web;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.SimulateImporter;
 import io.skalogs.skaetl.service.SimulateResultService;
@@ -40,16 +39,6 @@ public class ManageController {
     @PostMapping("/readOutputFromText")
     public SimulateData readOutputFromText(@RequestBody PayloadTextForReadOutput payloadTextForReadOutput) {
         return simulateTextService.readOutputFromText(payloadTextForReadOutput.getTextSubmit(), payloadTextForReadOutput.getProcessConsumer());
-    }
-
-    @PostMapping("/captureString")
-    public List<String> captureString(@RequestBody PayloadCaptureData payloadCaptureData) {
-        return simulateResultService.readKafkaString(payloadCaptureData.getBootStrapServers(), payloadCaptureData.getTopic(), payloadCaptureData.getMaxPollRecords(), payloadCaptureData.getPollingTime(),payloadCaptureData.getIdProcess());
-    }
-
-    @PostMapping("/captureJson")
-    public List<JsonNode> captureJson(@RequestBody PayloadCaptureData payloadCaptureData) {
-        return simulateResultService.readKafkaJson(payloadCaptureData.getBootStrapServers(), payloadCaptureData.getTopic(), payloadCaptureData.getMaxPollRecords(), payloadCaptureData.getPollingTime(),payloadCaptureData.getIdProcess());
     }
 
     @PostMapping("/captureRawData")

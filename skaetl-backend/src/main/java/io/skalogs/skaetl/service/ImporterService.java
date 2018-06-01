@@ -1,8 +1,10 @@
 package io.skalogs.skaetl.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.config.ImporterConfiguration;
-import io.skalogs.skaetl.domain.*;
+import io.skalogs.skaetl.domain.PayloadReadOutput;
+import io.skalogs.skaetl.domain.PayloadTextForReadOutput;
+import io.skalogs.skaetl.domain.ProcessConsumer;
+import io.skalogs.skaetl.domain.SimulateData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
@@ -49,52 +51,6 @@ public class ImporterService {
         HttpEntity<PayloadReadOutput> request = new HttpEntity<>(payloadReadOutput);
         try {
             SimulateData[] objStatus = restTemplate.postForObject(importerConfiguration.getFullUrlSimulate() + "/manage/readOutput", request, SimulateData[].class);
-            return Arrays.asList(objStatus);
-        } catch (Exception e) {
-            log.error("status {}", e);
-        }
-        return new ArrayList<>();
-    }
-
-    public List<String> captureInput(PayloadIdProcess payloadIdProcess) {
-        ProcessConsumer processConsumer = processService.findProcess(payloadIdProcess.getIdProcess());
-        return captureRaw(PayloadCaptureData.builder()
-                .bootStrapServers(processConsumer.getProcessInput().bootstrapServer())
-                .idProcess(processConsumer.getIdProcess())
-                .maxPollRecords("100")
-                .pollingTime("500")
-                .topic(processConsumer.getProcessInput().getTopicInput()+"inputprocess")
-                .build());
-    }
-
-    private List<String> captureRaw(PayloadCaptureData payloadCaptureData) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<PayloadCaptureData> request = new HttpEntity<>(payloadCaptureData);
-        try {
-            String[] objStatus = restTemplate.postForObject(importerConfiguration.getFullUrlSimulate() + "/manage/captureString", request, String[].class);
-            return Arrays.asList(objStatus);
-        } catch (Exception e) {
-            log.error("status {}", e);
-        }
-        return new ArrayList<>();
-    }
-
-    public List<JsonNode> captureTransformation(PayloadIdProcess payloadIdProcess) {
-        ProcessConsumer processConsumer = processService.findProcess(payloadIdProcess.getIdProcess());
-        return captureRawJson(PayloadCaptureData.builder()
-                .bootStrapServers(processConsumer.getProcessInput().bootstrapServer())
-                .idProcess(processConsumer.getIdProcess())
-                .maxPollRecords("100")
-                .pollingTime("500")
-                .topic(processConsumer.getProcessInput().getTopicInput()+"treatprocess")
-                .build());
-    }
-
-    private List<JsonNode> captureRawJson(PayloadCaptureData payloadCaptureData) {
-        RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<PayloadCaptureData> request = new HttpEntity<>(payloadCaptureData);
-        try {
-            JsonNode[] objStatus = restTemplate.postForObject(importerConfiguration.getFullUrlSimulate() + "/manage/captureJson", request, JsonNode[].class);
             return Arrays.asList(objStatus);
         } catch (Exception e) {
             log.error("status {}", e);
