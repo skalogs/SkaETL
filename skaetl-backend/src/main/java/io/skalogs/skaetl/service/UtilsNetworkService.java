@@ -5,7 +5,6 @@ import io.skalogs.skaetl.web.domain.NetworkLinksWeb;
 import io.skalogs.skaetl.web.domain.NetworkNodeWeb;
 import io.skalogs.skaetl.web.domain.NetworkWeb;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -30,6 +29,7 @@ public class UtilsNetworkService {
     public NetworkWeb viewNetwork(){
         List<NetworkLinksWeb> listLink = new ArrayList<>();
         Map<String,NetworkNodeWeb> mapNode = new HashMap<>();
+
         //Process Consumer
         registryService.findAll(WorkerType.PROCESS_CONSUMER).stream()
                 .filter(consumerState -> consumerState.getStatusProcess() != StatusProcess.CREATION)
@@ -44,6 +44,7 @@ public class UtilsNetworkService {
 
     }
 
+    /*
     private String addParser(ProcessConsumer processConsumer, Map<String,NetworkNodeWeb> mapNode, List<NetworkLinksWeb> listLink,String prevId){
         //add Parser
         if(processConsumer.getProcessParser()!=null && !processConsumer.getProcessParser().isEmpty()){
@@ -76,38 +77,54 @@ public class UtilsNetworkService {
         }
         return prevId;
     }
+    */
 
-    private void addNodeLink(ProcessConsumer processConsumer, Map<String,NetworkNodeWeb> mapNode, List<NetworkLinksWeb> listLink){
+    private void addNodeLink(ProcessConsumer processConsumer, Map<String, NetworkNodeWeb> mapNode, List<NetworkLinksWeb> listLink) {
+
+        String source, target;
+
         //add node Input
-        mapNode.put(processConsumer.getProcessInput().getTopicInput(),NetworkNodeWeb.builder()
-                .id(processConsumer.getProcessInput().getTopicInput())
-                .name(processConsumer.getProcessInput().getTopicInput()+"-"+processConsumer.getName())
-                .color("orange")
+        source = processConsumer.getProcessInput().getTopicInput();
+        mapNode.put(source, NetworkNodeWeb.builder()
+                .id(source)
+                .name(source)
+                .color("LightGrey")
                 .build());
-        String prevId = processConsumer.getProcessInput().getTopicInput();
-
-        prevId= addParser(processConsumer,mapNode,listLink,prevId);
 
         //add node Output
-        for(ProcessOutput processOutput : processConsumer.getProcessOutput()){
-            mapNode.put(processConsumer.getName() + "-" + processOutput.getTypeOutput().name(), NetworkNodeWeb.builder()
-                    .id(processConsumer.getName()+"-"+processOutput.getTypeOutput().name())
-                    .name(processOutput.getTypeOutput().name()+"-"+processConsumer.getName())
-                    .color(processOutput.getTypeOutput() == TypeOutput.KAFKA ? "orange" : "black")
+        for (ProcessOutput processOutput : processConsumer.getProcessOutput()) {
+
+            if (processOutput.getTypeOutput() == TypeOutput.KAFKA)
+                target = processOutput.getParameterOutput().getTopicOut();
+            else
+                target = processOutput.getTypeOutput().name();
+
+            mapNode.put(target, NetworkNodeWeb.builder()
+                    .id(target)
+                    .name(target)
+                    .color(getColor(processOutput.getTypeOutput()))
                     .build());
 
             //add link
             listLink.add(NetworkLinksWeb.builder()
-                    .sid(prevId)
-                    .tid(processConsumer.getName()+"-"+processOutput.getTypeOutput().name())
+                    .sid(source)
+                    .tid(target)
                     .color("green")
-                    .name("output")
+                    .name(processConsumer.getName())
                     .build());
-
         }
-
     }
 
-
-
+    private String getColor(TypeOutput typeOutput) {
+        switch (typeOutput) {
+            case KAFKA:
+                return "LightGrey";
+            case ELASTICSEARCH:
+                return "DodgerBlue";
+            case SLACK:
+                return "#3eb991";
+            default:
+                return "black";
+        }
+    }
 }

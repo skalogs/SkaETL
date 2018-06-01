@@ -2,7 +2,9 @@
   <v-container fluid grid-list-md >
     <v-card>
       <v-card-title class="card-title">Map of consumer processes</v-card-title>
+
       <d3-network :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"/>
+
       <v-layout row >
         <v-flex xs12 sm12 md12 >
           <v-alert v-model="viewError" xs12 sm12 md12  color="error" icon="warning" value="true" dismissible>
@@ -17,39 +19,23 @@
   </v-container>
 </template>
 
+<style src="vue-d3-network/dist/vue-d3-network.css"></style>
 <style>
-  @import url('https://fonts.googleapis.com/css?family=PT+Sans');
-  body{
-    font-family: 'PT Sans', sans-serif;
-    background-color: #eee;
-  }
-  .title{
-    position:absolute;
-    text-align: center;
-    left: 2em;
-  }
-  h1,a{
-    color: #1aad8d;
-    text-decoration: none;
-  }
-  ul.menu {
-    list-style: none;
-    position: absolute;
-    z-index: 100;
-    min-width: 20em;
-    text-align: left;
-  }
-  ul.menu li{
-    margin-top: 1em;
-    position: relative;
-  }
-  #m-end path, #m-start{
-    fill: rgba(18, 120, 98, 0.8);
-  }
   .card-title {
     color: #757575;
     font-size: 22px;
     font-weight: bold;
+  }
+  #m-end path, #m-start{
+    fill: rgba(18, 120, 98, 0.8);
+  }
+  .node-label{
+    font-size: 12;
+  }
+  .link-label{
+    fill: black;
+    transform: translate(0,4);
+    font-size: 11;
   }
 </style>
 
@@ -68,8 +54,8 @@
            links: [],
            options:
            {
-            force: 3000,
-            nodeSize: 15,
+            force: 10000,
+            nodeSize: 20,
             nodeLabels: true,
             linkLabels: true,
             linkWidth: 2,
@@ -81,6 +67,7 @@
              var network = response.data;
              this.nodes=network.nodeList;
              this.links=network.linksList;
+             console.log(this.links);
          }, response => {
            this.viewError=true;
            this.msgError = "Error during call service";
