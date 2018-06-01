@@ -37,14 +37,23 @@
                    <v-chip color="blue darken-2">{{item}}</v-chip>
                 </v-flex>
              </v-layout>
-            </td>
-            <td class="text-md-center">
+           </td>
+           <td class="text-md-center">
               <v-layout row>
                 <v-flex v-for="item in props.item.processDefinition.listIdProcessConsumer">
                   <v-chip color="orange lighten-2">{{ getProcessName(item) }} </v-chip>
                 </v-flex>
               </v-layout>
-            </td>
+           </td>
+           <td class="text-md-center">
+              <v-checkbox :disabled="true" v-model="props.item.processDefinition.isNotificationChange"></v-checkbox>
+           </td>
+           <td class="text-md-center">
+              <v-checkbox :disabled="true" v-model="props.item.processDefinition.isValidationTimeAllField"></v-checkbox>
+           </td>
+           <td class="text-md-center">
+              <v-chip v-if="props.item.processDefinition.fieldChangeValidation" color="blue-grey lighten-3">{{props.item.processDefinition.fieldChangeValidation}}</v-chip>
+           </td>
          </template>
      </v-data-table>
      <v-layout row wrap>
@@ -80,9 +89,12 @@
                    { text: 'Action', align: 'center',sortable: 0,value: '',width: '10%' },
                    { text: 'Name', align: 'center',value: 'processDefinition.name',width: '10%' },
                    { text: 'Data Referential', align: 'center',value: 'processDefinition.referentialKey',width: '10%' },
-                   { text: 'Key',align: 'center',sortable: 0,value: '', width: '25%'},
-                   { text: 'Metadata',align: 'center',sortable: 0,value: '', width: '25%'},
-                   { text: 'Process',align: 'center',sortable: 0,value: '', width: '25%'}
+                   { text: 'Key',align: 'center',sortable: 0,value: '', width: '20%'},
+                   { text: 'Metadata',align: 'center',sortable: 0,value: '', width: '20%'},
+                   { text: 'Process',align: 'center',sortable: 0,value: '', width: '20%'},
+                   { text: 'Notification',align: 'center',sortable: 0,value: '', width: '5%'},
+                   { text: 'Validation All',align: 'center',sortable: 0,value: '', width: '5%'},
+                   { text: 'Validation Field',align: 'center',sortable: 0,value: '', width: '5%'}
                  ],
         process,
         consumerProcess: new Map()

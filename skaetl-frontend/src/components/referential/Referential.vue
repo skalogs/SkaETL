@@ -11,6 +11,10 @@
                 <v-stepper-step step="4" v-bind:complete="referentialWizardStep > 4" :editable="referentialWizardStep > 3">Add Entry</v-stepper-step>
                 <v-divider></v-divider>
                 <v-stepper-step step="5" v-bind:complete="referentialWizardStep > 5" :editable="referentialWizardStep > 4">Extract Meta-data</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="5" v-bind:complete="referentialWizardStep > 6" :editable="referentialWizardStep > 5">Validation</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="5" v-bind:complete="referentialWizardStep > 7" :editable="referentialWizardStep > 6">Notification</v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-header v-if="editMode">
@@ -23,6 +27,10 @@
                 <v-stepper-step step="4" editable>Add Entry</v-stepper-step>
                 <v-divider></v-divider>
                 <v-stepper-step step="5" editable>Extract Meta-data</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="6" editable>Validation</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="7" editable>Notification</v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-content step="1">
@@ -114,28 +122,52 @@
                      </v-layout>
                    </v-flex>
                 </v-layout>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" style="width: 120px" @click.native="previousStep()"><v-icon>navigate_before</v-icon>Previous</v-btn>
+                <v-btn color="primary" style="width: 120px" @click.native="nextStep()" >Next<v-icon>navigate_next</v-icon></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+
+          <v-stepper-content step="6">
+            <v-card class="mb-5">
+              <v-card-title><div class="headline">Validation</div></v-card-title>
+              <v-card-text>
                 <v-layout row>
                   <v-flex xs6 sm6 md6>
                     <v-layout row>
-                      <v-checkbox :disabled="itemToEdit.isValidationTimeField" label="Validity event" v-model="itemToEdit.isValidationTimeAllField"></v-checkbox>
-                      <v-text-field :disabled="itemToEdit.isValidationTimeField" v-show="itemToEdit.isValidationTimeAllField" label="time (sec)" v-model="itemToEdit.timeValidationInSec"></v-text-field>
+                      <v-checkbox :disabled="itemToEdit.isValidationTimeAllField" label="Validity event" v-model="itemToEdit.isValidationTimeAllField"></v-checkbox>
+                      <v-text-field :disabled="!itemToEdit.isValidationTimeAllField" v-show="itemToEdit.isValidationTimeAllField" label="time (sec)" v-model="itemToEdit.timeValidationAllFieldInSec"></v-text-field>
                     </v-layout>
                   </v-flex>
                 </v-layout>
                 <v-layout row>
                   <v-flex xs6 sm6 md6>
                     <v-layout row>
-                      <v-checkbox :disabled="itemToEdit.isValidationTimeAllField" label="Validity field" v-model="itemToEdit.isValidationTimeField"></v-checkbox>
-                      <v-text-field :disabled="itemToEdit.isValidationTimeAllField" v-show="itemToEdit.isValidationTimeField" label="time (sec)" v-model="itemToEdit.timeValidationInSec"></v-text-field>
-                      <v-text-field :disabled="itemToEdit.isValidationTimeAllField" v-show="itemToEdit.isValidationTimeField" label="field" v-model="itemToEdit.fieldChangeValidation"></v-text-field>
+                      <v-checkbox :disabled="itemToEdit.isValidationTimeField" label="Validity field" v-model="itemToEdit.isValidationTimeField"></v-checkbox>
+                      <v-text-field :disabled="!itemToEdit.isValidationTimeField" v-show="itemToEdit.isValidationTimeField" label="time (sec)" v-model="itemToEdit.timeValidationFieldInSec"></v-text-field>
+                      <v-select label="Field" :disabled="!itemToEdit.isValidationTimeField" v-show="itemToEdit.isValidationTimeField" v-model="itemToEdit.fieldChangeValidation" v-bind:items="itemToEdit.listMetadata"/>
                     </v-layout>
                   </v-flex>
                 </v-layout>
+              </v-card-text>
+              <v-card-actions>
+                <v-btn color="primary" style="width: 120px" @click.native="previousStep()"><v-icon>navigate_before</v-icon>Previous</v-btn>
+                <v-btn color="primary" style="width: 120px" @click.native="nextStep()" >Next<v-icon>navigate_next</v-icon></v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-stepper-content>
+
+          <v-stepper-content step="7">
+            <v-card class="mb-5">
+              <v-card-title><div class="headline">Notification</div></v-card-title>
+              <v-card-text>
                 <v-layout row>
                   <v-flex xs6 sm6 md6>
                     <v-layout row>
                       <v-checkbox label="Notification on change event" v-model="itemToEdit.isNotificationChange"></v-checkbox>
-                      <v-text-field v-show="itemToEdit.isNotificationChange" label="field" v-model="itemToEdit.fieldChangeNotification"></v-text-field>
+                      <v-select label="Field" :disabled="!itemToEdit.isNotificationChange" v-show="itemToEdit.isNotificationChange" v-model="itemToEdit.fieldChangeNotification" v-bind:items="itemToEdit.listMetadata"/>
                     </v-layout>
                   </v-flex>
                 </v-layout>
@@ -146,7 +178,6 @@
               </v-card-actions>
             </v-card>
           </v-stepper-content>
-
     </v-stepper>
   </v-container>
 </template>

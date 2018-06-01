@@ -31,11 +31,13 @@ public class ProcessReferential extends ProcessDefinition {
     @Builder.Default
     private String fieldChangeNotification = "";
     @Builder.Default
-    private Integer timeValidationInSec = 0;
-    @Builder.Default
     private Boolean isValidationTimeAllField = false;
     @Builder.Default
+    private Integer timeValidationAllFieldInSec = 0;
+    @Builder.Default
     private Boolean isValidationTimeField = false;
+    @Builder.Default
+    private Integer timeValidationFieldInSec = 0;
     @Builder.Default
     private String fieldChangeValidation = "";
 }

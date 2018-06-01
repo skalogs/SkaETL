@@ -85,7 +85,8 @@ public class GeneratorService {
                 .listAssociatedKeys(Lists.newArrayList("database_ip"))
                 .listMetadata(Lists.newArrayList("os_server","database_type","patch_version"))
                 .isValidationTimeAllField(true)
-                .timeValidationInSec(60*30)
+                .timeValidationAllFieldInSec(60*30)
+                .timeValidationFieldInSec(60*30)
                 .isNotificationChange(true)
                 .fieldChangeNotification("database_type")
                 .build());

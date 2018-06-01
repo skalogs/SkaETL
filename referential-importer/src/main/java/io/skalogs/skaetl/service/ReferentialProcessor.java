@@ -134,11 +134,11 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         long diffInSec = differenceTime(referential.getTimestampETL(), df.format(new Date()));
         log.error("referential {} validationTimeAllField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),referential.getTimestampETL(),df.format(new Date()),diffInSec);
-        if (diffInSec > processReferential.getTimeValidationInSec()) {
+        if (diffInSec > processReferential.getTimeValidationAllFieldInSec()) {
             ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
             jsonNode.put("typeReferential", "validation");
             jsonNode.put("timeExceeded", diffInSec);
-            jsonNode.put("timeValidationInSec", processReferential.getTimeValidationInSec());
+            jsonNode.put("timeValidationAllFieldInSec", processReferential.getTimeValidationAllFieldInSec());
             referentialProducer.send(new ProducerRecord<>(TOPIC_REFERENTIAL_VALIDATION_ES, jsonNode));
         }
     }
@@ -149,12 +149,12 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             long diffInSec = differenceTime(item.getTimestampETL(), df.format(new Date()));
             log.error("referential {}  validationTimeField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),item.getTimestampETL(),df.format(new Date()),diffInSec);
-            if (diffInSec > processReferential.getTimeValidationInSec()) {
+            if (diffInSec > processReferential.getTimeValidationFieldInSec()) {
                 ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
                 jsonNode.put("typeReferential", "validation");
                 jsonNode.put("timeExceeded", diffInSec);
                 jsonNode.put("fieldChangeValidation", processReferential.getFieldChangeValidation());
-                jsonNode.put("timeValidationInSec", processReferential.getTimeValidationInSec());
+                jsonNode.put("timeValidationFieldInSec", processReferential.getTimeValidationFieldInSec());
                 referentialProducer.send(new ProducerRecord<>(TOPIC_REFERENTIAL_VALIDATION_ES, jsonNode));
             }
         }
