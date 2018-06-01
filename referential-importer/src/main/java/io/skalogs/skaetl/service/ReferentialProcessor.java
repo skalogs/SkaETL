@@ -49,7 +49,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         super.init(context);
         referentialStateStore = (KeyValueStore<String, Referential>) context.getStateStore(REFERENTIAL);
 
-        context.schedule(5 * 60 * 1000, PunctuationType.WALL_CLOCK_TIME, (timestamp) -> flush());
+        context.schedule(10 * 1000, PunctuationType.WALL_CLOCK_TIME, (timestamp) -> flush());
     }
 
     @Override
@@ -130,6 +130,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
     private void validationTimeAllField(ProcessReferential processReferential, Referential referential) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         long diffInSec = differenceTime(referential.getTimestampETL(), df.format(new Date()));
+        log.error("referential {} validationTimeAllField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),referential.getTimestampETL(),df.format(new Date()),diffInSec);
         if (diffInSec > processReferential.getTimeValidationInSec()) {
             ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
             jsonNode.put("typeReferential", "validation");
@@ -144,6 +145,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         if (item != null) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             long diffInSec = differenceTime(item.getTimestampETL(), df.format(new Date()));
+            log.error("referential {}  validationTimeField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),item.getTimestampETL(),df.format(new Date()),diffInSec);
             if (diffInSec > processReferential.getTimeValidationInSec()) {
                 ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
                 jsonNode.put("typeReferential", "validation");
@@ -156,6 +158,8 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
     }
 
     private Referential mergeMetadata(Referential referential, Set<MetadataItem> newMetadataItemSet) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        referential.setTimestampETL(df.format(new Date()));
         newMetadataItemSet.stream().forEach(itemNew -> updateRefMetadata(referential, itemNew));
         return referential;
     }

@@ -85,6 +85,24 @@ public class GeneratorCreditService {
         }
     }
 
+    public void generateDataForRef(Integer minute, Integer nbCredit){
+        for(int i = 0 ; i < nbCredit ;i++) {
+            Integer amount = 500 + utilsCreditData.random(19) * 1000;
+            Integer creditDuration = utilsCreditData.getDuration();
+            String product = utilsCreditData.getProduct();
+            ClientData clientData = utilsCreditData.getClient();
+            String requestId = UUID.randomUUID().toString();
+            String provider = utilsCreditData.getProvider();
+            Integer timeTotalRequest = 0;
+            log.error("Usecase referential Credit amount {} creditDuration {} product {} clientData {} requestId {} provider {}",amount,creditDuration,product,clientData.getEmail(),requestId,provider);
+            timeTotalRequest += utilsCreditData.generateScriptGlobalBackendRequest(minute, generateScenarioMicroServiceCreateCredit(amount, creditDuration, product, clientData, requestId, provider));
+            Integer timeFront = timeTotalRequest + utilsCreditData.random(20);
+            utilsCreditData.generateScriptGlobalFrontEndRequest(minute, "front-create-credit", "/view/demandeCredit", "POST", "200", amount, creditDuration, product, clientData, requestId, timeFront);
+            //Validation Credit
+            utilsCreditData.generateScriptGlobalBackendRequest(minute+90, generateScenarioMicroServiceValidationCredit(amount, creditDuration, product, clientData, requestId, provider));
+        }
+    }
+
     private InputDataCredit generateScenarioMicroServiceValidationCredit(Integer amount, Integer creditDuration,String product, ClientData clientData, String requestId, String provider){
         String codeResponse = "200";
         if(utilsCreditData.random(30) == 1){

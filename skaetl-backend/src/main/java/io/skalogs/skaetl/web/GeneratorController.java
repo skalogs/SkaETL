@@ -84,4 +84,11 @@ public class GeneratorController {
         generatorCreditService.generateData(timeToGenerateInMinute,nbView,nbCredit,nbRandomRq);
     }
 
+    @ResponseStatus(CREATED)
+    @GetMapping("/inputCreditRef")
+    public void inputCreditRef(@PathParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
+                            @PathParam("nbCredit") Integer nbCredit) {
+        generatorCreditService.generateDataForRef(timeToGenerateInMinute,nbCredit);
+    }
+
 }
