@@ -62,11 +62,11 @@ public class GeneratorController {
     @GetMapping("/inputCart")
     public void inputCart(@PathParam("nbCustomer") Integer nbCustomer,
                           @PathParam("nbShowByMinute") Integer nbShowByMinute,
-                          @PathParam("nbAddToCardByMinute") Integer nbAddToCardByMinute,
+                          @PathParam("nbAddToCartByMinute") Integer nbAddToCartByMinute,
                           @PathParam("nbPaySuccessByMinute") Integer nbPaySuccessByMinute,
                           @PathParam("nbPayNotSuccessByMinute") Integer nbPayNotSuccessByMinute,
                           @PathParam("timeToGenerateInMinute") Integer timeToGenerateInMinute ) {
-        generatorCartService.generateData(nbCustomer, nbShowByMinute, nbAddToCardByMinute, nbPaySuccessByMinute, nbPayNotSuccessByMinute, timeToGenerateInMinute);
+        generatorCartService.generateData(nbCustomer, nbShowByMinute, nbAddToCartByMinute, nbPaySuccessByMinute, nbPayNotSuccessByMinute, timeToGenerateInMinute);
     }
 
     @ResponseStatus(CREATED)

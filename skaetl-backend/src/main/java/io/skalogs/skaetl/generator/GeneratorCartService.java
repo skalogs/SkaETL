@@ -35,7 +35,7 @@ public class GeneratorCartService {
 
 
     private void createAndActiveProcessConsumer() {
-        if(processService.findProcess("idProcessCardData") == null) {
+        if(processService.findProcess("idProcessCartData") == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -81,7 +81,7 @@ public class GeneratorCartService {
                     .build());
 
             processService.saveOrUpdate(ProcessConsumer.builder()
-                    .idProcess("idProcessCardData")
+                    .idProcess("idProcessCartData")
                     .name("demo cart")
                     .processInput(ProcessInput.builder().topicInput("demo-cart").host(this.host).port(this.port).build())
                     .processTransformation(listProcessTransformation)
@@ -92,9 +92,9 @@ public class GeneratorCartService {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess("idProcessCardData"));
+                processService.activateProcess(processService.findProcess("idProcessCartData"));
             } catch (Exception e) {
-                log.error("Exception createAndActiveProcessConsumer idProcessCardData");
+                log.error("Exception createAndActiveProcessConsumer idProcessCartData");
             }
 
             buildMetrics();
@@ -107,7 +107,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_NB_TX")
                 .name("Cart - Number of Transaction")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT(*)")
                 .where("type = \"payment\"")
                 .windowType(WindowType.TUMBLING)
@@ -118,7 +118,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_NB_TX_FAIL")
                 .name("Cart - Number of Transaction Failed")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT(*)")
                 .where("type = \"incident\"")
                 .windowType(WindowType.TUMBLING)
@@ -130,7 +130,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_NB_PRODUCT_SEEN")
                 .name("Cart - Number of Product seen")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT(*)")
                 .where("type = \"showProduct\"")
                 .windowType(WindowType.TUMBLING)
@@ -141,7 +141,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_NB_PRODUCT_SEEN_PER_USER")
                 .name("Cart - Number of Product seen per user")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT(*)")
                 .where("type = \"showProduct\"")
                 .groupBy("customerEmail_ue")
@@ -153,7 +153,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_NB_PRODUCT_SOLD")
                 .name("Cart - Number of Product Sold")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT(*)")
                 .where("type = \"addToCart\"")
                 .groupBy("product-name")
@@ -166,7 +166,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_NB_OF_DISCOUNT_PER_USER")
                 .name("Cart - Number of Discount per User")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT(*)")
                 .where("type = \"payment\"")
                 .groupBy("customerEmail_ue")
@@ -178,7 +178,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_AVG_DISCOUNT_PER_USER")
                 .name("Cart - Average Discount per User")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("AVG(discount_long)")
                 .where("type = \"payment\"")
                 .groupBy("customerEmail_ue")
@@ -191,7 +191,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_FRAUD_DIFFERENT_COUNTRY")
                 .name("Cart - Fraud different country")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT-DISTINCT(ip_country_name)")
                 .where("type IN(\"payment\",\"incident\") ")
                 .groupBy("customerEmail_ue")
@@ -204,7 +204,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_FRAUD_DISCOUNT_USER")
                 .name("Cart - Fraud discount same user")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT-DISTINCT(codeDiscount)")
                 .where("type = \"payment\" ")
                 .groupBy("customerEmail_ue")
@@ -217,7 +217,7 @@ public class GeneratorCartService {
         processMetrics.add(ProcessMetric.builder()
                 .idProcess("CART_USAGE_CODE_DISCOUNT")
                 .name("Cart - Usage code discount DISCOUNT-201805")
-                .sourceProcessConsumers(Lists.newArrayList("idProcessCardData"))
+                .sourceProcessConsumers(Lists.newArrayList("idProcessCartData"))
                 .aggFunction("COUNT(codeDiscount)")
                 .where("type = \"payment\" AND codeDiscount =\"DISCOUNT-201805\"")
                 .having("> 1")
@@ -255,13 +255,13 @@ public class GeneratorCartService {
     }
 
 
-    public void generateData(Integer nbCustomer, Integer nbShowByMinute, Integer nbAddToCardByMinute, Integer nbPaySuccessByMinute,Integer nbPayNotSuccessByMinute, Integer timeToGenerateInMinute){
+    public void generateData(Integer nbCustomer, Integer nbShowByMinute, Integer nbAddToCartByMinute, Integer nbPaySuccessByMinute,Integer nbPayNotSuccessByMinute, Integer timeToGenerateInMinute){
         createAndActiveProcessConsumer();
         List<String> listCustomer = utilsCartData.generateCustomer(nbCustomer);
         for(int i = 0 ; i< timeToGenerateInMinute ;i++){
             try {
                     utilsCartData.generateScriptShowProduct(nbShowByMinute,i,listCustomer);
-                    utilsCartData.generateScriptAddToCart(nbAddToCardByMinute,i,utilsCartData.getUser(listCustomer),utilsCartData.generateIp(),RANDOM.nextInt(3)+1);
+                    utilsCartData.generateScriptAddToCart(nbAddToCartByMinute,i,utilsCartData.getUser(listCustomer),utilsCartData.generateIp(),RANDOM.nextInt(3)+1);
                     utilsCartData.generateScriptPaySucess(nbPaySuccessByMinute, i,utilsCartData.getUser(listCustomer),utilsCartData.generateIp(),RANDOM.nextInt(3)+1);
                     utilsCartData.generateScriptPayNotSucess(nbPayNotSuccessByMinute, i,utilsCartData.getUser(listCustomer),utilsCartData.generateIp(),RANDOM.nextInt(3)+1);
                 Thread.sleep(1000);
