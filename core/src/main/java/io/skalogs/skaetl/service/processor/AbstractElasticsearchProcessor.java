@@ -34,7 +34,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     }
 
     protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, String valueAsString, String id) {
-        esWriteEs.labels(getApplicationId() != null ? getApplicationId() : "retryApplication", project, type).inc();
+        esWriteEs.labels(getApplicationId() != null ? getApplicationId() : "forRetryApplication", project, type).inc();
         esBuffer.add(date, project, type, retentionLevel, valueAsString, id);
         if (esBuffer.needFlush()) {
             log.info("{} Flushing {}", context().applicationId(), esBuffer.values().size());
@@ -57,7 +57,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
         esBuffer
                 .values()
                 .stream()
-                .forEach(itemRaw -> esErrorRetryWriter.sendToRetryTopic(getApplicationId(), itemRaw));
+                .forEach(itemRaw -> esErrorRetryWriter.sendToRetryTopic(getApplicationId() != null ? getApplicationId() : "forRetryApplication", itemRaw));
 
     }
 
