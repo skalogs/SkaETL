@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class NetworkLinksWeb {
+    private String id;
     private String sid;
     private String tid;
     @JsonProperty("_color")

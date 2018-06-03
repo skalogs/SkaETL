@@ -88,7 +88,7 @@ public class UtilsNetworkService {
         mapNode.put(source, NetworkNodeWeb.builder()
                 .id(source)
                 .name(source)
-                .color("LightGrey")
+                .color(getColor(TypeOutput.KAFKA))
                 .build());
 
         //add node Output
@@ -107,6 +107,7 @@ public class UtilsNetworkService {
 
             //add link
             listLink.add(NetworkLinksWeb.builder()
+                    .id(source + target)
                     .sid(source)
                     .tid(target)
                     .color("green")
@@ -118,13 +119,15 @@ public class UtilsNetworkService {
     private String getColor(TypeOutput typeOutput) {
         switch (typeOutput) {
             case KAFKA:
-                return "LightGrey";
+                return "#e9a820";
             case ELASTICSEARCH:
-                return "DodgerBlue";
+                return "#6ecadc";
             case SLACK:
                 return "#3eb991";
+            case EMAIL:
+                return "#e01563";
             default:
-                return "black";
+                return "white";
         }
     }
 }
