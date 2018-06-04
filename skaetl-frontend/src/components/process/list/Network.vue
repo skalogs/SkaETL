@@ -103,12 +103,23 @@
           this.nodes = this.nodes.concat(this.consumerNodes);
           this.links = this.links.concat(this.consumerLinks);
         }
+        this.nodes = this.arrayUnique(this.nodes);
       }
     },
     methods: {
       lcb (link) {
         link._svgAttrs = { 'marker-end': 'url(#m-end)'}
         return link
+      },
+      arrayUnique(array) {
+        var a = array.concat();
+          for(var i=0; i<a.length; ++i) {
+            for(var j=i+1; j<a.length; ++j) {
+              if(a[i].name === a[j].name)
+                a.splice(j--, 1);
+            }
+          }
+        return a;
       }
     }
   }
