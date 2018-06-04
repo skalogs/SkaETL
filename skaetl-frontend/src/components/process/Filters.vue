@@ -21,6 +21,7 @@
             <v-text-field label="criteria (SQL Like)" v-model="editedItem.criteria"></v-text-field>
             <v-checkbox label="Active Fail Topic Forward " v-model="editedItem.activeFailForward"></v-checkbox>
             <v-text-field v-if="editedItem.activeFailForward" label="Topic Fail Filter" v-model="editedItem.failForwardTopic" required></v-text-field>
+            <FiltersHelp></FiltersHelp>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -44,6 +45,7 @@
         </td>
       </template>
     </v-data-table>
+
     <v-card-actions>
       <v-btn color="primary" style="width: 120px" @click.native="$emit('previousStep')">
         <v-icon>navigate_before</v-icon>
@@ -58,7 +60,9 @@
 
 
 <script>
+  import FiltersHelp from "./FiltersHelp";
   export default {
+    components: {FiltersHelp},
     props: {
       processFilters: {
         type: Array,
@@ -68,7 +72,14 @@
     data: function(){
       return {
         dialog: false,
-        editedItem: {},
+        editedItem: {
+          name: "",
+          criteria: ""
+        },
+        defaultItem: {
+          name: "",
+            criteria: ""
+        },
         editedIndex: -1,
         headers: [
           { text: 'Filter Name', value: 'name'},

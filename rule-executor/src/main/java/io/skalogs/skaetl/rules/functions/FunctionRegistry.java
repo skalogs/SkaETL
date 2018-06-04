@@ -1,10 +1,13 @@
 package io.skalogs.skaetl.rules.functions;
 
+import io.skalogs.skaetl.rules.domain.FilterFunctionDescription;
 import io.skalogs.skaetl.rules.functions.numbers.*;
 import io.skalogs.skaetl.rules.functions.strings.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FunctionRegistry {
 
@@ -16,7 +19,7 @@ public class FunctionRegistry {
         register("IS_NUMBER", new IsNumberFunction());
 
         register("IS_BLANK", new IsBlankFunction());
-        register("IS_NOT_BLANK", new IsNotBlank());
+        register("IS_NOT_BLANK", new IsNotBlankFunction());
         register("CONTAINS", new ContainsFunction());
         register("REGEXP", new RegexpFunction());
         register("MATCH", new RegexpFunction());
@@ -46,5 +49,13 @@ public class FunctionRegistry {
 
     public RuleFunction getRuleFunction(String functionName) {
         return registry.get(functionName.toUpperCase());
+    }
+
+    public List<FilterFunctionDescription> filterFunctions() {
+        return registry
+                .entrySet()
+                .stream()
+                .map((e) -> new FilterFunctionDescription(e.getKey(),e.getValue().getDescription(),e.getValue().getExample()))
+                .collect(Collectors.toList());
     }
 }

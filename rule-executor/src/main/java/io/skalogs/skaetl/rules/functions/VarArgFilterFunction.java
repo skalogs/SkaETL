@@ -7,6 +7,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public abstract class VarArgFilterFunction<InputType> extends FilterFunction<InputType> {
+    public VarArgFilterFunction(String description, String example) {
+        super(description, example);
+    }
+
     @Override
     public Boolean evaluate(Object... args) {
         Preconditions.checkArgument(args.length >= 2);

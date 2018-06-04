@@ -34,7 +34,13 @@
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
             <artifactId>process-importer-api</artifactId>
-            <version>1.0.1-SNAPSHOT</version>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.skalogs.skaetl</groupId>
+            <artifactId>rule-executor</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

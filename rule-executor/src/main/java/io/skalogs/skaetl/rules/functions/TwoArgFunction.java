@@ -3,6 +3,10 @@ package io.skalogs.skaetl.rules.functions;
 import com.google.common.base.Preconditions;
 
 public abstract class TwoArgFunction<InputType, OutputType> extends RuleFunction<InputType, OutputType> {
+    public TwoArgFunction(String description, String example) {
+        super(description, example);
+    }
+
     @Override
     public OutputType evaluate(Object... args) {
         Preconditions.checkArgument(args.length == 2);
