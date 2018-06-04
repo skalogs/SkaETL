@@ -3,8 +3,8 @@
     <v-card>
       <v-card-title class="card-title">Map of consumer processes</v-card-title>
 
-        <v-switch v-model="visibles" label="Consumer processes" color="success" value="consumer" hide-details></v-switch>
-        <v-switch v-model="visibles" label="Metric processes" color="red" value="metric" hide-details></v-switch>
+        <v-switch v-model="visibles" label="consumer" color="success" value="consumer" hide-details ripple></v-switch>
+        <v-switch v-model="visibles" label="metric" color="red" value="metric" hide-details></v-switch>
 
       <d3-network :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"/>
 
@@ -66,6 +66,7 @@
             nodeLabels: true,
             linkLabels: true,
             linkWidth: 2,
+            size:{h:700}
            },
            visibles: ['consumer','metric'],
            source: ''
