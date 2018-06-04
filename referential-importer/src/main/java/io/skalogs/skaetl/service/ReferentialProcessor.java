@@ -222,9 +222,11 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
     }
 
     private MetadataItem getItem(String field, Set<MetadataItem> metadataItemSet) {
-        for (MetadataItem item : metadataItemSet) {
-            if (item.getKey().equals(field)) {
-                return item;
+        if(metadataItemSet !=null && !metadataItemSet.isEmpty()) {
+            for (MetadataItem item : metadataItemSet) {
+                if (item.getKey().equals(field)) {
+                    return item;
+                }
             }
         }
         return null;
