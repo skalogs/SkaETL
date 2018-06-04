@@ -18,73 +18,51 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class UtilsNetworkService {
 
-    private final ConfService confService;
+    //private final ConfService confService;
     private final RegistryService registryService;
 
     public UtilsNetworkService(ConfService confService, RegistryService registryService) {
-        this.confService = confService;
+        //this.confService = confService;
         this.registryService = registryService;
     }
 
     public NetworkWeb viewNetwork(){
-        List<NetworkLinksWeb> listLink = new ArrayList<>();
-        Map<String,NetworkNodeWeb> mapNode = new HashMap<>();
+        List<NetworkLinksWeb> consumerListLink = new ArrayList<>();
+        Map<String, NetworkNodeWeb> consumerMapNode = new HashMap<>();
+        List<NetworkLinksWeb> metricListLink = new ArrayList<>();
+        Map<String, NetworkNodeWeb> metricMapNode = new HashMap<>();
 
-        //Process Consumer
+        // Consumer processes
         registryService.findAll(WorkerType.PROCESS_CONSUMER).stream()
                 .filter(consumerState -> consumerState.getStatusProcess() != StatusProcess.CREATION)
                 .map(consumerState -> (ProcessConsumer) consumerState.getProcessDefinition())
                 .collect(toList())
                 .stream()
-                .forEach(processConsumer -> addNodeLink(processConsumer,mapNode,listLink));
+                .forEach(processConsumer -> addConsumerNodeLink(processConsumer, consumerMapNode, consumerListLink));
+
+        // Metric processes
+        registryService.findAll(WorkerType.METRIC_PROCESS).stream()
+                .filter(metricState -> metricState.getStatusProcess() != StatusProcess.CREATION)
+                .map(metricState -> (ProcessMetric) metricState.getProcessDefinition())
+                .collect(toList())
+                .stream()
+                .forEach(processMetric -> addMetricNodeLink(processMetric, metricMapNode, metricListLink));
+
         return NetworkWeb.builder()
-                .linksList(listLink)
-                .nodeList(mapNode.values().stream().collect(toList()))
+                .consumerLinksList(consumerListLink)
+                .consumerNodeList(consumerMapNode.values().stream().collect(toList()))
+                .metricLinksList(metricListLink)
+                .metricNodeList(metricMapNode.values().stream().collect(toList()))
                 .build();
 
     }
 
-    /*
-    private String addParser(ProcessConsumer processConsumer, Map<String,NetworkNodeWeb> mapNode, List<NetworkLinksWeb> listLink,String prevId){
-        //add Parser
-        if(processConsumer.getProcessParser()!=null && !processConsumer.getProcessParser().isEmpty()){
-            for( ProcessParser processParser : processConsumer.getProcessParser()){
-                mapNode.put(processConsumer.getName()+"-"+processParser.getTypeParser().name(),NetworkNodeWeb.builder()
-                        .id(processConsumer.getName()+"-"+processParser.getTypeParser().name())
-                        .name("Parser "+processParser.getTypeParser().name()+"-"+processConsumer.getName())
-                        .color("blue")
-                        .build());
-                listLink.add(NetworkLinksWeb.builder()
-                        .sid(prevId)
-                        .tid(processConsumer.getName()+"-"+processParser.getTypeParser().name())
-                        .color("green")
-                        .build());
-                if(processParser.getActiveFailForward()!=null && StringUtils.isNotBlank(processParser.getFailForwardTopic())){
-                    mapNode.put(processParser.getFailForwardTopic(),NetworkNodeWeb.builder()
-                            .id(processParser.getFailForwardTopic())
-                            .name(processParser.getFailForwardTopic())
-                            .color("orange")
-                            .build());
-                    listLink.add(NetworkLinksWeb.builder()
-                            .sid(processConsumer.getName()+"-"+processParser.getTypeParser().name())
-                            .tid(processParser.getFailForwardTopic())
-                            .name("error")
-                            .color("red")
-                            .build());
-                }
-                prevId=processConsumer.getName()+"-"+processParser.getTypeParser().name();
-            }
-        }
-        return prevId;
-    }
-    */
-
-    private void addNodeLink(ProcessConsumer processConsumer, Map<String, NetworkNodeWeb> mapNode, List<NetworkLinksWeb> listLink) {
+    private void addConsumerNodeLink(ProcessConsumer processConsumer, Map<String, NetworkNodeWeb> mapNode, List<NetworkLinksWeb> listLink) {
 
         String source, target;
 
         //add node Input
-        source = processConsumer.getProcessInput().getTopicInput();
+        source = new StringBuilder().append("TOPIC [").append(processConsumer.getProcessInput().getTopicInput()).append("]").toString();
         mapNode.put(source, NetworkNodeWeb.builder()
                 .id(source)
                 .name(source)
@@ -95,7 +73,7 @@ public class UtilsNetworkService {
         for (ProcessOutput processOutput : processConsumer.getProcessOutput()) {
 
             if (processOutput.getTypeOutput() == TypeOutput.KAFKA)
-                target = processOutput.getParameterOutput().getTopicOut();
+                target = new StringBuilder().append("TOPIC [").append(processOutput.getParameterOutput().getTopicOut()).append("]").toString();
             else
                 target = processOutput.getTypeOutput().name();
 
@@ -112,6 +90,43 @@ public class UtilsNetworkService {
                     .tid(target)
                     .color("green")
                     .name(processConsumer.getName())
+                    .build());
+        }
+    }
+
+    private void addMetricNodeLink(ProcessMetric processMetric, Map<String, NetworkNodeWeb> mapNode, List<NetworkLinksWeb> listLink) {
+
+        String source, target;
+
+        // Adds input nodes
+        source = new StringBuilder().append("TOPIC [").append(processMetric.getFromTopic()).append("]").toString();
+        mapNode.put(source, NetworkNodeWeb.builder()
+                .id(source)
+                .name(source)
+                .color(getColor(TypeOutput.KAFKA))
+                .build());
+
+        // Adds output nodes
+        for (ProcessOutput processOutput : processMetric.getProcessOutputs()) {
+
+            if (processOutput.getTypeOutput() == TypeOutput.KAFKA)
+                target = new StringBuilder().append("TOPIC [").append(processOutput.getParameterOutput().getTopicOut()).append("]").toString();
+            else
+                target = processOutput.getTypeOutput().name();
+
+            mapNode.put(target, NetworkNodeWeb.builder()
+                    .id(target)
+                    .name(target)
+                    .color(getColor(processOutput.getTypeOutput()))
+                    .build());
+
+            // Adds links
+            listLink.add(NetworkLinksWeb.builder()
+                    .id(source + target)
+                    .sid(source)
+                    .tid(target)
+                    .color("red")
+                    .name(processMetric.getName())
                     .build());
         }
     }

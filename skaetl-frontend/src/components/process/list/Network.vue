@@ -3,6 +3,9 @@
     <v-card>
       <v-card-title class="card-title">Map of consumer processes</v-card-title>
 
+        <v-switch v-model="visibles" label="Consumer processes" color="success" value="consumer" hide-details></v-switch>
+        <v-switch v-model="visibles" label="Metric processes" color="red" value="metric" hide-details></v-switch>
+
       <d3-network :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"/>
 
       <v-layout row >
@@ -52,31 +55,51 @@
            msgError : '',
            nodes: [],
            links: [],
-           options:
-           {
-            force: 10000,
+           consumerNodes: [],
+           consumerLinks: [],
+           consumerNodes: [],
+           consumerLinks: [],
+           options: {
+            force: 15000,
             nodeSize: 20,
             nodeLabels: true,
             linkLabels: true,
             linkWidth: 2,
-           }
+           },
+           visibles: ['consumer','metric'],
       }
     },
     mounted() {
          this.$http.get('/process/network').then(response => {
              var network = response.data;
-             this.nodes=network.nodeList;
-             this.links=network.linksList;
-             console.log(this.links);
+             this.consumerNodes=network.consumerNodeList;
+             this.consumerLinks=network.consumerLinksList;
+             this.metricNodes=network.metricNodeList;
+             this.metricLinks=network.metricLinksList;
+             this.nodes=this.consumerNodes.concat(this.metricNodes);
+             this.links=this.consumerLinks.concat(this.metricLinks);
          }, response => {
            this.viewError=true;
            this.msgError = "Error during call service";
          });
     },
+    watch: {
+      visibles: function () {
+        this.nodes=[];
+        this.links=[];
+        if (this.visibles.includes("metric")) {
+          this.nodes = this.nodes.concat(this.metricNodes);
+          this.links = this.links.concat(this.metricLinks);
+        }
+        if (this.visibles.includes("consumer")) {
+          this.nodes = this.nodes.concat(this.consumerNodes);
+          this.links = this.links.concat(this.consumerLinks);
+        }
+      }
+    },
     methods: {
       lcb (link) {
-        link._svgAttrs = { 'marker-end': 'url(#m-end)',
-                           'marker-start': 'url(#m-start)'}
+        link._svgAttrs = { 'marker-end': 'url(#m-end)'}
         return link
       }
     }
