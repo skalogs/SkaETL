@@ -125,7 +125,7 @@
     },
     methods: {
       visualize(){
-        this.$router.push('/process/network');
+        this.$router.push('/process/network?source=metric');
       },
       refreshAction() {
         this.$http.get('/metric/listProcess').then(response => {

@@ -13,7 +13,8 @@ let router = new VueRouter({
         name: 'network',
         meta: {
           requiresAuth: true
-        }
+        },
+        props: (route) => ({ query: route.query.source })
       },
       {
         path: '/main/process',

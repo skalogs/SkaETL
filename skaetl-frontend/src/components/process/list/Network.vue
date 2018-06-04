@@ -16,7 +16,8 @@
         </v-flex>
       </v-layout>
       <v-card-actions>
-        <v-btn color="primary" flat href="/process/list">Return to consumer process list</v-btn>
+        <v-btn v-show="this.source =='consumer'" color="primary" flat href="/process/list">Return to consumer process list</v-btn>
+        <v-btn v-show="this.source =='metric'" color="primary" flat href="/metric/list">Return to metric process list</v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -67,6 +68,7 @@
             linkWidth: 2,
            },
            visibles: ['consumer','metric'],
+           source: ''
       }
     },
     mounted() {
@@ -76,8 +78,13 @@
              this.consumerLinks=network.consumerLinksList;
              this.metricNodes=network.metricNodeList;
              this.metricLinks=network.metricLinksList;
-             this.nodes=this.consumerNodes.concat(this.metricNodes);
-             this.links=this.consumerLinks.concat(this.metricLinks);
+
+             this.source = this.$route.query.source;
+             if (this.source == "metric")
+               this.visibles = ['metric'];
+             else
+               this.visibles = ['consumer'];
+
          }, response => {
            this.viewError=true;
            this.msgError = "Error during call service";

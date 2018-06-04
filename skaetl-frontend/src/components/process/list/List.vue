@@ -143,7 +143,7 @@
     },
     methods: {
         visualize(){
-          this.$router.push('/process/network');
+          this.$router.push('/process/network?source=consumer');
         },
         launchCaptureKafka(){
              this.$router.push('/process/live?topic='+this.process.idProcess+'parsedprocess&hostInput='+this.process.processInput.host+'&portInput='+this.process.processInput.port+'&offsetInput=latest');
