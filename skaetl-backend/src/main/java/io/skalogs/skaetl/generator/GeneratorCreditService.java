@@ -47,7 +47,7 @@ public class GeneratorCreditService {
     }
 
     private void generateDataForEndToEndView(int minute, Integer nbView){
-        for(int i = 0 ; i < nbView ;i++) {
+        for(int i = 0 ; i < nbView ;i = i+2) {
             ClientData clientData = utilsCreditData.getClient();
             String product = utilsCreditData.getProduct();
             String provider = utilsCreditData.getProvider();
@@ -62,7 +62,7 @@ public class GeneratorCreditService {
     }
 
     private void generateDataForEndToEndCreateCredit(int minute, Integer nbCredit){
-        for(int i = 0 ; i < nbCredit ;i++) {
+        for(int i = 0 ; i < nbCredit ;i = i+2) {
             Integer amount = 500 + utilsCreditData.random(19) * 1000;
             Integer creditDuration = utilsCreditData.getDuration();
             String product = utilsCreditData.getProduct();
