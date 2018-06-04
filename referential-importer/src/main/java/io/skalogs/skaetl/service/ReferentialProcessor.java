@@ -133,7 +133,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
     private void validationTimeAllField(ProcessReferential processReferential, Referential referential) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         long diffInSec = differenceTime(referential.getTimestampETL(), df.format(new Date()));
-        log.error("referential {} validationTimeAllField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),referential.getTimestampETL(),df.format(new Date()),diffInSec);
+        log.debug("referential {} validationTimeAllField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),referential.getTimestampETL(),df.format(new Date()),diffInSec);
         if (diffInSec > processReferential.getTimeValidationAllFieldInSec()) {
             ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
             jsonNode.put("typeReferential", "validation");
@@ -148,7 +148,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         if (item != null) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             long diffInSec = differenceTime(item.getTimestampETL(), df.format(new Date()));
-            log.error("referential {}  validationTimeField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),item.getTimestampETL(),df.format(new Date()),diffInSec);
+            log.debug("referential {}  validationTimeField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),item.getTimestampETL(),df.format(new Date()),diffInSec);
             if (diffInSec > processReferential.getTimeValidationFieldInSec()) {
                 ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
                 jsonNode.put("typeReferential", "validation");
