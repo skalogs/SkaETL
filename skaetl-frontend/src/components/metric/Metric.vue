@@ -192,6 +192,7 @@
           <v-card-text>
             <v-text-field label="Where condition" v-model="metricProcess.where"
                           hint="A condition such as myfield = 'something'" persistent-hint></v-text-field>
+            <FiltersHelp></FiltersHelp>
           </v-card-text>
           <v-card-actions>
             <v-btn color="primary" style="width: 120px" @click.native="previousStep()">
@@ -334,9 +335,10 @@
 
 <script>
   import Output from "../process/Output";
+  import FiltersHelp from "../process/FiltersHelp";
 
   export default {
-    components: {Output},
+    components: {FiltersHelp, Output},
     data() {
       return {
         metricProcess: {
