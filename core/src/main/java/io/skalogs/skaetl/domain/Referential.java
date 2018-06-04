@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.Wither;
 
@@ -22,6 +23,7 @@ public class Referential {
     public String type;
     @Builder.Default
     public RetentionLevel retentionLevel = RetentionLevel.year;
+    @JsonProperty("metadataItemSet_nested")
     public Set<MetadataItem> metadataItemSet = new HashSet<MetadataItem>();
     public String timestampETL;
 }
