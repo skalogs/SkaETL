@@ -55,8 +55,8 @@ public class UtilsCreditProcess {
                 .listMetadata(Lists.newArrayList("statusCredit","creditDuration","productName","user"))
                 .isValidationTimeField(true)
                 .fieldChangeValidation("statusCredit")
-                .timeValidationAllFieldInSec(8 * 60)
-                .timeValidationFieldInSec(8 * 60)
+                .timeValidationAllFieldInSec(24 * 60 * 60)
+                .timeValidationFieldInSec(24 * 60 * 60)
                 .isNotificationChange(true)
                 .fieldChangeNotification("statusCredit")
                 .build());
