@@ -1,13 +1,20 @@
 <template>
-  <v-container fluid grid-list-md>
+  <v-container fluid>
     <v-card>
-      <v-card-title class="card-title">Map of consumer processes</v-card-title>
-        <v-layout row>
-          <v-switch v-model="visibles" label="consumer" color="success" value="consumer" hide-details></v-switch>
-          <v-switch v-model="visibles" label="metric" color="red" value="metric" hide-details></v-switch>
-          <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
-          <v-slider v-model="force" min=0 max=200 thumb-label label="force" step="10" ticks></v-slider>
-        </v-layout>
+      <v-layout row wrap>
+        <v-flex xs2>
+          <div class="card-title">Processes map</div>
+        </v-flex>
+        <v-flex xs9>
+          <v-layout align-baseline>
+            <v-switch v-model="visibles" label="Consumers" color="success" value="consumer" hide-details></v-switch>
+            <v-switch v-model="visibles" label="Metrics" color="red" value="metric" hide-details></v-switch>
+            <v-spacer/><v-spacer/><v-spacer/>
+            <v-slider v-model="force" min=0 max=200 thumb-label label="Force" step="10" ticks></v-slider>
+          </v-layout>
+        </v-flex>
+      </v-layout>
+
       <d3-network :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"/>
 
       <v-layout row >
@@ -31,6 +38,7 @@
     color: #757575;
     font-size: 22px;
     font-weight: bold;
+    text-align: center;
   }
   #m-end path, #m-start{
     fill: rgba(18, 120, 98, 0.8);
