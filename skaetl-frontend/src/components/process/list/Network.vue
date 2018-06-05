@@ -1,9 +1,9 @@
 <template>
-  <v-container fluid grid-list-md >
+  <v-container fluid grid-list-md>
     <v-card>
       <v-card-title class="card-title">Map of consumer processes</v-card-title>
         <v-layout row>
-          <v-switch v-model="visibles" label="consumer" color="success" value="consumer" hide-details ripple></v-switch>
+          <v-switch v-model="visibles" label="consumer" color="success" value="consumer" hide-details></v-switch>
           <v-switch v-model="visibles" label="metric" color="red" value="metric" hide-details></v-switch>
           <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
           <v-slider v-model="force" min=0 max=20000 thumb-label label="force" step="1000" ticks></v-slider>
@@ -66,7 +66,6 @@
            consumerLinks: [],
            consumerNodes: [],
            consumerLinks: [],
-
            visibles: ['consumer','metric'],
            source: '',
            force: 10000
