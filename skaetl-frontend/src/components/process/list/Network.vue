@@ -36,7 +36,7 @@
     fill: rgba(18, 120, 98, 0.8);
   }
   .node-label{
-    font-size: 12;
+    font-size: 1.0em;
   }
   .node{
     stroke-width: 1;
@@ -45,7 +45,7 @@
   .link-label{
     fill: black;
     transform: translate(0,4);
-    font-size: 11;
+    font-size: .8em;
   }
 </style>
 
