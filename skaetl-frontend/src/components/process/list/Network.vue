@@ -36,16 +36,17 @@
     fill: rgba(18, 120, 98, 0.8);
   }
   .node-label{
-    font-size: 1.0em;
+    fill: #757575;
+    font-size: .9em;
   }
   .node{
     stroke-width: 1;
     stroke: rgba(0,0,0,.2);
   }
   .link-label{
-    fill: black;
-    transform: translate(0,4);
-    font-size: .8em;
+    fill: #757575;
+    transform: translate(0,.9em);
+    font-size: .9em;
   }
 </style>
 
