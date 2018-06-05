@@ -98,6 +98,9 @@
         if (this.visibles.includes("metric")) {
           this.nodes = this.nodes.concat(this.metricNodes);
           this.links = this.links.concat(this.metricLinks);
+          if (!this.visibles.includes("consumer")) {
+            this.links = this.links.filter(link => link.name != 'stream');
+          }
         }
         if (this.visibles.includes("consumer")) {
           this.nodes = this.nodes.concat(this.consumerNodes);
