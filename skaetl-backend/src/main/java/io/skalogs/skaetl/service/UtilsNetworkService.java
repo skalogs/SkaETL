@@ -130,7 +130,7 @@ public class UtilsNetworkService {
                     .sid(processInput)
                     .tid(source)
                     .name("stream")
-                    .color("orange")
+                    .color("green")
                     .build());
         }
 
