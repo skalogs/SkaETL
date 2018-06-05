@@ -2,10 +2,12 @@
   <v-container fluid grid-list-md >
     <v-card>
       <v-card-title class="card-title">Map of consumer processes</v-card-title>
-
-        <v-switch v-model="visibles" label="consumer" color="success" value="consumer" hide-details ripple></v-switch>
-        <v-switch v-model="visibles" label="metric" color="red" value="metric" hide-details></v-switch>
-
+        <v-layout row>
+          <v-switch v-model="visibles" label="consumer" color="success" value="consumer" hide-details ripple></v-switch>
+          <v-switch v-model="visibles" label="metric" color="red" value="metric" hide-details></v-switch>
+          <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
+          <v-slider v-model="force" min=0 max=20000 thumb-label label="force" step="1000" ticks></v-slider>
+        </v-layout>
       <d3-network :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"/>
 
       <v-layout row >
@@ -36,6 +38,10 @@
   .node-label{
     font-size: 12;
   }
+  .node{
+    stroke-width: 1;
+    stroke: rgba(0,0,0,.2);
+  }
   .link-label{
     fill: black;
     transform: translate(0,4);
@@ -60,16 +66,10 @@
            consumerLinks: [],
            consumerNodes: [],
            consumerLinks: [],
-           options: {
-            force: 15000,
-            nodeSize: 20,
-            nodeLabels: true,
-            linkLabels: true,
-            linkWidth: 2,
-            size:{h:700}
-           },
+
            visibles: ['consumer','metric'],
-           source: ''
+           source: '',
+           force: 10000
       }
     },
     mounted() {
@@ -90,6 +90,22 @@
            this.viewError=true;
            this.msgError = "Error during call service";
          });
+    },
+  	computed:{
+      options(){
+    	  return {
+      	  force: this.force,
+      	  forces:{
+            X:0.2,
+            Y:0.5
+          },
+          nodeSize: 20,
+          nodeLabels: true,
+          linkLabels: true,
+           linkWidth: 2,
+           size:{h:700}
+        }
+      }
     },
     watch: {
       visibles: function () {
