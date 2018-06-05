@@ -89,7 +89,7 @@ public class UtilsNetworkService {
                     .sid(source)
                     .tid(target)
                     .color("green")
-                    .name(new StringBuilder().append("Consumer process [").append(processConsumer.getName()).append("]").toString())
+                    .name(new StringBuilder().append("Consumer [").append(processConsumer.getName()).append("]").toString())
                     .build());
         }
     }
