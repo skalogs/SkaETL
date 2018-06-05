@@ -67,6 +67,7 @@ public class UtilsNetworkService {
                 .id(source)
                 .name(new StringBuilder().append("Topic [").append(processConsumer.getProcessInput().getTopicInput()).append("]").toString())
                 .color(getColor(TypeOutput.KAFKA))
+                .size(10)
                 .build());
 
         //add node Output
@@ -104,6 +105,7 @@ public class UtilsNetworkService {
                 .id(process)
                 .name(process)
                 .color("DarkBlue")
+                .size(12)
                 .build());
 
         // Adds input nodes

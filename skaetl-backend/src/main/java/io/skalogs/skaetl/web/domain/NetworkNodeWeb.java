@@ -14,4 +14,6 @@ public class NetworkNodeWeb {
     private String name;
     @JsonProperty("_color")
     private String color;
+    @JsonProperty("_size")
+    private int size;
 }
