@@ -6,7 +6,7 @@
           <v-switch v-model="visibles" label="consumer" color="success" value="consumer" hide-details></v-switch>
           <v-switch v-model="visibles" label="metric" color="red" value="metric" hide-details></v-switch>
           <v-spacer></v-spacer><v-spacer></v-spacer><v-spacer></v-spacer>
-          <v-slider v-model="force" min=0 max=20000 thumb-label label="force" step="1000" ticks></v-slider>
+          <v-slider v-model="force" min=0 max=200 thumb-label label="force" step="10" ticks></v-slider>
         </v-layout>
       <d3-network :net-nodes="nodes" :net-links="links" :options="options" :link-cb="lcb"/>
 
@@ -69,7 +69,7 @@
            consumerLinks: [],
            visibles: ['consumer','metric'],
            source: '',
-           force: 10000
+           force: 100
       }
     },
     mounted() {
@@ -94,7 +94,7 @@
   	computed:{
       options(){
     	  return {
-      	  force: this.force,
+      	  force: this.force * 100,
       	  forces:{
             X:0.2,
             Y:0.5
