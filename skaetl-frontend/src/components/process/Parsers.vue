@@ -73,6 +73,7 @@
         dialog: false,
         typeParser: ["CEF", "NITRO", "GROK", "CSV"],
         editedItem: {},
+        defaultItem: {},
         editedIndex: -1,
         headers: [
           { text: 'Type', value: 'typeParser'},
