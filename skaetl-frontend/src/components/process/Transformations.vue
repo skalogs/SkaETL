@@ -217,8 +217,10 @@
         this.editedIndex = this.processTransformations.indexOf(item);
         this.editedItem = _.cloneDeep(item);
         this.dialog = true;
-        for (var i = 0; i < this.editedItem.parameterTransformation.mapLookup.length; i++) {
-            console.log(this.editedItem.parameterTransformation.mapLookup[i]);
+        if (this.editedItem.typeTransformation == "LOOKUP_LIST") {
+          Object.entries(this.editedItem.parameterTransformation.mapLookup).forEach(
+            ([key, value]) => this.listLookup.push({oldValue: key, newValue: value})
+          );
         }
       },
       deleteItem(item) {
@@ -227,7 +229,7 @@
       },
 
       save() {
-        if (this.viewLookupList) {
+        if (this.editedItem.typeTransformation == "LOOKUP_LIST") {
           var result = {};
           for (var i = 0; i < this.listLookup.length; i++) {
             var itemLookup = this.listLookup[i];
