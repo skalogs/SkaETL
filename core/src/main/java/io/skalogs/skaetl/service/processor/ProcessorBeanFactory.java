@@ -35,6 +35,13 @@ public class ProcessorBeanFactory {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public ReferentialElasticsearchProcessor referentialElasticsearchProcessor() {
+        ESBuffer esBuffer = new ESBuffer(client, esBufferConfiguration, esConfiguration);
+        return new ReferentialElasticsearchProcessor(esBuffer, esErrorRetryWriter);
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public LoggingProcessor loggingProcessor() {
         return new LoggingProcessor();
     }

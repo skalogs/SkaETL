@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.serdes.GenericSerdes;
-import io.skalogs.skaetl.service.processor.JsonNodeToElasticSearchProcessor;
+import io.skalogs.skaetl.service.processor.ReferentialElasticsearchProcessor;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serdes;
@@ -27,7 +27,7 @@ public class ReferentialESService {
     public static String TOPIC_REFERENTIAL_NOTIFICATION_ES = "topicReferentialNotification";
     public static String TOPIC_REFERENTIAL_VALIDATION_ES = "topicReferentialValidation";
 
-    public ReferentialESService(KafkaConfiguration kafkaConfiguration,ReferentialElasticsearchProcessor referentialElasticsearchProcessor, KafkaAdminService kafkaAdminService) {
+    public ReferentialESService(KafkaConfiguration kafkaConfiguration, ReferentialElasticsearchProcessor referentialElasticsearchProcessor, KafkaAdminService kafkaAdminService) {
         this.referentialElasticsearchProcessor = referentialElasticsearchProcessor;
         this.bootstrapServer = kafkaConfiguration.getBootstrapServers();
         this.kafkaAdminService = kafkaAdminService;

@@ -1,11 +1,10 @@
-package io.skalogs.skaetl.service.referential;
+package io.skalogs.skaetl.service.processor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import io.skalogs.skaetl.domain.ESBuffer;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
-import io.skalogs.skaetl.service.processor.AbstractElasticsearchProcessor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
