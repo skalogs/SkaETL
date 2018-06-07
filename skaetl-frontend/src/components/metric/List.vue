@@ -167,7 +167,7 @@
         });
       },
       windowFormat(processDefinition) {
-        if (processDefinition.windowType == 'HOPPING') {
+        if (processDefinition.windowType != 'HOPPING') {
           return processDefinition.windowType + "(" + processDefinition.size + " " + processDefinition.sizeUnit + ")";
         } else {
           return processDefinition.windowType + "(" + processDefinition.size + " " + processDefinition.sizeUnit + ", " +
