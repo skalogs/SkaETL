@@ -3,23 +3,29 @@ language: java
 sudo: true
 
 services:
-  - docker
+- docker
 
 cache:
   directories:
-    - $HOME/.m2
-    - /home/travis/build/skalogs/skaetl/skaetl-frontend/node_modules
+  - "$HOME/.m2"
+  - "/home/travis/build/skalogs/skaetl/skaetl-frontend/node_modules"
+
 jdk:
-  - oraclejdk8
+- oraclejdk8
+
 os:
-  - linux
+- linux
 
 install:
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dasciidoctor.skip -Ddockerfile.skip -Dskip.npm -B -V
+- mvn install -DskipTests=true -Dmaven.javadoc.skip=true -Dasciidoctor.skip -Ddockerfile.skip -Dskip.npm -B -V
 
 script:
-  - mvn verify -B
+- mvn verify -B
 
 after_success:
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - mvn dockerfile:push
+- docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+- mvn dockerfile:push
+
+notifications:
+  slack:
+    secure: Uvv0kCzw80fR5QAlrIonw8gOZhpGfmanFiGbJIuiE0CaXY296xwhEUGKKJbZZBKaMfKYjqgGWtAYiY8OeDxMHSgtq9cDGn3n7sw/i17/zsu0cYRFpWcBft2CUW02Ns0BIZRcA1gf3e/iobwC95erCv4Vrs/LQYxl7rU6FloGhE3jpa3TvjARmV50Wp1qXG5fCaXmNvE912kDevBTKUtSsSU9WTDTLOifZ/zQnUS0awrc8ZUBWMOzRhvnRHiE4Nf2IF9ZIL1+OVvVEw2iRyHzcXcATBU0u9CoCRNZApXbNglEN/cMH3WzvW4TOkBLkH5E6q0nlnnbX7869vSHzrpWrRwgTul/Ofo+5+BUcSjLosvea9uj6hbtGfijqkYcl3z2Z3fTr1P8bg2ifl9r1CVcOP+CtQ0eUrPqjz/zm5I7bfepGBs49k4dQvGbUvCpvpaYg0OpUSiwAYbizxGdZOoJgsWY9R4/DvFahIB1GWnGnN4obyMI+nXQWpzg2eR+P+Mru0Z3nsJF6FossnmyIgMfI/wVTd8ts+LuUTGN1RHRJ4fKPDUIquJXCCJ5JFhLiNfhc0rQN/61QzKqCIBYau8gvWL7Q1eRRpQvY/x5Cm1I4eFfK+ZUkeX2UU+an+qjvAm3YaLdfZWgEzCbvPt0mv307UQN0H7YNFa8F5K+LTyRDYs=
