@@ -29,9 +29,9 @@ public class GeneratorCreditService {
             for(int i = 0 ; i < timeToGenerateInMinute ;i++) {
                 generateDataForEndToEndView(i, nbView);
                 generateDataForEndToEndCreateCredit(i, nbCredit);
-                generateRandonRq(i,nbRandomRq,generateScenarioMicroServiceProvider(utilsCreditData.getProvider(), UUID.randomUUID().toString()));
-                generateRandonRq(i,nbRandomRq,generateScenarioMicroServiceProduct(utilsCreditData.getProduct(), UUID.randomUUID().toString()));
-                generateRandonRq(i,nbRandomRq,generateScenarioMicroServiceCustomer(utilsCreditData.getClient(), UUID.randomUUID().toString()));
+                generateRandomRq(i,nbRandomRq,generateScenarioMicroServiceProvider(utilsCreditData.getProvider(), UUID.randomUUID().toString()));
+                generateRandomRq(i,nbRandomRq,generateScenarioMicroServiceProduct(utilsCreditData.getProduct(), UUID.randomUUID().toString()));
+                generateRandomRq(i,nbRandomRq,generateScenarioMicroServiceCustomer(utilsCreditData.getClient(), UUID.randomUUID().toString()));
                 Thread.sleep(1000);
             }
         } catch (InterruptedException e) {
@@ -39,7 +39,7 @@ public class GeneratorCreditService {
         }
     }
 
-    private void generateRandonRq(int minute, Integer nbRandomRq, InputDataCredit inputDataCredit){
+    private void generateRandomRq(int minute, Integer nbRandomRq, InputDataCredit inputDataCredit){
         int nbCreateRq = utilsCreditData.random(nbRandomRq);
         for(int i = 0 ; i < nbCreateRq ; i++) {
             utilsCreditData.generateScriptGlobalBackendRequest(minute, inputDataCredit);
