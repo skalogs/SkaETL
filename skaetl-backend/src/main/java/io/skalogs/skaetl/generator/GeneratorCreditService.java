@@ -213,6 +213,10 @@ public class GeneratorCreditService {
             product = "unknown";
             codeResponse = "404";
         }
+        if(utilsCreditData.random(30) == 1){
+            product = "unknown";
+            codeResponse = "500";
+        }
         Integer timeDB= utilsCreditData.random(500);
         Integer timeWS= utilsCreditData.random(50)+timeDB;
         Integer timeBL = utilsCreditData.random(10)+timeWS;
@@ -254,7 +258,7 @@ public class GeneratorCreditService {
         if(utilsCreditData.random(10) == 1){
             codeResponse = "404";
         }
-        Integer timeDB= utilsCreditData.random(10);
+        Integer timeDB= utilsCreditData.random(500);
         Integer timeWS= utilsCreditData.random(3000)+timeDB;
         Integer timeBL = utilsCreditData.random(10)+timeWS;
         Integer timeGlobal = utilsCreditData.random(2)+timeBL;
@@ -291,7 +295,7 @@ public class GeneratorCreditService {
             product = "unknown";
             codeResponse = "404";
         }
-        Integer timeDB= utilsCreditData.random(40);
+        Integer timeDB= utilsCreditData.random(250);
         Integer timeBL = utilsCreditData.random(10)+timeDB;
         Integer timeGlobal = utilsCreditData.random(2)+timeBL;
         return InputDataCredit.builder()
