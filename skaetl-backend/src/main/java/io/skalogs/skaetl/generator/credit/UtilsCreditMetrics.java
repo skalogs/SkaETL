@@ -25,17 +25,34 @@ public class UtilsCreditMetrics {
         this.metricProcessService = metricProcessService;
     }
 
-    public List<ProcessMetric> createFront(){
+    public List<ProcessMetric> createPerf(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
         processMetrics.add(ProcessMetric.builder()
-                .idProcess("FRONT_RESPONSE_TIME")
+                .idProcess("CREDIT_RESPONSE_TIME")
                 .name("Average Response Time")
-                .sourceProcessConsumers(Lists.newArrayList(idProcessFrontData))
+                .sourceProcessConsumers(Lists.newArrayList(idProcessFrontData,idProcessCustomerData,idProcessProductData,idProcessProviderData,idProcessCreditData))
                 .aggFunction("AVG(timeRequestMs_long)")
-                .where("type = \"front\"")
+                .groupBy("type")
                 .windowType(WindowType.TUMBLING)
                 .size(1)
                 .sizeUnit(TimeUnit.MINUTES)
+                .processOutputs(Lists.newArrayList(toEsOutput()))
+                .build());
+        processMetrics.add(ProcessMetric.builder()
+                .idProcess("CREDIT_SLOW_QUERIES")
+                .name("Credit - Slow Queries")
+                .sourceProcessConsumers(Lists.newArrayList(idProcessFrontData,idProcessCustomerData,idProcessProductData,idProcessProviderData,idProcessCreditData))
+                .aggFunction("AVG(timeRequestMs_long)")
+                .where("type = \"requestDB\"")
+                .having("> 250")
+                .windowType(WindowType.TUMBLING)
+                .size(1)
+                .sizeUnit(TimeUnit.MINUTES)
+                .sourceProcessConsumersB(Lists.newArrayList(idProcessFrontData,idProcessCustomerData,idProcessProductData,idProcessProviderData,idProcessCreditData))
+                .joinKeyFromA("requestId")
+                .joinKeyFromB("requestId")
+                .joinWindowUnit(TimeUnit.MINUTES)
+                .joinWindowSize(1)
                 .processOutputs(Lists.newArrayList(toEsOutput()))
                 .build());
         return processMetrics;
@@ -209,7 +226,7 @@ public class UtilsCreditMetrics {
         processMetrics.addAll(createCustomer());
         processMetrics.addAll(createProduct());
         processMetrics.addAll(createProvider());
-        processMetrics.addAll(createFront());
+        processMetrics.addAll(createPerf());
         createAndActivateMetrics(processMetrics);
     }
 
