@@ -285,6 +285,9 @@
                     <groupId>com.spotify</groupId>
                     <artifactId>dockerfile-maven-plugin</artifactId>
                     <version>1.4.0</version>
+                    <configuration>
+                        <googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>default</id>
