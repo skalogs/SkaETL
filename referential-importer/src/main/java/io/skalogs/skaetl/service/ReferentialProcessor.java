@@ -170,12 +170,14 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
     private void updateRefMetadata(Referential referential, MetadataItem itemNew) {
         Boolean noTreat = true;
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        for (MetadataItem itemRef : referential.getMetadataItemSet()) {
-            if (itemRef.getKey().equals(itemNew.getKey())) {
-                itemRef.setValue(itemNew.getValue());
-                itemRef.setTimestamp(referential.getTimestamp());
-                itemRef.setTimestampETL(df.format(new Date()));
-                noTreat = false;
+        if(referential.getMetadataItemSet() !=null && !referential.getMetadataItemSet().isEmpty()) {
+            for (MetadataItem itemRef : referential.getMetadataItemSet()) {
+                if (itemRef.getKey().equals(itemNew.getKey())) {
+                    itemRef.setValue(itemNew.getValue());
+                    itemRef.setTimestamp(referential.getTimestamp());
+                    itemRef.setTimestampETL(df.format(new Date()));
+                    noTreat = false;
+                }
             }
         }
         if (noTreat) {
