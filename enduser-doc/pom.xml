@@ -75,6 +75,7 @@
                     <repository>skalogs/enduser-doc</repository>
                     <tag>${project.version}</tag>
                     <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                    <skip>${dockerfile.skip}</skip>
                 </configuration>
             </plugin>
         </plugins>

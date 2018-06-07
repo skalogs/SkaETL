@@ -86,6 +86,7 @@
                     <repository>skalogs/skaetl-frontend</repository>
                     <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
                     <tag>${project.version}</tag>
+                    <skip>${dockerfile.skip}</skip>
                 </configuration>
             </plugin>
 
