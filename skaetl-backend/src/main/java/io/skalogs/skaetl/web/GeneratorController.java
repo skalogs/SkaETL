@@ -77,10 +77,10 @@ public class GeneratorController {
 
     @ResponseStatus(CREATED)
     @GetMapping("/inputCredit")
-    public void inputCredit(@PathParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
-                            @PathParam("nbView") Integer nbView,
-                            @PathParam("nbCredit") Integer nbCredit,
-                            @PathParam("nbRandomRq") Integer nbRandomRq) {
+    public void inputCredit(@RequestParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
+                            @RequestParam("nbView") Integer nbView,
+                            @RequestParam("nbCredit") Integer nbCredit,
+                            @RequestParam("nbRandomRq") Integer nbRandomRq) {
         generatorCreditService.generateData(timeToGenerateInMinute,nbView,nbCredit,nbRandomRq);
     }
 
