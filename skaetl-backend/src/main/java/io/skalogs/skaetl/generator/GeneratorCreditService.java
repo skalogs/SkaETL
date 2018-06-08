@@ -248,7 +248,6 @@ public class GeneratorCreditService {
                 .email(clientData.getEmail())
                 .type("credit")
                 .topic("credit")
-                .statusCredit(null)
                 .statusCredit(StatusCredit.INPROGRESS)
                 .build();
     }
