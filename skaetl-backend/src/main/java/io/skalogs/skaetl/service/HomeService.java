@@ -8,10 +8,8 @@ import io.skalogs.skaetl.web.domain.HomeWeb;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -41,45 +39,6 @@ public class HomeService {
                 .build();
     }
 
-    public DataCharts chartsForClients(){
-        log.info("loading chartsForClients ");
-        List<DataUnitCharts> data = new ArrayList<>();
-        data.add(buildchartsForClients());
-        for(String elem :confSkalogsService.tabEnv){
-            data.add(buildchartsForClientsKey("env",elem));
-        }
-        return DataCharts.builder()
-                .datasets(data)
-                .build();
-    }
-
-    private DataUnitCharts buildchartsForClients(){
-        return DataUnitCharts.builder()
-                .borderColor(randomColor())
-                .label("All client")
-                .data(promservice.fetchDataCapture("skaetl_fetch_skalogs_conf", null, null, 5))
-                .build();
-    }
-
-    private DataUnitCharts buildchartsForClientsKey(String key, String value){
-        return DataUnitCharts.builder()
-                .borderColor(randomColor())
-                .label("Client for "+value)
-                .data(promservice.fetchDataCapture("skaetl_fetch_skalogs_conf", key, value, 5))
-                .build();
-    }
-
-    public DataCharts chartsForMetrics() {
-        log.info("loading chartsForMetrics ");
-        return DataCharts.builder()
-                .datasets(registryService.findAll(WorkerType.METRIC_PROCESS).stream()
-                        .filter(e -> e.getStatusProcess() == StatusProcess.ENABLE)
-                        .map(e -> buildChartsMetric(e))
-                        .flatMap(e -> e.stream())
-                        .collect(Collectors.toList()))
-                .build();
-    }
-
     private DataUnitCharts buildChartsProcess(ConsumerState consumerState) {
         String name =consumerState.getProcessDefinition().getName();
         return DataUnitCharts.builder()
@@ -87,38 +46,6 @@ public class HomeService {
                 .label("Input "+ name)
                 .data(promservice.fetchDataCapture("skaetl_nb_read_kafka_count", "processConsumerName", name, 5))
                 .build();
-    }
-
-    private List<DataUnitCharts> buildChartsMetric(ConsumerState consumerState) {
-        String name = consumerState.getProcessDefinition().getName();
-        List<DataUnitCharts> charts = new ArrayList<>();
-        charts.add(DataUnitCharts.builder()
-                .borderColor(randomColor())
-                .label("Input "+name)
-                .data(promservice.fetchDataCapture("skaetl_nb_metric_input", "metricConsumerName", name, 5))
-                .build());
-        charts.add(DataUnitCharts.builder()
-                .borderColor(randomColor())
-                .label("Output "+name)
-                .data(promservice.fetchDataCapture("skaetl_nb_metric_output", "metricConsumerName", name, 5))
-                .build());
-        return charts;
-    }
-
-    private List<DataUnitCharts> buildChartsReferential(ConsumerState consumerState) {
-        String name = consumerState.getProcessDefinition().getName();
-        List<DataUnitCharts> charts = new ArrayList<>();
-        charts.add(DataUnitCharts.builder()
-                .borderColor(randomColor())
-                .label("Input " + name)
-                .data(promservice.fetchDataCapture("skaetl_nb_referential_input", "referentialConsumerName", name, 5))
-                .build());
-        charts.add(DataUnitCharts.builder()
-                .borderColor(randomColor())
-                .label("Output " + name)
-                .data(promservice.fetchDataCapture("skaetl_nb_referential_output", "referentialConsumerName", name, 5))
-                .build());
-        return charts;
     }
 
     public HomeWeb getHome() {

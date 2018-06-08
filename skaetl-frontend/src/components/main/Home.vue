@@ -454,6 +454,7 @@
          });
          this.$http.get('/home/dataCapture').then(response => {
            this.dataCharts=response.data;
+           console.log(this.dataCharts);
          }, response => {
            this.viewError=true;
            this.msgError = "Error during call service";

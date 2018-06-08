@@ -24,7 +24,8 @@
           </v-stepper-header>
 
           <v-stepper-content step="1">
-            <v-card class="mb-5" >
+          <div v-on:keyup.13="nextStep()">
+            <v-card class="mb-5">
               <v-card-title><div class="headline">Choose a Logstash configuration name</div></v-card-title>
               <v-card-text>
                 <v-text-field label="Name of your configuration" v-model="configurationLogstash.name" required></v-text-field>
@@ -34,10 +35,11 @@
                 <v-btn color="primary" style="width: 120px" @click.native="nextStep()" :disabled="!configurationLogstash.name">Next<v-icon>navigate_next</v-icon></v-btn>
               </v-card-actions>
             </v-card>
+            </div>
          </v-stepper-content>
 
           <v-stepper-content step="2">
-            <v-card class="mb-5 pa-3">
+            <v-card class="mb-5 pa-3" @keydown.enter="nextStep()">
               <v-card-title><div class="headline">Describe your attributes</div></v-card-title>
               <v-card-text>
                <v-flex xs12 sm6 md6>
@@ -69,7 +71,7 @@
 
 
           <v-stepper-content step="3">
-            <v-card class="mb-5 pa-3">
+            <v-card class="mb-5 pa-3" @keydown.enter="nextStep()">
               <v-card-title><div class="headline">Select your inputs</div></v-card-title>
               <v-card-text>
                  <v-flex>
@@ -132,7 +134,7 @@
           </v-stepper-content>
 
            <v-stepper-content step="4">
-              <v-card class="mb-5 pa-3" >
+              <v-card class="mb-5 pa-3">
                 <v-card-title><div class="headline">Select your outputs</div></v-card-title>
                 <v-card-text>
                    <v-flex>
