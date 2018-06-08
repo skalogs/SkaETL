@@ -271,7 +271,7 @@ public class GeneratorCreditService {
                 .serviceBL("customerService")
                 .database("CUSTOMER_PROD")
                 .typeDB("SELECT")
-                .requestDB("SELECT * FROM CUSTOMER WHERE firstname='"+clientData.getFirstName()+"' and lastname='"+clientData.getLastName()+"' ans email='"+clientData.getEmail()+"'")
+                .requestDB("SELECT * FROM CUSTOMER WHERE firstname='"+clientData.getFirstName()+"' and lastname='"+clientData.getLastName()+"' and email='"+clientData.getEmail()+"'")
                 .firstName(clientData.getFirstName())
                 .lastName(clientData.getLastName())
                 .email(clientData.getEmail())
