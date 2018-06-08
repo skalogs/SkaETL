@@ -60,18 +60,18 @@ public class GeneratorController {
 
     @ResponseStatus(CREATED)
     @GetMapping("/inputCart")
-    public void inputCart(@PathParam("nbCustomer") Integer nbCustomer,
-                          @PathParam("nbShowByMinute") Integer nbShowByMinute,
-                          @PathParam("nbAddToCartByMinute") Integer nbAddToCartByMinute,
-                          @PathParam("nbPaySuccessByMinute") Integer nbPaySuccessByMinute,
-                          @PathParam("nbPayNotSuccessByMinute") Integer nbPayNotSuccessByMinute,
-                          @PathParam("timeToGenerateInMinute") Integer timeToGenerateInMinute ) {
+    public void inputCart(@RequestParam("nbCustomer") Integer nbCustomer,
+                          @RequestParam("nbShowByMinute") Integer nbShowByMinute,
+                          @RequestParam("nbAddToCartByMinute") Integer nbAddToCartByMinute,
+                          @RequestParam("nbPaySuccessByMinute") Integer nbPaySuccessByMinute,
+                          @RequestParam("nbPayNotSuccessByMinute") Integer nbPayNotSuccessByMinute,
+                          @RequestParam("timeToGenerateInMinute") Integer timeToGenerateInMinute ) {
         generatorCartService.generateData(nbCustomer, nbShowByMinute, nbAddToCartByMinute, nbPaySuccessByMinute, nbPayNotSuccessByMinute, timeToGenerateInMinute);
     }
 
     @ResponseStatus(CREATED)
     @GetMapping("/inputSpecificCart")
-    public void inputSpecificCart(@PathParam("nbCustomer") Integer nbCustomer) {
+    public void inputSpecificCart(@RequestParam("nbCustomer") Integer nbCustomer) {
         generatorCartService.generateSpecificUsecase(nbCustomer);
     }
 
@@ -86,8 +86,8 @@ public class GeneratorController {
 
     @ResponseStatus(CREATED)
     @GetMapping("/inputCreditRef")
-    public void inputCreditRef(@PathParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
-                            @PathParam("nbCredit") Integer nbCredit) {
+    public void inputCreditRef(@RequestParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
+                            @RequestParam("nbCredit") Integer nbCredit) {
         generatorCreditService.generateDataForRef(timeToGenerateInMinute,nbCredit);
     }
 
