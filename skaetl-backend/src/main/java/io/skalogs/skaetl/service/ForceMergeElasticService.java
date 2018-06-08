@@ -51,7 +51,7 @@ public class ForceMergeElasticService {
     private void forceMerge(String index) {
         log.info("forceMerge index {}",index);
         try {
-            Response response = client.getLowLevelClient().performRequest("POST", "/"+index+"/_forcemerge?only_expunge_deletes=true&max_num_segments=100&flush=true");
+            Response response = client.getLowLevelClient().performRequest("POST", index+"/_forcemerge?only_expunge_deletes=true&max_num_segments=100&flush=true");
             log.info("response after forceMerge {}",EntityUtils.toString(response.getEntity()));
         } catch (IOException e) {
             log.error("Error during forceMerge request for {] msg {}",index,e);
