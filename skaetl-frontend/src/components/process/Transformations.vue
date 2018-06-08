@@ -140,7 +140,7 @@
             "composeField": {"key": "", "value": ""},
             "formatDateValue": {"keyField": "", "srcFormat": "", "targetFormat": ""},
             "keyField": "",
-            "mapLookup": [],
+            "mapLookup": {},
             "externalHTTPData": {"url": "http://url:port", "refresh": "10", "httpMethod": "GET", "body": ""},
             "processHashData": {"field": "", "typeHash": "SHA256"}
           }
@@ -156,7 +156,7 @@
             "composeField": {"key": "", "value": ""},
             "formatDateValue": {"keyField": "", "srcFormat": "", "targetFormat": ""},
             "keyField": "",
-            "mapLookup": [],
+            "mapLookup": {},
             "externalHTTPData": {"url": "http://url:port", "refresh": "10", "httpMethod": "GET", "body": ""},
             "processHashData": {"field": "", "typeHash": "SHA256"}
           }
