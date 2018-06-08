@@ -48,6 +48,11 @@
               </v-btn>
             </td>
             <td class="text-xs-center">{{props.item.processDefinition.name}}</td>
+            <td class="text-md-center">
+                <v-flex v-for="item in props.item.processDefinition.sourceProcessConsumers">
+                  <v-chip color="orange lighten-2">{{ getProcessName(item) }} </v-chip>
+                </v-flex>
+            </td>
             <td class="text-xs-center">
               <v-chip color="blue-grey lighten-3" small>{{props.item.processDefinition.aggFunction}}</v-chip>
             </td>
@@ -105,13 +110,15 @@
         headers: [
           {text: 'Action', align: 'center', sortable: 0, value: '', width: '4%'},
           {text: 'Name', align: 'center', value: 'processDefinition.name', width: '8%'},
+          {text: 'Process',align: 'center',sortable: 0,value: '', width: '10%'},
           {text: 'Function', align: 'center', value: 'processDefinition.aggFunction', width: '16%'},
           {text: 'Window', align: 'center', sortable: 0, value: '', width: '8%'},
           {text: 'Where', align: 'center', value: 'processDefinition.where', width: '8%'},
           {text: 'Group By', align: 'center', value: 'processDefinition.groupBy', width: '16%'},
           {text: 'Having', align: 'center', value: 'processDefinition.having', width: '16%'},
           {text: 'Output', align: 'center', value: 'processDefinition.processOutputs',width: '8%' }
-        ]
+        ],
+        sourceProcesses: new Map()
       }
     },
     mounted() {
@@ -173,8 +180,23 @@
           return processDefinition.windowType + "(" + processDefinition.size + " " + processDefinition.sizeUnit + ", " +
             processDefinition.advanceBy + " " + processDefinition.advanceByUnit + ")";
         }
+      },
+      getProcessName(id){
+        if (this.sourceProcesses != undefined && this.sourceProcesses.get(id) != undefined) {
+            return this.sourceProcesses.get(id);
+        } else {
+          this.$http.get('/referential/find', {params: {idReferential: id}}).then(response => {
+            this.process = response.data;
+            name = this.process.name;
+            this.sourceProcesses.set(id, name);
+            return name;
+          }, response => {
+            this.viewError=true;
+            this.msgError = "Error during call service";
+        });
+        this.refreshAction();
+        }
       }
-
     }
   }
 </script>
