@@ -36,7 +36,7 @@ public class ForceMergeElasticService {
                     JsonNode jsonNode = JSONUtils.getInstance().parse(responseBody);
                     if(jsonNode!=null) {
                         jsonNode.findValues("index").stream()
-                                .filter(itemJsonNode -> itemJsonNode.asText().contains("metrics") || itemJsonNode.asText().contains("referential"))
+                                .filter(itemJsonNode -> itemJsonNode.asText().contains("-metrics-") || itemJsonNode.asText().contains("-referential-"))
                                 .forEach(itemJsonNode -> forceMerge(itemJsonNode.asText()));
                     }
                 }
