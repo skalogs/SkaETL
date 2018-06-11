@@ -179,9 +179,9 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
                     noTreat = false;
                 }
             }
-        }
-        if (noTreat) {
-            referential.getMetadataItemSet().add(itemNew);
+            if (noTreat) {
+                referential.getMetadataItemSet().add(itemNew);
+            }
         }
     }
 
