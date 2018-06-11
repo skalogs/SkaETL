@@ -54,25 +54,33 @@ public class KafkaAdminService {
     public void buildTopic(String... topicList) {
         createTopics(Stream.of(topicList)
                 .filter(e -> StringUtils.isNotBlank(e))
-                .map(e -> createTopic(e))
+                .map(e -> buildTopicInfo(e))
                 .collect(toList()));
     }
 
-    private TopicInfo createTopic(String item) {
+    private TopicInfo buildTopicInfo(String item) {
+        return buildTopicInfo(item,TopicConfig.CLEANUP_POLICY_DELETE);
+    }
+
+    public TopicInfo buildTopicInfo(String item, String cleanupStrategy) {
         return TopicInfo.builder()
                 .name(item)
                 .secure(zookeeperConfiguration.isTopicSecured())
                 .retentionHours(zookeeperConfiguration.getTopicDefaultRetentionHours())
                 .replica(zookeeperConfiguration.getTopicDefaultReplica())
                 .partition(zookeeperConfiguration.getTopicDefaultPartition())
+                .cleanupPolicy(cleanupStrategy)
                 .build();
     }
+
+
 
     public void createTopic(TopicInfo topicInfo) {
 
         Properties paramTopic = new Properties();
         Integer retention = topicInfo.getRetentionHours() * 60 * 1000;
         paramTopic.put(TopicConfig.RETENTION_MS_CONFIG, retention.toString());
+        paramTopic.put(TopicConfig.CLEANUP_POLICY_CONFIG, topicInfo.getCleanupPolicy());
 
         ZkUtils zkUtils = zookeeperConfiguration.newConnection();
 

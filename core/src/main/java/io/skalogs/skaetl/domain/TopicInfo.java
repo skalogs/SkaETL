@@ -19,4 +19,5 @@ public class TopicInfo {
     private Integer sessionTimeoutSec;
     private Integer connectionTimeoutSec;
     private String bootstrapServers;
+    private String cleanupPolicy;
 }

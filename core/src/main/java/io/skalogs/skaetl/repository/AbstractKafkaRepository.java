@@ -10,6 +10,7 @@ import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.Getter;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -40,7 +41,7 @@ public abstract class AbstractKafkaRepository<V> {
         this.repositoryName = name + "-db";
         this.keyFunction = keyFunction;
         this.producer = KafkaUtils.kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, JsonNodeSerialializer.class);
-        kafkaAdminService.buildTopic(repositoryName);
+        kafkaAdminService.createTopic(kafkaAdminService.buildTopicInfo(repositoryName,TopicConfig.CLEANUP_POLICY_COMPACT));
 
         Properties props = KafkaUtils.createKStreamProperties(repositoryName + "-stream"+ UUID.randomUUID().toString(), kafkaConfiguration.getBootstrapServers());
         StreamsBuilder builder = new StreamsBuilder();
