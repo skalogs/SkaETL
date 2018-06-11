@@ -2,6 +2,7 @@ package io.skalogs.skaetl.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import io.prometheus.client.Counter;
 import io.skalogs.skaetl.domain.*;
@@ -53,7 +54,7 @@ public class GenericValidator {
     }
 
 
-    public ValidateData mandatoryImporter(String value, JsonNode jsonValue) {
+    public ValidateData mandatoryImporter(String value, ObjectNode jsonValue) {
         //JSON
         if (jsonValue == null) {
             nbMandatoryImporter.labels("jsonFormat").inc();
@@ -83,10 +84,10 @@ public class GenericValidator {
         try {
             if (StringUtils.isBlank(timestampAsString)) {
                 timestamp = dateFormat.parse(timestampAnnotedAsString);
+                jsonValue.set("timestamp", jsonValue.path("@timestamp"));
             } else {
                 timestamp = dateFormat.parse(timestampAsString);
             }
-
         } catch (ParseException e) {
             return createValidateData(jsonValue, project, type, false, StatusCode.invalid_format_timestamp, TypeValidation.MANDATORY_FIELD, value);
         }
@@ -94,7 +95,7 @@ public class GenericValidator {
     }
 
     public ValidateData process(String value, ProcessConsumer processConsumer) {
-        JsonNode jsonValue = createJsonObject(value);
+        ObjectNode jsonValue = (ObjectNode) createJsonObject(value);
 
         ValidateData validateMandatory = mandatoryImporter(value, jsonValue);
         if (!validateMandatory.success) {
