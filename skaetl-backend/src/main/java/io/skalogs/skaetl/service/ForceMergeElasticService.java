@@ -24,7 +24,7 @@ public class ForceMergeElasticService {
         this.esConfiguration = esConfiguration;
     }
 
-    @Scheduled(cron = "* 0/30 * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public void forceMergeAllIndexMetricsAndReferential(){
         log.info("start forceMerge All Index Metrics And Referential");
         try {
