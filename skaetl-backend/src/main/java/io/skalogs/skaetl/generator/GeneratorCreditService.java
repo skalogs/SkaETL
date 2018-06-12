@@ -76,10 +76,10 @@ public class GeneratorCreditService {
             Integer timeFront = timeTotalRequest + utilsCreditData.random(20);
             utilsCreditData.generateScriptGlobalFrontEndRequest(minute, "front-create-credit", "/view/demandeCredit", "POST", "200", amount, creditDuration, product, clientData, requestId, timeFront);
             //Validation Credit
-            Integer gap = utilsCreditData.random(10);
+            Integer gap = utilsCreditData.random(1);
             Integer minToValidate = minute + 30;
             if(gap == 2){
-                minToValidate = minute + 4 * 60;
+                minToValidate = minute + 2 * 60;
             }
             utilsCreditData.generateScriptGlobalBackendRequest(minToValidate, generateScenarioMicroServiceValidationCredit(amount, creditDuration, product, clientData, requestId, provider));
         }

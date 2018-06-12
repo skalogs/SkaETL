@@ -42,29 +42,31 @@ public class UtilsCreditProcess {
         this.mapProduct.put("REVOL","credit revolving");
     }
 
-    private void createReferentialCredit(){
+    private void createReferentialCredit() {
         //Track db_ip
         //validation -> if no activity on status credit 1 day -> produce a message for inactivity
         //notification -> if statusCredit change -> produce a message for change
-        referentialService.updateReferential(ProcessReferential.builder()
-                .name("referentialCreditStatus")
-                .idProcess("demoReferentialCreditStatus")
-                .referentialKey("Client")
-                .listIdProcessConsumer(Lists.newArrayList(idProcessCreditData))
-                .listAssociatedKeys(Lists.newArrayList("email"))
-                .listMetadata(Lists.newArrayList("statusCredit","creditDuration","productName","user"))
-                .isValidationTimeField(true)
-                .fieldChangeValidation("statusCredit")
-                .timeValidationAllFieldInSec(4 * 60 * 60)
-                .timeValidationFieldInSec(4 * 60 * 60)
-                .isNotificationChange(true)
-                .fieldChangeNotification("statusCredit")
-                .build());
-        try {
-            Thread.sleep(2000);
-            referentialService.activateProcess((ProcessReferential) referentialService.findReferential("demoReferentialCreditStatus"));
-        }catch (Exception e){
-            log.error("Exception {}",e);
+        if (referentialService.findReferential("demoReferentialCreditStatus") == null){
+                referentialService.updateReferential(ProcessReferential.builder()
+                        .name("referentialCreditStatus")
+                        .idProcess("demoReferentialCreditStatus")
+                        .referentialKey("Client")
+                        .listIdProcessConsumer(Lists.newArrayList(idProcessCreditData))
+                        .listAssociatedKeys(Lists.newArrayList("email"))
+                        .listMetadata(Lists.newArrayList("statusCredit", "creditDuration", "productName", "user"))
+                        .isValidationTimeField(true)
+                        .fieldChangeValidation("statusCredit")
+                        .timeValidationAllFieldInSec(2 * 60 * 60)
+                        .timeValidationFieldInSec(2 * 60 * 60)
+                        .isNotificationChange(true)
+                        .fieldChangeNotification("statusCredit")
+                        .build());
+            try {
+                Thread.sleep(2000);
+                referentialService.activateProcess((ProcessReferential) referentialService.findReferential("demoReferentialCreditStatus"));
+            } catch (Exception e) {
+                log.error("Exception {}", e);
+            }
         }
     }
 
