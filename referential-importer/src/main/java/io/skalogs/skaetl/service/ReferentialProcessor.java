@@ -191,7 +191,6 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         if (processReferential.getIsNotificationChange()) {
             MetadataItem itemOld = getItem(processReferential.getFieldChangeNotification(), referential.getMetadataItemSet());
             MetadataItem itemNew = getItem(processReferential.getFieldChangeNotification(), referentialNew.getMetadataItemSet());
-            log.error("itemOld {} itemNew {} ",itemOld,itemNew);
             if (itemNew != null && itemOld == null) {
                 notificationReferentialToKafka(referential, itemNew.getTimestamp(), new Long(0L), processReferential.getFieldChangeNotification(), itemNew.getValue());
             } else if (itemNew != null && !itemOld.getValue().equals(itemNew.getValue())) {
