@@ -7,7 +7,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.websocket.server.PathParam;
 
 import static org.springframework.http.HttpStatus.CREATED;
 
@@ -83,6 +82,16 @@ public class GeneratorController {
                             @RequestParam("nbRandomRq") Integer nbRandomRq) {
         generatorCreditService.generateData(timeToGenerateInMinute,nbView,nbCredit,nbRandomRq);
     }
+
+    @ResponseStatus(CREATED)
+    @GetMapping("/inputCreditLong")
+    public void inputCreditLong(@RequestParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
+                                @RequestParam("nbView") Integer nbView,
+                                @RequestParam("nbCredit") Integer nbCredit,
+                                @RequestParam("nbRandomRq") Integer nbRandomRq) {
+        generatorCreditService.generateLongData(timeToGenerateInMinute, nbView, nbCredit, nbRandomRq);
+    }
+
 
     @ResponseStatus(CREATED)
     @GetMapping("/inputCreditRef")

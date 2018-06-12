@@ -20,6 +20,28 @@ public class GeneratorCreditService {
         this.utilsCreditMetrics = utilsCreditMetrics;
     }
 
+    public void generateLongData(Integer timeToGenerateInHours, Integer nbView, Integer nbCredit, Integer nbRandomRq) {
+        try {
+            utilsProcess.createAllProcess();
+            utilsProcess.createAllReferential();
+            utilsCreditMetrics.createAllMetrics();
+            Thread.sleep(5000);
+            Integer timeToGenerateInMinute = timeToGenerateInHours * 60;
+            for (int i = 0; i < timeToGenerateInMinute; i++) {
+                generateDataForEndToEndView(i, nbView);
+                if (i % 30 == 0) {
+                    generateDataForEndToEndCreateCredit(i, nbCredit);
+                }
+                generateRandomRq(i, nbRandomRq, generateScenarioMicroServiceProvider(utilsCreditData.getProvider(), UUID.randomUUID().toString()));
+                generateRandomRq(i, nbRandomRq, generateScenarioMicroServiceProduct(utilsCreditData.getProduct(), UUID.randomUUID().toString()));
+                generateRandomRq(i, nbRandomRq, generateScenarioMicroServiceCustomer(utilsCreditData.getClient(), UUID.randomUUID().toString()));
+                Thread.sleep(1000);
+            }
+        } catch (InterruptedException e) {
+            log.error("InterruptedException ", e);
+        }
+    }
+
     public void generateData(Integer timeToGenerateInMinute, Integer nbView, Integer nbCredit, Integer nbRandomRq) {
         try {
             utilsProcess.createAllProcess();

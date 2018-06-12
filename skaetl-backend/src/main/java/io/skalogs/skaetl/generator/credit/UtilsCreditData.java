@@ -1,10 +1,8 @@
 package io.skalogs.skaetl.generator.credit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.utils.KafkaUtils;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -12,14 +10,14 @@ import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
 
 @Slf4j
 @Component
 public class UtilsCreditData {
-    private Random RANDOM = new Random();
     private final ObjectMapper mapper = new ObjectMapper();
-
     private final String[] tabCustomerFirstName = new String[]{
             "JAMES",
             "JOHN",
@@ -87,7 +85,6 @@ public class UtilsCreditData {
             "KING",
             "SCOTT"
     };
-
     private final String[] tabProduct = new String[]{
             "AUTOM",
             "CONSO",
@@ -95,7 +92,6 @@ public class UtilsCreditData {
             "ECOLO",
             "REVOL"
     };
-
     private final String[] tabProvider = new String[]{
             "WEBSITE",
             "AGENCE",
@@ -103,14 +99,12 @@ public class UtilsCreditData {
             "PARTENAIRE 1",
             "PARTENAIRE 2"
     };
-
     private final String[] tabUser = new String[]{
             "u24589",
             "u10451",
             "u10852",
             "u29214"
     };
-
     private final String[] tabDomain = new String[]{
             "yahoo.com",
             "gmail.com",
@@ -119,7 +113,6 @@ public class UtilsCreditData {
             "live.com",
             "yandex.com"
     };
-
     private final Integer[] tabDuration = new Integer[]{
             6,
             12,
@@ -129,9 +122,9 @@ public class UtilsCreditData {
             48,
             60
     };
-
     private final String topic;
     private final Producer<String, String> producer;
+    private Random RANDOM = new Random();
 
     public UtilsCreditData(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
         producer = kafkaUtils.kafkaProducer();
@@ -161,7 +154,7 @@ public class UtilsCreditData {
     private Date addMinutesAndSecondsToTime(int minutesToAdd, int secondsToAdd, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTime());
-        cal.add(Calendar.HOUR, -3);
+        cal.add(Calendar.HOUR, -6);
         cal.add(Calendar.MINUTE, minutesToAdd);
         cal.add(Calendar.SECOND, secondsToAdd);
         return cal.getTime();
