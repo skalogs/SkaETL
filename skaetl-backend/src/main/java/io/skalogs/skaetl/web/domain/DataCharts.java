@@ -1,9 +1,9 @@
 package io.skalogs.skaetl.web.domain;
 
-
 import lombok.*;
 
 import java.util.List;
+
 @Builder
 @Getter
 @Setter
@@ -11,7 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class DataCharts {
-
     private List<DataUnitCharts> datasets;
-
 }
