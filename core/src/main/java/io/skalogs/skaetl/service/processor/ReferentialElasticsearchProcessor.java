@@ -27,7 +27,7 @@ public class ReferentialElasticsearchProcessor  extends AbstractElasticsearchPro
         String valueAsString = jsonNode.toString();
         String timestamp = jsonNode.path("timestamp").asText();
         String id;
-        if (jsonNode.has("typeReferential") || jsonNode.has("typeReferential")) {
+        if (jsonNode.has("typeReferential") && jsonNode.path("typeReferential").asText().equals("notification")) {
             id = generateId(jsonNode.toString());
         } else {
             id = jsonNode.path("idProcessReferential").asText() + "-" + jsonNode.path("key").asText() + "-" + jsonNode.path("value").asText() + "-" + jsonNode.path("project").asText() + "-" + jsonNode.path("type").asText();
