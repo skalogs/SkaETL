@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.text.ParseException;
 
+import static com.google.common.hash.Hashing.murmur3_128;
+import static java.nio.charset.Charset.defaultCharset;
+
 @Slf4j
 public class ReferentialElasticsearchProcessor  extends AbstractElasticsearchProcessor<String, JsonNode> {
 
@@ -23,11 +26,24 @@ public class ReferentialElasticsearchProcessor  extends AbstractElasticsearchPro
         RetentionLevel retentionLevel = jsonNode.has("retention") ? RetentionLevel.valueOf(jsonNode.path("retention").asText()) : RetentionLevel.week;
         String valueAsString = jsonNode.toString();
         String timestamp = jsonNode.path("timestamp").asText();
-        String id = jsonNode.path("idProcessReferential").asText()+"-"+jsonNode.path("key").asText()+"-"+jsonNode.path("value").asText()+"-"+jsonNode.path("project").asText()+"-"+jsonNode.path("type").asText();
+        String id;
+        if (jsonNode.has("typeReferential") || jsonNode.has("typeReferential")) {
+            id = generateId(jsonNode.toString());
+        } else {
+            id = jsonNode.path("idProcessReferential").asText() + "-" + jsonNode.path("key").asText() + "-" + jsonNode.path("value").asText() + "-" + jsonNode.path("project").asText() + "-" + jsonNode.path("type").asText();
+        }
         try {
             processToElasticsearch(df.parse(timestamp), jsonNode.path("project").asText(), jsonNode.path("type").asText(), retentionLevel, valueAsString, id);
         } catch (ParseException e) {
             log.error("Couldn't extract timestamp " + jsonNode.toString(), e);
         }
+    }
+
+    private String generateId(String value) {
+        return murmur3_128()
+                .newHasher()
+                .putString(value, defaultCharset())
+                .hash()
+                .toString();
     }
 }
