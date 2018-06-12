@@ -37,7 +37,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
         esWriteEs.labels(getApplicationId() != null ? getApplicationId() : "forRetryApplication", project, type).inc();
         esBuffer.add(date, project, type, retentionLevel, valueAsString, id);
         if (esBuffer.needFlush()) {
-            log.info("{} Flushing {}", context().applicationId(), esBuffer.values().size());
+            log.info("{} Flushing {}", getApplicationId() != null ? getApplicationId() : "forRetryApplication", esBuffer.values().size());
             try {
                 BulkResponse bulkItemResponses = esBuffer.flush();
                 if (bulkItemResponses != null && bulkItemResponses.hasFailures()) {
@@ -54,10 +54,12 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
 
     private void parseErrorsTechnical() {
         //send all value into topic retry
-        esBuffer
-                .values()
-                .stream()
-                .forEach(itemRaw -> esErrorRetryWriter.sendToRetryTopic(getApplicationId() != null ? getApplicationId() : "forRetryApplication", itemRaw));
+        if(!esBuffer.values().isEmpty()) {
+            esBuffer
+                    .values()
+                    .stream()
+                    .forEach(itemRaw -> esErrorRetryWriter.sendToRetryTopic(getApplicationId() != null ? getApplicationId() : "forRetryApplication", itemRaw));
+        }
 
     }
 

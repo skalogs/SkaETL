@@ -137,6 +137,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         if (diffInSec > processReferential.getTimeValidationAllFieldInSec()) {
             ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
             jsonNode.put("typeReferential", "validation");
+            jsonNode.put("type", referential.getType()+"-validation");
             jsonNode.put("timeExceeded", diffInSec);
             jsonNode.put("timeValidationAllFieldInSec", processReferential.getTimeValidationAllFieldInSec());
             referentialProducer.send(new ProducerRecord<>(TOPIC_REFERENTIAL_VALIDATION_ES, jsonNode));
@@ -151,6 +152,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
             log.debug("referential {}  validationTimeField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),item.getTimestampETL(),df.format(new Date()),diffInSec);
             if (diffInSec > processReferential.getTimeValidationFieldInSec()) {
                 ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
+                jsonNode.put("type", referential.getType()+"-validation");
                 jsonNode.put("typeReferential", "validation");
                 jsonNode.put("timeExceeded", diffInSec);
                 jsonNode.put("fieldChangeValidation", processReferential.getFieldChangeValidation());
@@ -189,6 +191,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         if (processReferential.getIsNotificationChange()) {
             MetadataItem itemOld = getItem(processReferential.getFieldChangeNotification(), referential.getMetadataItemSet());
             MetadataItem itemNew = getItem(processReferential.getFieldChangeNotification(), referentialNew.getMetadataItemSet());
+            log.error("itemOld {} itemNew {} ",itemOld,itemNew);
             if (itemNew != null && itemOld == null) {
                 notificationReferentialToKafka(referential, itemNew.getTimestamp(), new Long(0L), processReferential.getFieldChangeNotification(), itemNew.getValue());
             } else if (itemNew != null && !itemOld.getValue().equals(itemNew.getValue())) {
@@ -215,6 +218,7 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
 
     private void notificationReferentialToKafka(Referential referential, String newTimeStamp, Long timeBetweenEventSec, String keyMetadata, String newMetadataValue) {
         ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
+        jsonNode.put("type", referential.getType()+"-notification");
         jsonNode.put("typeReferential", "notification");
         jsonNode.put("newTimeStamp", newTimeStamp);
         jsonNode.put("keyMetadataModified", keyMetadata);
