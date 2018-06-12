@@ -379,9 +379,9 @@
         </repository>
     </repositories>
     <scm>
-        <connection>scm:git:git@bitbucket.org:ingloriousbastards/etl.git</connection>
-        <developerConnection>scm:git:git@bitbucket.org:ingloriousbastards/etl.git</developerConnection>
-        <url>https://bitbucket.org/ingloriousbastards/etl</url>
+        <connection>scm:git:git@github.com:skalogs/SkaETL.git</connection>
+        <developerConnection>scm:git:git@github.com:skalogs/SkaETL.git</developerConnection>
+        <url>https://github.com/skalogs/SkaETL</url>
         <tag>HEAD</tag>
     </scm>
 </project>
