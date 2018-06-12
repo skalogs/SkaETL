@@ -79,7 +79,7 @@ public class GeneratorCreditService {
             Integer gap = utilsCreditData.random(10);
             Integer minToValidate = minute + 30;
             if(gap == 2){
-                minToValidate = minute + 2 * 24 * 60;
+                minToValidate = minute + 4 * 60;
             }
             utilsCreditData.generateScriptGlobalBackendRequest(minToValidate, generateScenarioMicroServiceValidationCredit(amount, creditDuration, product, clientData, requestId, provider));
         }
