@@ -10,8 +10,6 @@ import lombok.*;
 @ToString
 public class DataChartsWeb {
     private DataCharts dataProcess;
-    private DataCharts dataMetric;
-    private DataCharts dataClient;
     @Builder.Default
     private Long numberAllClientConfiguration = new Long(0);
     @Builder.Default
