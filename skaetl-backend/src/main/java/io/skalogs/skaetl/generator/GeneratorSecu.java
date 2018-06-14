@@ -22,11 +22,10 @@ public class GeneratorSecu {
         this.utilsDatabase = utilsDatabase;
     }
 
-    public void generateLongData(Integer timeToGenerateInHours, Boolean firewall, Boolean proxy, Boolean connexion, Boolean database, Integer nbUser) {
+    public void generateLongData(Integer timeToGenerateInMinute, Boolean firewall, Boolean proxy, Boolean connexion, Boolean database, Integer nbUser) {
         try {
             utilsSecu.setup(nbUser);
             Thread.sleep(5000);
-            Integer timeToGenerateInMinute = timeToGenerateInHours * 60;
             for (int i = 0; i < timeToGenerateInMinute; i++) {
                 if (connexion) {
                     utilsConnexion.generateData(i);
