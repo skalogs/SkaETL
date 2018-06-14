@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.generator.secuRules;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ public class UtilsFirewall {
 
     private final UtilsSecu utilsSecu;
     private Random RANDOM = new Random();
+    @Getter
     private List<FWEquiGen> listEqui = new ArrayList<>();
     private Integer[] tabPort = new Integer[]{
             80,

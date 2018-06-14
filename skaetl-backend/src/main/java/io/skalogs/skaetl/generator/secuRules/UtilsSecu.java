@@ -627,11 +627,94 @@ public class UtilsSecu {
         int rand = RANDOM.nextInt(20);
         if (rand == 5){
             usecaseLocalhost(minute);
+            usecaseFwdDatabase(minute);
         }
+    }
+
+    private void usecaseFwdDatabase(int minute) {
+        String dbIp = "15.15.10.10";
+
+        ClientData client = getClient();
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        Date newDateDb = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
+        sendToKafka("database", Database.builder()
+                .databaseIp(dbIp)
+                .user(client.username)
+                .databaseName("PRODUCT_REFERENTIAL")
+                .message("log database")
+                .portDatabase(7878)
+                .request("SELECT * FROM product;")
+                .statusAccess("OK")
+                .remoteIp(client.ipClient)
+                .typeDatabase("ORACLE")
+                .versionDatabase("12")
+                .timestamp(df.format(newDateDb))
+                .build());
+
+        sendToKafka("firewall", Firewall.builder()
+                .srcIp(client.ipClient)
+                .srcPort(RANDOM.nextInt(55000) + 2048)
+                .destIp(dbIp)
+                .destPort(7878)
+                .typeConnexion("JDBC")
+                .user(client.username)
+                .status("OK")
+                .equipment("STORMSHIELD")
+                .equipmentIp("10.242.18.2")
+                .equipmentVersion("SN-300")
+                .timestamp(df.format(newDateDb))
+                .build());
+        Date newDateDb2 = addMinutesAndSecondsToTime(minute + 2, RANDOM.nextInt(50), new Date());
+        sendToKafka("database", Database.builder()
+                .databaseIp(dbIp)
+                .user(client.username)
+                .databaseName("PRODUCT_REFERENTIAL")
+                .message("log database")
+                .portDatabase(7878)
+                .request("SELECT * FROM product;")
+                .statusAccess("OK")
+                .remoteIp(client.ipClient)
+                .typeDatabase("ORACLE")
+                .versionDatabase("12")
+                .timestamp(df.format(newDateDb2))
+                .build());
+
+        sendToKafka("firewall", Firewall.builder()
+                .srcIp(client.ipClient)
+                .srcPort(RANDOM.nextInt(55000) + 2048)
+                .destIp(dbIp)
+                .destPort(7878)
+                .typeConnexion("JDBC")
+                .user(client.username)
+                .status("OK")
+                .equipment("STORMSHIELD")
+                .equipmentIp("10.242.18.2")
+                .equipmentVersion("SN-300")
+                .timestamp(df.format(newDateDb2))
+                .build());
+        Date newDateDb3 = addMinutesAndSecondsToTime(minute + 10, RANDOM.nextInt(50), new Date());
+        sendToKafka("database", Database.builder()
+                .databaseIp(dbIp)
+                .user("oracle")
+                .databaseName("PRODUCT_REFERENTIAL")
+                .message("log database")
+                .portDatabase(7878)
+                .request("SELECT * FROM product;")
+                .statusAccess("OK")
+                .remoteIp("15.15.10.8")
+                .typeDatabase("ORACLE")
+                .versionDatabase("12")
+                .timestamp(df.format(newDateDb3))
+                .build());
+
     }
 
     private void usecaseLocalhost(int minute){
         String dbIp = "10.10.8."+(RANDOM.nextInt(5)+10);
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        Date newDateDb = addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
         sendToKafka("database", Database.builder()
                     .databaseIp(dbIp)
                     .user("oracle")
@@ -643,8 +726,8 @@ public class UtilsSecu {
                     .remoteIp("127.0.0.1")
                     .typeDatabase("ORACLE")
                     .versionDatabase("12")
+                .timestamp(df.format(newDateDb))
                     .build());
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = addMinutesAndSecondsToTime(minute-20, RANDOM.nextInt(50), new Date());
         ClientData client = getClient();
 
