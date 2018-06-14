@@ -157,7 +157,7 @@ public class UtilsSecu {
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
                     .parameterTransformation(ParameterTransformation.builder()
-                            .composeField(ProcessKeyValue.builder().key("project").value("demo").build())
+                            .composeField(ProcessKeyValue.builder().key("project").value("secu").build())
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
@@ -191,7 +191,7 @@ public class UtilsSecu {
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
                     .parameterTransformation(ParameterTransformation.builder()
-                            .composeField(ProcessKeyValue.builder().key("project").value("demo").build())
+                            .composeField(ProcessKeyValue.builder().key("project").value("secu").build())
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
@@ -225,7 +225,7 @@ public class UtilsSecu {
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
                     .parameterTransformation(ParameterTransformation.builder()
-                            .composeField(ProcessKeyValue.builder().key("project").value("demo").build())
+                            .composeField(ProcessKeyValue.builder().key("project").value("secu").build())
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
@@ -259,7 +259,7 @@ public class UtilsSecu {
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
                     .parameterTransformation(ParameterTransformation.builder()
-                            .composeField(ProcessKeyValue.builder().key("project").value("demo").build())
+                            .composeField(ProcessKeyValue.builder().key("project").value("secu").build())
                             .build())
                     .build());
             listProcessTransformation.add(ProcessTransformation.builder()
