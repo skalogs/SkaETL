@@ -28,19 +28,13 @@ public class Database {
     // Meta of Database (prod, uat, whatever)
     public String metaDatabase;
     // Timestamp access or request execution
-    public Date timestamp;
+    public String timestamp;
     // Status access or request
     public String statusAccess;
     // OPTION:  request
     public String request;
-    // OPTION: type of request (select, update, delete, managing role)
-    public String typeRequest;
     // Message error or acceptance
     public String message;
     // hostname database
-    public String hostname;
-    public String osHost;
-    public String osVersion;
-    public String osPatch;
 
 }

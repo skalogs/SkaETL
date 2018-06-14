@@ -14,11 +14,10 @@ import java.util.Date;
 public class HTTPProxy {
 
     // Timestamp Request
-    public Date timestamp;
+    public String timestamp;
     // Login or uuid
     public String user;
     // Domain user
-    public String domain;
 
     //Cookie session : JSESSION,
     public String cookieSession;
@@ -58,9 +57,5 @@ public class HTTPProxy {
     public String typeHTTP;
     // hostname of httpproxy
     public String hostname;
-    public String osHost;
-    public String osVersion;
-    public String osPatch;
-
 
 }

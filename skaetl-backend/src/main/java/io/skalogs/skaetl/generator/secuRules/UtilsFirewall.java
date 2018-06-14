@@ -79,6 +79,7 @@ public class UtilsFirewall {
                 .equipment(fwd.equipment)
                 .equipmentIp(fwd.equipmentIp)
                 .equipmentVersion(fwd.equipmentVersion)
+                .timestamp(df.format(newDate))
                 .build());
     }
 

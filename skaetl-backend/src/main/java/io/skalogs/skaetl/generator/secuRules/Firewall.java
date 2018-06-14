@@ -13,7 +13,7 @@ import java.util.Date;
 public class Firewall {
     public Long id;
     // Timestamp Request
-    public Date timestamp;
+    public String timestamp;
     // Login or uuid
     public String user;
 

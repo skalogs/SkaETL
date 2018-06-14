@@ -12,6 +12,8 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -563,5 +565,53 @@ public class UtilsSecu {
                 .typeOutput(TypeOutput.ELASTICSEARCH)
                 .parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build())
                 .build();
+    }
+
+    public void usecase(int minute){
+        int rand = RANDOM.nextInt(20);
+        if (rand == 5){
+            usecaseLocalhost(minute);
+        }
+    }
+
+    private void usecaseLocalhost(int minute){
+        String dbIp = "10.10.8."+(RANDOM.nextInt(5)+10);
+        sendToKafka("database", Database.builder()
+                    .databaseIp(dbIp)
+                    .user("oracle")
+                    .databaseName("CLIENT_ACCOUNT")
+                    .message("log database")
+                    .portDatabase(7878)
+                    .request("SELECT * FROM users;")
+                    .statusAccess("OK")
+                    .remoteIp("127.0.0.1")
+                    .typeDatabase("ORACLE")
+                    .versionDatabase("12")
+                    .build());
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        Date newDate = addMinutesAndSecondsToTime(minute-20, RANDOM.nextInt(50), new Date());
+        ClientData client = getClient();
+
+        sendToKafka("connexion", ConnexionSSH.builder()
+                .clientIp(client.ipClient)
+                .portClient(new Integer(22))
+                .serverIp(dbIp)
+                .hostname(client.hostname)
+                .messageRaw("log ssh")
+                .timestamp(df.format(newDate))
+                .userClient(client.username)
+                .build());
+        Date newDate2 = addMinutesAndSecondsToTime(minute-28, RANDOM.nextInt(50), new Date());
+
+        sendToKafka("connexion", ConnexionSSH.builder()
+                .clientIp(client.ipClient)
+                .portClient(new Integer(22))
+                .serverIp(dbIp)
+                .hostname(client.hostname)
+                .messageRaw("log ssh")
+                .timestamp(df.format(newDate2))
+                .userClient(client.username)
+                .build());
+
     }
 }

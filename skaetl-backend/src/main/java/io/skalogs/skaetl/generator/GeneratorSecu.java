@@ -1,8 +1,6 @@
 package io.skalogs.skaetl.generator;
 
-import io.skalogs.skaetl.generator.secuRules.UtilsConnexion;
-import io.skalogs.skaetl.generator.secuRules.UtilsFirewall;
-import io.skalogs.skaetl.generator.secuRules.UtilsSecu;
+import io.skalogs.skaetl.generator.secuRules.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,11 +11,15 @@ public class GeneratorSecu {
     private final UtilsSecu utilsSecu;
     private final UtilsConnexion utilsConnexion;
     private final UtilsFirewall utilsFirewall;
+    private final UtilsDatabase utilsDatabase;
+    private final UtilsProxy utilsProxy;
 
-    public GeneratorSecu(UtilsSecu utilsSecu, UtilsConnexion utilsConnexion, UtilsFirewall utilsFirewall) {
+    public GeneratorSecu(UtilsSecu utilsSecu, UtilsConnexion utilsConnexion, UtilsFirewall utilsFirewall, UtilsProxy utilsProxy, UtilsDatabase utilsDatabase) {
         this.utilsSecu = utilsSecu;
         this.utilsConnexion = utilsConnexion;
         this.utilsFirewall = utilsFirewall;
+        this.utilsProxy = utilsProxy;
+        this.utilsDatabase = utilsDatabase;
     }
 
     public void generateLongData(Integer timeToGenerateInHours, Boolean firewall, Boolean proxy, Boolean connexion, Boolean database, Integer nbUser) {
@@ -32,12 +34,21 @@ public class GeneratorSecu {
                 if (firewall) {
                     utilsFirewall.generateData(i);
                 }
-
+                if (database){
+                    utilsDatabase.generateData(i);
+                }
+                if (proxy){
+                    utilsProxy.generateData(i);
+                }
+                utilsSecu.usecase(i);
                 Thread.sleep(1000);
             }
         } catch (InterruptedException e) {
             log.error("InterruptedException ", e);
         }
     }
+
+
+
 
 }

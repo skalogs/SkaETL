@@ -3,6 +3,9 @@ package io.skalogs.skaetl.generator.secuRules;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
@@ -10,6 +13,12 @@ import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
 @Component
 @Slf4j
 public class UtilsDatabase {
+
+    private final UtilsSecu utilsSecu;
+    private Random RANDOM = new Random();
+    public UtilsDatabase(UtilsSecu utilsSecu){
+        this.utilsSecu = utilsSecu;
+    }
 
     public static String[] databaseTab = new String[]{
             "REF_CLIENT_PRODUCT",
@@ -48,15 +57,29 @@ public class UtilsDatabase {
             "SELECT * from Reporting from Reporting r where r.rating='unknown';"
     };
 
-    private static String[] insertTab = new String[]{
-            "INSERT INTO Product (\"productRefId\",\"price\") VALUES ('" + randomAlphabetic(10) + "','" + new Random().nextInt(1478) + "€');",
-            "INSERT INTO Contract (\"contract_name\",\"status\") VALUES ('" + randomAlphabetic(10) + "','DISABLE');",
-            "INSERT INTO User (\"name\",\"password\",\"role\",\"mail\") VALUES ('****','****','user_client','*****');",
-            "INSERT INTO User (\"name\",\"password\",\"role\",\"mail\") VALUES ('****','','admin','*****');",
-            "INSERT INTO User (\"name\",\"password\",\"role\",\"mail\") VALUES ('****','','admin','*****');",
-            "INSERT INTO Pricing (\"priceRefId\",\"price\") VALUES ('" + randomAlphabetic(10) + "','" + new Random().nextInt(12222665) + "€');",
-            "INSERT INTO Pricing (\"priceRefId\",\"price\") VALUES ('" + randomAlphabetic(10) + "','" + new Random().nextInt(12222665) + "€');",
-            "INSERT INTO Reporting (\"client\",\"to_follow\",\"rating\") VALUES ('" + randomAlphabetic(10) + "','yes','bad');",
-            "INSERT INTO Reporting (\"client\",\"to_follow\",\"rating\") VALUES ('" + randomAlphabetic(10) + "','yes','bad');",
-    };
+
+    public void generateData(int minute) {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        Date newDate = utilsSecu.addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
+        ClientData client = utilsSecu.getClient();
+        int rand = RANDOM.nextInt(10);
+        String status = "OK";
+        if(rand == 9){
+            status = "KO";
+        }
+        utilsSecu.sendToKafka("database", Database.builder()
+                .databaseIp("10.10.8."+(RANDOM.nextInt(5)+10))
+                .user(client.username)
+                .databaseName(databaseTab[RANDOM.nextInt(databaseTab.length)])
+                .message("log database")
+                .portDatabase(7878)
+                .request(requestTab[RANDOM.nextInt(requestTab.length)])
+                .statusAccess(status)
+                .remoteIp(client.ipClient)
+                .typeDatabase("ORACLE")
+                .versionDatabase("12")
+                .timestamp(df.format(newDate))
+                .build());
+
+    }
 }
