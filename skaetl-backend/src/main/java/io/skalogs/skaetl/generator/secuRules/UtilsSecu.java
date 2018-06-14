@@ -728,7 +728,7 @@ public class UtilsSecu {
                     .versionDatabase("12")
                 .timestamp(df.format(newDateDb))
                     .build());
-        Date newDate = addMinutesAndSecondsToTime(minute-20, RANDOM.nextInt(50), new Date());
+        Date newDate = addMinutesAndSecondsToTime(minute - 5, RANDOM.nextInt(50), new Date());
         ClientData client = getClient();
 
         sendToKafka("connexion", ConnexionSSH.builder()
@@ -740,7 +740,7 @@ public class UtilsSecu {
                 .timestamp(df.format(newDate))
                 .userClient(client.username)
                 .build());
-        Date newDate2 = addMinutesAndSecondsToTime(minute-28, RANDOM.nextInt(50), new Date());
+        Date newDate2 = addMinutesAndSecondsToTime(minute - 8, RANDOM.nextInt(50), new Date());
 
         sendToKafka("connexion", ConnexionSSH.builder()
                 .clientIp(client.ipClient)
