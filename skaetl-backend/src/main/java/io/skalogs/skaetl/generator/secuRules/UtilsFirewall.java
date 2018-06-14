@@ -68,7 +68,7 @@ public class UtilsFirewall {
             typeConnexion = "UNKNOWN";
         }
         FWEquiGen fwd = listEqui.get(RANDOM.nextInt(listEqui.size()));
-        utilsSecu.sendToKafka("connexion", Firewall.builder()
+        utilsSecu.sendToKafka("firewall", Firewall.builder()
                 .srcIp(client.ipClient)
                 .srcPort(RANDOM.nextInt(55000) + 2048)
                 .destIp(tabHost[RANDOM.nextInt(tabHost.length)])
