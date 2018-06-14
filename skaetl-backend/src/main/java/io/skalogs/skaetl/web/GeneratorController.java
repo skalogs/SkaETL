@@ -20,6 +20,7 @@ public class GeneratorController {
     private final GeneratorService generatorService;
     private final GeneratorErrorService generatorErrorService;
     private final GeneratorRetryService generatorRetryService;
+    private final GeneratorSecu generatorSecu;
 
     @ResponseStatus(CREATED)
     @PostMapping("/inputTopic")
@@ -64,7 +65,7 @@ public class GeneratorController {
                           @RequestParam("nbAddToCartByMinute") Integer nbAddToCartByMinute,
                           @RequestParam("nbPaySuccessByMinute") Integer nbPaySuccessByMinute,
                           @RequestParam("nbPayNotSuccessByMinute") Integer nbPayNotSuccessByMinute,
-                          @RequestParam("timeToGenerateInMinute") Integer timeToGenerateInMinute ) {
+                          @RequestParam("timeToGenerateInMinute") Integer timeToGenerateInMinute) {
         generatorCartService.generateData(nbCustomer, nbShowByMinute, nbAddToCartByMinute, nbPaySuccessByMinute, nbPayNotSuccessByMinute, timeToGenerateInMinute);
     }
 
@@ -80,7 +81,7 @@ public class GeneratorController {
                             @RequestParam("nbView") Integer nbView,
                             @RequestParam("nbCredit") Integer nbCredit,
                             @RequestParam("nbRandomRq") Integer nbRandomRq) {
-        generatorCreditService.generateData(timeToGenerateInMinute,nbView,nbCredit,nbRandomRq);
+        generatorCreditService.generateData(timeToGenerateInMinute, nbView, nbCredit, nbRandomRq);
     }
 
     @ResponseStatus(CREATED)
@@ -96,8 +97,20 @@ public class GeneratorController {
     @ResponseStatus(CREATED)
     @GetMapping("/inputCreditRef")
     public void inputCreditRef(@RequestParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
-                            @RequestParam("nbCredit") Integer nbCredit) {
-        generatorCreditService.generateDataForRef(timeToGenerateInMinute,nbCredit);
+                               @RequestParam("nbCredit") Integer nbCredit) {
+        generatorCreditService.generateDataForRef(timeToGenerateInMinute, nbCredit);
     }
+
+    @ResponseStatus(CREATED)
+    @GetMapping("/inputSecu")
+    public void inputSecu(@RequestParam("timeToGenerateInMinute") Integer timeToGenerateInMinute,
+                          @RequestParam("firewall") Boolean firewall,
+                          @RequestParam("proxy") Boolean proxy,
+                          @RequestParam("proxy") Boolean database,
+                          @RequestParam("connexion") Boolean connexion,
+                          @RequestParam("nbUser") Integer nbUser) {
+        generatorSecu.generateLongData(timeToGenerateInMinute, firewall, proxy, connexion, database, nbUser);
+    }
+
 
 }
