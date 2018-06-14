@@ -153,10 +153,24 @@ public class UtilsSecu {
 
     private void processProxy() {
         if (processService.findProcess("idProcessProxy") == null) {
+            List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.ADD_FIELD)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .composeField(ProcessKeyValue.builder().key("project").value("demo").build())
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.ADD_FIELD)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .composeField(ProcessKeyValue.builder().key("type").value("proxy").build())
+                            .build())
+                    .build());
             processService.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessProxy")
                     .name("demo proxy")
                     .processInput(ProcessInput.builder().topicInput("proxy").host(this.host).port(this.port).build())
+                    .processTransformation(listProcessTransformation)
                     .processOutput(Lists.newArrayList(
                             ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
                     .build());
@@ -173,10 +187,24 @@ public class UtilsSecu {
 
     private void processFirewall() {
         if (processService.findProcess("idProcessFirewall") == null) {
+            List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.ADD_FIELD)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .composeField(ProcessKeyValue.builder().key("project").value("demo").build())
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.ADD_FIELD)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .composeField(ProcessKeyValue.builder().key("type").value("firewall").build())
+                            .build())
+                    .build());
             processService.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessFirewall")
                     .name("demo firewall")
                     .processInput(ProcessInput.builder().topicInput("firewall").host(this.host).port(this.port).build())
+                    .processTransformation(listProcessTransformation)
                     .processOutput(Lists.newArrayList(
                             ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
                     .build());
@@ -193,10 +221,24 @@ public class UtilsSecu {
 
     private void processConnexion() {
         if (processService.findProcess("idProcessConnexion") == null) {
+            List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.ADD_FIELD)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .composeField(ProcessKeyValue.builder().key("project").value("demo").build())
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.ADD_FIELD)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .composeField(ProcessKeyValue.builder().key("type").value("connexion").build())
+                            .build())
+                    .build());
             processService.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessConnexion")
                     .name("demo connexion")
                     .processInput(ProcessInput.builder().topicInput("connexion").host(this.host).port(this.port).build())
+                    .processTransformation(listProcessTransformation)
                     .processOutput(Lists.newArrayList(
                             ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
                     .build());
@@ -213,10 +255,24 @@ public class UtilsSecu {
 
     private void processDatabase() {
         if (processService.findProcess("idProcessDatabase") == null) {
+            List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.ADD_FIELD)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .composeField(ProcessKeyValue.builder().key("project").value("demo").build())
+                            .build())
+                    .build());
+            listProcessTransformation.add(ProcessTransformation.builder()
+                    .typeTransformation(TypeValidation.ADD_FIELD)
+                    .parameterTransformation(ParameterTransformation.builder()
+                            .composeField(ProcessKeyValue.builder().key("type").value("database").build())
+                            .build())
+                    .build());
             processService.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessDatabase")
                     .name("demo database")
                     .processInput(ProcessInput.builder().topicInput("database").host(this.host).port(this.port).build())
+                    .processTransformation(listProcessTransformation)
                     .processOutput(Lists.newArrayList(
                             ProcessOutput.builder().typeOutput(TypeOutput.ELASTICSEARCH).parameterOutput(ParameterOutput.builder().elasticsearchRetentionLevel(RetentionLevel.week).build()).build()))
                     .build());
