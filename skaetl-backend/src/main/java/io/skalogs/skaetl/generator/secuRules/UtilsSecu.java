@@ -300,7 +300,7 @@ public class UtilsSecu {
                 .sizeUnit(TimeUnit.MINUTES)
                 .sourceProcessConsumersB(Lists.newArrayList("idProcessConnexion"))
                 .joinKeyFromA("databaseIp")
-                .joinKeyFromB("destIp")
+                .joinKeyFromB("serverIp")
                 .joinWindowSize(15)
                 .joinWindowUnit(TimeUnit.MINUTES)
                 .processOutputs(Lists.newArrayList(toEsOutput()))
