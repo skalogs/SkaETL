@@ -3,8 +3,8 @@ package io.skalogs.skaetl.generator.credit;
 import com.google.common.collect.Lists;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.*;
-import io.skalogs.skaetl.service.ProcessService;
-import io.skalogs.skaetl.service.ReferentialService;
+import io.skalogs.skaetl.service.ProcessServiceHTTP;
+import io.skalogs.skaetl.service.ReferentialServiceHTTP;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,8 +16,8 @@ import java.util.List;
 @Slf4j
 public class UtilsCreditProcess {
 
-    private final ProcessService processService;
-    private final ReferentialService referentialService;
+    private final ProcessServiceHTTP processServiceHTTP;
+    private final ReferentialServiceHTTP referentialServiceHTTP;
     private final String host;
     private final String port;
 
@@ -29,9 +29,9 @@ public class UtilsCreditProcess {
 
     private final HashMap<String,String> mapProduct;
 
-    public UtilsCreditProcess(ProcessService processService, UtilsCreditData utilsCreditData, KafkaConfiguration kafkaConfiguration, ReferentialService referentialService) {
-        this.processService = processService;
-        this.referentialService = referentialService;
+    public UtilsCreditProcess(ProcessServiceHTTP processServiceHTTP, UtilsCreditData utilsCreditData, KafkaConfiguration kafkaConfiguration, ReferentialServiceHTTP referentialServiceHTTP) {
+        this.processServiceHTTP = processServiceHTTP;
+        this.referentialServiceHTTP = referentialServiceHTTP;
         this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
         this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
         this.mapProduct = new HashMap<>();
@@ -46,8 +46,8 @@ public class UtilsCreditProcess {
         //Track db_ip
         //validation -> if no activity on status credit 1 day -> produce a message for inactivity
         //notification -> if statusCredit change -> produce a message for change
-        if (referentialService.findReferential("demoReferentialCreditStatus") == null){
-                referentialService.updateReferential(ProcessReferential.builder()
+        if (referentialServiceHTTP.findReferential("demoReferentialCreditStatus") == null) {
+            referentialServiceHTTP.updateReferential(ProcessReferential.builder()
                         .name("referentialCreditStatus")
                         .idProcess("demoReferentialCreditStatus")
                         .referentialKey("Client")
@@ -63,7 +63,7 @@ public class UtilsCreditProcess {
                         .build());
             try {
                 Thread.sleep(2000);
-                referentialService.activateProcess((ProcessReferential) referentialService.findReferential("demoReferentialCreditStatus"));
+                referentialServiceHTTP.activateProcess((ProcessReferential) referentialServiceHTTP.findReferential("demoReferentialCreditStatus"));
             } catch (Exception e) {
                 log.error("Exception {}", e);
             }
@@ -83,7 +83,7 @@ public class UtilsCreditProcess {
     }
 
     private void createAndActiveProcessConsumerCustomer() {
-        if (processService.findProcess(idProcessCustomerData) == null) {
+        if (processServiceHTTP.findProcess(idProcessCustomerData) == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -115,7 +115,7 @@ public class UtilsCreditProcess {
                             .processHashData(ProcessHashData.builder().typeHash(TypeHash.SHA256).field("lastName").build())
                             .build())
                     .build());
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess(idProcessCustomerData)
                     .name("demo credit customer")
                     .processInput(ProcessInput.builder().topicInput("customer").host(this.host).port(this.port).build())
@@ -127,7 +127,7 @@ public class UtilsCreditProcess {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess(idProcessCustomerData));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess(idProcessCustomerData));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer {}", idProcessCustomerData);
             }
@@ -136,7 +136,7 @@ public class UtilsCreditProcess {
 
 
     private void createAndActiveProcessConsumerProvider() {
-        if (processService.findProcess(idProcessProviderData) == null) {
+        if (processServiceHTTP.findProcess(idProcessProviderData) == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -151,7 +151,7 @@ public class UtilsCreditProcess {
                             .build())
                     .build());
 
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess(idProcessProviderData)
                     .name("demo credit provider")
                     .processInput(ProcessInput.builder().topicInput("provider").host(this.host).port(this.port).build())
@@ -163,7 +163,7 @@ public class UtilsCreditProcess {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess(idProcessProviderData));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess(idProcessProviderData));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer {}", idProcessProviderData);
             }
@@ -171,7 +171,7 @@ public class UtilsCreditProcess {
     }
 
     private void createAndActiveProcessConsumerProduct() {
-        if (processService.findProcess(idProcessProductData) == null) {
+        if (processServiceHTTP.findProcess(idProcessProductData) == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -194,7 +194,7 @@ public class UtilsCreditProcess {
                             .build())
                     .build());
 
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess(idProcessProductData)
                     .name("demo credit product")
                     .processInput(ProcessInput.builder().topicInput("product").host(this.host).port(this.port).build())
@@ -206,7 +206,7 @@ public class UtilsCreditProcess {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess(idProcessProductData));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess(idProcessProductData));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer {}", idProcessProductData);
             }
@@ -214,7 +214,7 @@ public class UtilsCreditProcess {
     }
 
     private void createAndActiveProcessConsumerCredit() {
-        if (processService.findProcess(idProcessCreditData) == null) {
+        if (processServiceHTTP.findProcess(idProcessCreditData) == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -261,7 +261,7 @@ public class UtilsCreditProcess {
                     .build());
 
 
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess(idProcessCreditData)
                     .name("demo credit process")
                     .processInput(ProcessInput.builder().topicInput("credit").host(this.host).port(this.port).build())
@@ -273,7 +273,7 @@ public class UtilsCreditProcess {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess(idProcessCreditData));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess(idProcessCreditData));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer {}", idProcessCreditData);
             }
@@ -281,7 +281,7 @@ public class UtilsCreditProcess {
     }
 
     private void createAndActiveProcessConsumerFront() {
-        if (processService.findProcess(idProcessFrontData) == null) {
+        if (processServiceHTTP.findProcess(idProcessFrontData) == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -326,7 +326,7 @@ public class UtilsCreditProcess {
                             .keyField("timeRequestMs")
                             .build())
                     .build());
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess(idProcessFrontData)
                     .name("demo credit front")
                     .processInput(ProcessInput.builder().topicInput("front").host(this.host).port(this.port).build())
@@ -338,7 +338,7 @@ public class UtilsCreditProcess {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess(idProcessFrontData));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess(idProcessFrontData));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer {}", idProcessFrontData);
             }

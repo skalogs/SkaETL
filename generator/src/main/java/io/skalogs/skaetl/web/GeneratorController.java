@@ -1,7 +1,6 @@
 package io.skalogs.skaetl.web;
 
 import io.skalogs.skaetl.generator.*;
-import io.skalogs.skaetl.web.domain.PayloadTopic;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;

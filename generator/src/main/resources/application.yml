@@ -44,3 +44,5 @@ importer.fullUrlImporter: "http://localhost:8080"
 importer.fullUrlSimulate: "http://localhost:8084"
 
 prometheus.host: prometheus:9090
+
+generator.backend: "http://localhost:8090"

@@ -2,7 +2,7 @@ package io.skalogs.skaetl.generator.credit;
 
 import com.google.common.collect.Lists;
 import io.skalogs.skaetl.domain.*;
-import io.skalogs.skaetl.service.MetricProcessService;
+import io.skalogs.skaetl.service.MetricServiceHTTP;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -14,20 +14,20 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class UtilsCreditMetrics {
 
-    private final MetricProcessService metricProcessService;
+    private final MetricServiceHTTP metricServiceHTTP;
     private final String idProcessCreditData = "idProcessCreditData";
     private final String idProcessProviderData = "idProcessProviderData";
     private final String idProcessProductData = "idProcessProductData";
     private final String idProcessCustomerData = "idProcessCustomerData";
     private final String idProcessFrontData = "idProcessFrontData";
 
-    public UtilsCreditMetrics(MetricProcessService metricProcessService){
-        this.metricProcessService = metricProcessService;
+    public UtilsCreditMetrics(MetricServiceHTTP metricServiceHTTP) {
+        this.metricServiceHTTP = metricServiceHTTP;
     }
 
     public List<ProcessMetric> createPerf(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
-        if (metricProcessService.findById("CREDIT_RESPONSE_TIME") == null) {
+        if (metricServiceHTTP.findById("CREDIT_RESPONSE_TIME") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("CREDIT_RESPONSE_TIME")
                     .name("Average Response Time")
@@ -40,7 +40,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("CREDIT_SLOW_QUERIES") == null) {
+        if (metricServiceHTTP.findById("CREDIT_SLOW_QUERIES") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("CREDIT_SLOW_QUERIES")
                     .name("Credit - Slow Queries")
@@ -65,7 +65,7 @@ public class UtilsCreditMetrics {
 
     public List<ProcessMetric> createProduct(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
-        if (metricProcessService.findById("CODE_ERROR_PRODUCT") == null) {
+        if (metricServiceHTTP.findById("CODE_ERROR_PRODUCT") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("CODE_ERROR_PRODUCT")
                     .name("Number of Error Product")
@@ -83,7 +83,7 @@ public class UtilsCreditMetrics {
 
     public List<ProcessMetric> createProvider(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
-        if (metricProcessService.findById("CODE_ERROR_PRODUCT") == null) {
+        if (metricServiceHTTP.findById("CODE_ERROR_PRODUCT") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("CODE_ERROR_PRODUCT")
                     .name("Number of Error Provider")
@@ -102,7 +102,7 @@ public class UtilsCreditMetrics {
 
     public List<ProcessMetric> createCustomer(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
-        if (metricProcessService.findById("CODE_ERROR_CUSTOMER") == null) {
+        if (metricServiceHTTP.findById("CODE_ERROR_CUSTOMER") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("CODE_ERROR_CUSTOMER")
                     .name("Number of Error Customer")
@@ -115,7 +115,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("CODE_ERROR_BY_CUSTOMER") == null) {
+        if (metricServiceHTTP.findById("CODE_ERROR_BY_CUSTOMER") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("CODE_ERROR_BY_CUSTOMER")
                     .name("Number of Error by Customer")
@@ -135,7 +135,7 @@ public class UtilsCreditMetrics {
 
     public List<ProcessMetric> createMetricsCredit(){
         List<ProcessMetric> processMetrics = new ArrayList<>();
-        if (metricProcessService.findById("DEMAND_CREDIT") == null) {
+        if (metricServiceHTTP.findById("DEMAND_CREDIT") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("DEMAND_CREDIT")
                     .name("Number of Credit In Progress ")
@@ -148,7 +148,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("DEMAND_CREDIT_BY_PRODUCT") == null) {
+        if (metricServiceHTTP.findById("DEMAND_CREDIT_BY_PRODUCT") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("DEMAND_CREDIT_BY_PRODUCT")
                     .name("Number of Credit In Progress by ProductName")
@@ -162,7 +162,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("DEMAND_CREDIT_BY_PROVIDER") == null) {
+        if (metricServiceHTTP.findById("DEMAND_CREDIT_BY_PROVIDER") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("DEMAND_CREDIT_BY_PROVIDER")
                     .name("Number of Credit In Progress by Provider")
@@ -176,7 +176,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("VALIDATION_CREDIT") == null) {
+        if (metricServiceHTTP.findById("VALIDATION_CREDIT") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("VALIDATION_CREDIT")
                     .name("Number of Validate Credit")
@@ -189,7 +189,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("VALIDATION_CREDIT_BY_USER") == null) {
+        if (metricServiceHTTP.findById("VALIDATION_CREDIT_BY_USER") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("VALIDATION_CREDIT_BY_USER")
                     .name("Number of Validate Credit by User")
@@ -203,7 +203,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("VALIDATION_CREDIT_BY_PRODUCT") == null) {
+        if (metricServiceHTTP.findById("VALIDATION_CREDIT_BY_PRODUCT") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("VALIDATION_CREDIT_BY_PRODUCT")
                     .name("Number of Validate Credit by Product")
@@ -217,7 +217,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("VALIDATION_CREDIT_BY_PROVIDER") == null) {
+        if (metricServiceHTTP.findById("VALIDATION_CREDIT_BY_PROVIDER") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("VALIDATION_CREDIT_BY_PROVIDER")
                     .name("Number of Validate Credit by Provider")
@@ -231,7 +231,7 @@ public class UtilsCreditMetrics {
                     .processOutputs(Lists.newArrayList(toEsOutput()))
                     .build());
         }
-        if (metricProcessService.findById("AVERAGE_AMOUNT_CREDIT_VALIDATE_BY_DURATION") == null) {
+        if (metricServiceHTTP.findById("AVERAGE_AMOUNT_CREDIT_VALIDATE_BY_DURATION") == null) {
             processMetrics.add(ProcessMetric.builder()
                     .idProcess("AVERAGE_AMOUNT_CREDIT_VALIDATE_BY_DURATION")
                     .name("Average Amount of Validate Credit By Duration")
@@ -260,7 +260,7 @@ public class UtilsCreditMetrics {
 
     private void createAndActivateMetrics(List<ProcessMetric> processMetrics) {
         for (ProcessMetric processMetric : processMetrics) {
-            metricProcessService.updateProcess(processMetric);
+            metricServiceHTTP.updateProcess(processMetric);
         }
         try {
             Thread.sleep(2000);
@@ -269,7 +269,7 @@ public class UtilsCreditMetrics {
         }
         for (ProcessMetric processMetric : processMetrics) {
             try {
-                metricProcessService.activateProcess(processMetric);
+                metricServiceHTTP.activateProcess(processMetric);
             } catch (Exception e) {
                 log.error("Error occured when activating metrics " + processMetric.getIdProcess(), e);
             }

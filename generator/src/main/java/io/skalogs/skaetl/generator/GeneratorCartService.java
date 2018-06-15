@@ -4,8 +4,8 @@ import com.google.common.collect.Lists;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.generator.cart.UtilsCartData;
-import io.skalogs.skaetl.service.MetricProcessService;
-import io.skalogs.skaetl.service.ProcessService;
+import io.skalogs.skaetl.service.MetricServiceHTTP;
+import io.skalogs.skaetl.service.ProcessServiceHTTP;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -18,16 +18,16 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class GeneratorCartService {
 
-    private final ProcessService processService;
-    private final MetricProcessService metricProcessService;
+    private final ProcessServiceHTTP processServiceHTTP;
+    private final MetricServiceHTTP metricServiceHTTP;
     private final UtilsCartData utilsCartData;
     private final String host;
     private final String port;
     private Random RANDOM = new Random();
 
-    public GeneratorCartService(ProcessService processService, MetricProcessService metricProcessService, UtilsCartData utilsCartData, KafkaConfiguration kafkaConfiguration) {
-        this.processService = processService;
-        this.metricProcessService = metricProcessService;
+    public GeneratorCartService(ProcessServiceHTTP processServiceHTTP, MetricServiceHTTP metricServiceHTTP, UtilsCartData utilsCartData, KafkaConfiguration kafkaConfiguration) {
+        this.processServiceHTTP = processServiceHTTP;
+        this.metricServiceHTTP = metricServiceHTTP;
         this.utilsCartData =  utilsCartData;
         this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
         this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
@@ -35,7 +35,7 @@ public class GeneratorCartService {
 
 
     private void createAndActiveProcessConsumer() {
-        if(processService.findProcess("idProcessCartData") == null) {
+        if (processServiceHTTP.findProcess("idProcessCartData") == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -80,7 +80,7 @@ public class GeneratorCartService {
                             .build())
                     .build());
 
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessCartData")
                     .name("demo cart")
                     .processInput(ProcessInput.builder().topicInput("demo-cart").host(this.host).port(this.port).build())
@@ -92,7 +92,7 @@ public class GeneratorCartService {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess("idProcessCartData"));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess("idProcessCartData"));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer idProcessCartData");
             }
@@ -238,7 +238,7 @@ public class GeneratorCartService {
 
     private void createAndActivateMetrics(List<ProcessMetric> processMetrics) {
         for (ProcessMetric processMetric : processMetrics) {
-            metricProcessService.updateProcess(processMetric);
+            metricServiceHTTP.updateProcess(processMetric);
         }
         try {
             Thread.sleep(2000);
@@ -247,7 +247,7 @@ public class GeneratorCartService {
         }
         for (ProcessMetric processMetric : processMetrics) {
             try {
-                metricProcessService.activateProcess(processMetric);
+                metricServiceHTTP.activateProcess(processMetric);
             } catch (Exception e) {
                 log.error("Error occured when activating metrics " + processMetric.getIdProcess(), e);
             }

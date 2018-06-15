@@ -31,6 +31,12 @@
         </dependency>
 
         <dependency>
+            <groupId>io.skalogs.skaetl</groupId>
+            <artifactId>process-importer-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

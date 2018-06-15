@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.*;
-import io.skalogs.skaetl.service.MetricProcessService;
-import io.skalogs.skaetl.service.ProcessService;
+import io.skalogs.skaetl.service.MetricServiceHTTP;
+import io.skalogs.skaetl.service.ProcessServiceHTTP;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
@@ -21,8 +21,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class UtilsSecu {
 
-    private final MetricProcessService metricProcessService;
-    private final ProcessService processService;
+    private final ProcessServiceHTTP processServiceHTTP;
+    private final MetricServiceHTTP metricServiceHTTP;
     private final String host;
     private final String port;
     private final ObjectMapper mapper = new ObjectMapper();
@@ -97,9 +97,9 @@ public class UtilsSecu {
     private Random RANDOM = new Random();
     private List<ClientData> listClient = new ArrayList<>();
 
-    public UtilsSecu(MetricProcessService metricProcessService, ProcessService processService, KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
-        this.metricProcessService = metricProcessService;
-        this.processService = processService;
+    public UtilsSecu(MetricServiceHTTP metricServiceHTTP, ProcessServiceHTTP processServiceHTTP, KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
+        this.metricServiceHTTP = metricServiceHTTP;
+        this.processServiceHTTP = processServiceHTTP;
         this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
         this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
         this.producer = kafkaUtils.kafkaProducer();
@@ -152,7 +152,7 @@ public class UtilsSecu {
     }
 
     private void processProxy() {
-        if (processService.findProcess("idProcessProxy") == null) {
+        if (processServiceHTTP.findProcess("idProcessProxy") == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -166,7 +166,7 @@ public class UtilsSecu {
                             .composeField(ProcessKeyValue.builder().key("type").value("proxy").build())
                             .build())
                     .build());
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessProxy")
                     .name("demo proxy")
                     .processInput(ProcessInput.builder().topicInput("proxy").host(this.host).port(this.port).build())
@@ -178,7 +178,7 @@ public class UtilsSecu {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess("idProcessProxy"));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess("idProcessProxy"));
             } catch (Exception e) {
                 log.error("Exception processProxy {}", "idProcessProxy");
             }
@@ -186,7 +186,7 @@ public class UtilsSecu {
     }
 
     private void processFirewall() {
-        if (processService.findProcess("idProcessFirewall") == null) {
+        if (processServiceHTTP.findProcess("idProcessFirewall") == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -200,7 +200,7 @@ public class UtilsSecu {
                             .composeField(ProcessKeyValue.builder().key("type").value("firewall").build())
                             .build())
                     .build());
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessFirewall")
                     .name("demo firewall")
                     .processInput(ProcessInput.builder().topicInput("firewall").host(this.host).port(this.port).build())
@@ -212,7 +212,7 @@ public class UtilsSecu {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess("idProcessFirewall"));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess("idProcessFirewall"));
             } catch (Exception e) {
                 log.error("Exception processFirewall {}", "idProcessFirewall");
             }
@@ -220,7 +220,7 @@ public class UtilsSecu {
     }
 
     private void processConnexion() {
-        if (processService.findProcess("idProcessConnexion") == null) {
+        if (processServiceHTTP.findProcess("idProcessConnexion") == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -234,7 +234,7 @@ public class UtilsSecu {
                             .composeField(ProcessKeyValue.builder().key("type").value("connexion").build())
                             .build())
                     .build());
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessConnexion")
                     .name("demo connexion")
                     .processInput(ProcessInput.builder().topicInput("connexion").host(this.host).port(this.port).build())
@@ -246,7 +246,7 @@ public class UtilsSecu {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess("idProcessConnexion"));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess("idProcessConnexion"));
             } catch (Exception e) {
                 log.error("Exception processConnexion {}", "idProcessConnexion");
             }
@@ -254,7 +254,7 @@ public class UtilsSecu {
     }
 
     private void processDatabase() {
-        if (processService.findProcess("idProcessDatabase") == null) {
+        if (processServiceHTTP.findProcess("idProcessDatabase") == null) {
             List<ProcessTransformation> listProcessTransformation = new ArrayList<>();
             listProcessTransformation.add(ProcessTransformation.builder()
                     .typeTransformation(TypeValidation.ADD_FIELD)
@@ -268,7 +268,7 @@ public class UtilsSecu {
                             .composeField(ProcessKeyValue.builder().key("type").value("database").build())
                             .build())
                     .build());
-            processService.saveOrUpdate(ProcessConsumer.builder()
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcessDatabase")
                     .name("demo database")
                     .processInput(ProcessInput.builder().topicInput("database").host(this.host).port(this.port).build())
@@ -280,7 +280,7 @@ public class UtilsSecu {
             try {
                 //HACK
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess("idProcessDatabase"));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess("idProcessDatabase"));
             } catch (Exception e) {
                 log.error("Exception processDatabase {}", "idProcessDatabase");
             }
@@ -602,12 +602,12 @@ public class UtilsSecu {
 
     private void createProcessMetrics(List<ProcessMetric> processMetrics) {
         for (ProcessMetric processMetric : processMetrics) {
-            if (metricProcessService.findById(processMetric.getIdProcess()) == null) {
-                metricProcessService.updateProcess(processMetric);
+            if (metricServiceHTTP.findById(processMetric.getIdProcess()) == null) {
+                metricServiceHTTP.updateProcess(processMetric);
                 try {
                     //HACK
                     Thread.sleep(2000);
-                    metricProcessService.activateProcess((ProcessMetric) metricProcessService.findById(processMetric.getIdProcess()));
+                    metricServiceHTTP.activateProcess((ProcessMetric) metricServiceHTTP.findById(processMetric.getIdProcess()));
                 } catch (Exception e) {
                     log.error("Exception createProcessMetrics {}", processMetric.getIdProcess());
                 }

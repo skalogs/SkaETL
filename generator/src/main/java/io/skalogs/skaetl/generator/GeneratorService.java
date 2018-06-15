@@ -5,8 +5,8 @@ import com.google.common.collect.Lists;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.GrokService;
-import io.skalogs.skaetl.service.ProcessService;
-import io.skalogs.skaetl.service.ReferentialService;
+import io.skalogs.skaetl.service.ProcessServiceHTTP;
+import io.skalogs.skaetl.service.ReferentialServiceHTTP;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.producer.Producer;
@@ -33,8 +33,8 @@ public class GeneratorService {
     private final String port;
     private final Producer<String, String> producer;
     private final GrokService grokService;
-    private final ProcessService processService;
-    private final ReferentialService referentialService;
+    private final ProcessServiceHTTP processServiceHTTP;
+    private final ReferentialServiceHTTP referentialServiceHTTP;
     private final String topic;
     private final ObjectMapper mapper = new ObjectMapper();
     private final String[] tabDb = new String[]{
@@ -62,14 +62,14 @@ public class GeneratorService {
     };
     private Random RANDOM = new Random();
 
-    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService, ProcessService processService, ReferentialService referentialService) {
+    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService, ProcessServiceHTTP processServiceHTTP, ReferentialServiceHTTP referentialServiceHTTP) {
         producer = kafkaUtils.kafkaProducer();
         topic = kafkaConfiguration.getTopic();
         this.grokService = grokService;
-        this.processService = processService;
+        this.processServiceHTTP = processServiceHTTP;
         this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
         this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
-        this.referentialService = referentialService;
+        this.referentialServiceHTTP = referentialServiceHTTP;
     }
 
     public Date addMinutesAndSecondsToTime(int minutesToAdd, int secondsToAdd, Date date) {
@@ -84,7 +84,7 @@ public class GeneratorService {
         //Track db_ip
         //validation -> if no activity during 60*30 sec -> produce a message for inactivity
         //notification -> if database_type change -> produce a message for change
-        referentialService.updateReferential(ProcessReferential.builder()
+        referentialServiceHTTP.updateReferential(ProcessReferential.builder()
                 .name("referentialNetwork")
                 .idProcess("demoReferentialNetwork")
                 .referentialKey("db_ip")
@@ -99,15 +99,15 @@ public class GeneratorService {
                 .build());
         try {
             Thread.sleep(2000);
-            referentialService.activateProcess((ProcessReferential) referentialService.findReferential("demoReferentialNetwork"));
+            referentialServiceHTTP.activateProcess((ProcessReferential) referentialServiceHTTP.findReferential("demoReferentialNetwork"));
         }catch (Exception e){
             log.error("Exception {}",e);
         }
     }
 
     private void createAndActiveProcessConsumer(String topic){
-        if(processService.findProcess("idProcess"+topic) == null) {
-            processService.saveOrUpdate(ProcessConsumer.builder()
+        if (processServiceHTTP.findProcess("idProcess" + topic) == null) {
+            processServiceHTTP.saveOrUpdate(ProcessConsumer.builder()
                     .idProcess("idProcess" + topic)
                     .name("idProcess" + topic)
                     .processInput(ProcessInput.builder().topicInput(topic).host(this.host).port(this.port).build())
@@ -116,7 +116,7 @@ public class GeneratorService {
                     .build());
             try {
                 Thread.sleep(2000);
-                processService.activateProcess(processService.findProcess("idProcess" + topic));
+                processServiceHTTP.activateProcess(processServiceHTTP.findProcess("idProcess" + topic));
             } catch (Exception e) {
                 log.error("Exception createAndActiveProcessConsumer idProcess" + topic);
             }
