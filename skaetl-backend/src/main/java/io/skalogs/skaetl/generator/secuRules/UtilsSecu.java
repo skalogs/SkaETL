@@ -355,7 +355,7 @@ public class UtilsSecu {
                 .idProcess("PROXY_AVG_REQUEST_SIZE_PER_USER")
                 .name("Proxy average request size per user")
                 .sourceProcessConsumers(Lists.newArrayList("idProcessProxy"))
-                .aggFunction("AVG(requestSize)")
+                .aggFunction("AVG(request_size_l)")
                 .where("urlMethod IN (\"PUT\",\"POST\",\"PATCH\")")
                 .groupBy("user")
                 .windowType(WindowType.TUMBLING)
