@@ -1,0 +1,46 @@
+info:
+  component: ETL Backend !
+
+spring.profiles.active: dev
+
+management.security.enabled: false
+
+security:
+  basic.enabled: false
+  user:
+    name: admin
+    password: admin
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.web: INFO
+    io.skalogs.skaetl.logstash: INFO
+
+server.port: 8099
+
+
+process.maxProcessConsumer: 100
+process.frequency: 100
+
+grok.index: "backend-pattern-index"
+grok.type: "backend-pattern-type"
+
+kafka.bootstrapServers: localhost:9092
+kafka.groupId: adminGrok
+kafka.pollRecord: 50
+kafka.topic: processtopic
+
+elasticsearch.host: localhost
+elasticsearch.port: 9200
+elasticsearch.clusterName: docker-cluster
+elasticsearch.serviceElasticsearchUsername: elastic
+elasticsearch.serviceElasticsearchPassword: changeme
+elasticsearch.clientTransportPingTimeout: 10
+elasticsearch.clientNodesSamplerInterval: 10
+elasticsearch.customIndexPrefix: ""
+
+importer.fullUrlImporter: "http://localhost:8080"
+importer.fullUrlSimulate: "http://localhost:8084"
+
+prometheus.host: prometheus:9090

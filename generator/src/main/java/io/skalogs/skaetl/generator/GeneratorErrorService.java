@@ -24,6 +24,11 @@ public class GeneratorErrorService {
     private final ObjectMapper mapper = new ObjectMapper();
     private Random RANDOM = new Random();
 
+    public GeneratorErrorService(KafkaUtils kafkaUtils) {
+        producer = kafkaUtils.kafkaProducer();
+        topic = "processtopic";
+    }
+
     public Date addMonthToTime(int monthToAdd, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTime());
@@ -182,10 +187,5 @@ public class GeneratorErrorService {
     private void sendToKafka(String raw) {
         producer.send(new ProducerRecord(topic, raw));
 
-    }
-
-    public GeneratorErrorService(KafkaUtils kafkaUtils) {
-        producer = kafkaUtils.kafkaProducer();
-        topic = "processtopic";
     }
 }

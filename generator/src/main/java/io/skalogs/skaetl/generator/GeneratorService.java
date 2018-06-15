@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -38,8 +37,6 @@ public class GeneratorService {
     private final ReferentialService referentialService;
     private final String topic;
     private final ObjectMapper mapper = new ObjectMapper();
-    private Random RANDOM = new Random();
-
     private final String[] tabDb = new String[]{
             "Oracle 11g",
             "Mysql 5.7.21"
@@ -63,6 +60,17 @@ public class GeneratorService {
             "171.14.15.1",
             "171.14.15.2"
     };
+    private Random RANDOM = new Random();
+
+    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService, ProcessService processService, ReferentialService referentialService) {
+        producer = kafkaUtils.kafkaProducer();
+        topic = kafkaConfiguration.getTopic();
+        this.grokService = grokService;
+        this.processService = processService;
+        this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
+        this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
+        this.referentialService = referentialService;
+    }
 
     public Date addMinutesAndSecondsToTime(int minutesToAdd, int secondsToAdd, Date date) {
         Calendar cal = Calendar.getInstance();
@@ -71,7 +79,6 @@ public class GeneratorService {
         cal.add(Calendar.SECOND, secondsToAdd);
         return cal.getTime();
     }
-
 
     private void createReferential(String idProcessConsumer){
         //Track db_ip
@@ -279,15 +286,5 @@ public class GeneratorService {
         } catch (Exception e) {
             log.error("Error sending to Kafka during generation ", e);
         }
-    }
-
-    public GeneratorService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils, GrokService grokService, ProcessService processService, ReferentialService referentialService) {
-        producer = kafkaUtils.kafkaProducer();
-        topic = kafkaConfiguration.getTopic();
-        this.grokService = grokService;
-        this.processService = processService;
-        this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
-        this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
-        this.referentialService = referentialService;
     }
 }

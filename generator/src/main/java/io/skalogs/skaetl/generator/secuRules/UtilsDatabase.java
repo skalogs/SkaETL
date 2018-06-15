@@ -8,17 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
 
-import static org.apache.commons.lang.RandomStringUtils.randomAlphabetic;
-
 @Component
 @Slf4j
 public class UtilsDatabase {
-
-    private final UtilsSecu utilsSecu;
-    private Random RANDOM = new Random();
-    public UtilsDatabase(UtilsSecu utilsSecu){
-        this.utilsSecu = utilsSecu;
-    }
 
     public static String[] databaseTab = new String[]{
             "REF_CLIENT_PRODUCT",
@@ -37,7 +29,6 @@ public class UtilsDatabase {
             "REPORTING",
             "REPORTING"
     };
-
     public static String[] requestTab = new String[]{
             "SELECT * from Product p where p.id='****';",
             "SELECT * from Product p where p.id='****' and p.product_name='****';",
@@ -56,7 +47,12 @@ public class UtilsDatabase {
             "SELECT * from Reporting from Reporting r, User user where r.rating='bad' and user.id=r.user_id and user.id ='***';",
             "SELECT * from Reporting from Reporting r where r.rating='unknown';"
     };
+    private final UtilsSecu utilsSecu;
+    private Random RANDOM = new Random();
 
+    public UtilsDatabase(UtilsSecu utilsSecu) {
+        this.utilsSecu = utilsSecu;
+    }
 
     public void generateData(int minute) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");

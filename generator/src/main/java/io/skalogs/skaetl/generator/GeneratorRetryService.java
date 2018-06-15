@@ -23,6 +23,11 @@ public class GeneratorRetryService {
     private final ObjectMapper mapper = new ObjectMapper();
     private Random RANDOM = new Random();
 
+    public GeneratorRetryService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
+        producer = kafkaUtils.kafkaProducer();
+        topic = kafkaConfiguration.getRetryTopic();
+    }
+
     public Date addMinutesAndSecondsToTime(int minutesToAdd, int secondsToAdd, Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(date.getTime());
@@ -55,10 +60,5 @@ public class GeneratorRetryService {
         } catch (Exception e) {
             log.error("Error during converter", e);
         }
-    }
-
-    public GeneratorRetryService(KafkaConfiguration kafkaConfiguration, KafkaUtils kafkaUtils) {
-        producer = kafkaUtils.kafkaProducer();
-        topic = kafkaConfiguration.getRetryTopic();
     }
 }
