@@ -41,6 +41,11 @@ public class UtilsConnexion {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Date newDate = utilsSecu.addMinutesAndSecondsToTime(minute, RANDOM.nextInt(50), new Date());
         ClientData client = utilsSecu.getClient();
+        String status = "OK";
+        int rand = RANDOM.nextInt(10);
+        if (rand == 5) {
+            status = "KO";
+        }
         utilsSecu.sendToKafka("connexion", ConnexionSSH.builder()
                 .clientIp(client.ipClient)
                 .portClient(new Integer(22))
@@ -52,6 +57,7 @@ public class UtilsConnexion {
                 .osVersion(tabVersion[RANDOM.nextInt(tabVersion.length)])
                 .timestamp(df.format(newDate))
                 .userClient(client.username)
+                .status(status)
                 .build());
     }
 }

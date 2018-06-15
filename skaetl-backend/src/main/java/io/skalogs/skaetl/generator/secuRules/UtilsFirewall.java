@@ -69,6 +69,10 @@ public class UtilsFirewall {
             status = "KO";
             typeConnexion = "UNKNOWN";
         }
+        int rand = RANDOM.nextInt(10);
+        if (rand == 5) {
+            status = "KO";
+        }
         FWEquiGen fwd = listEqui.get(RANDOM.nextInt(listEqui.size()));
         utilsSecu.sendToKafka("firewall", Firewall.builder()
                 .srcIp(client.ipClient)

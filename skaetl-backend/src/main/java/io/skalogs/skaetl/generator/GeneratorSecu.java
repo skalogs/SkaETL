@@ -29,14 +29,23 @@ public class GeneratorSecu {
             for (int i = 0; i < timeToGenerateInMinute; i++) {
                 if (connexion) {
                     utilsConnexion.generateData(i);
+                    utilsConnexion.generateData(i);
                 }
                 if (firewall) {
+                    utilsFirewall.generateData(i);
+                    utilsFirewall.generateData(i);
+                    utilsFirewall.generateData(i);
+                    utilsFirewall.generateData(i);
                     utilsFirewall.generateData(i);
                 }
                 if (database){
                     utilsDatabase.generateData(i);
                 }
                 if (proxy){
+                    utilsProxy.generateData(i);
+                    utilsProxy.generateData(i);
+                    utilsProxy.generateData(i);
+                    utilsProxy.generateData(i);
                     utilsProxy.generateData(i);
                 }
                 utilsSecu.usecase(i);
