@@ -17,7 +17,7 @@ public class MetricServiceHTTP {
     }
 
     public ProcessMetric findById(String idProcess) {
-
+        log.info("Call findById");
         RestTemplate restTemplate = new RestTemplate();
         ProcessMetric obj = new ProcessMetric();
         try {
@@ -25,10 +25,12 @@ public class MetricServiceHTTP {
         } catch (Exception e) {
             log.error("status {}", e);
         }
+        log.info("Result Call findById {} ", obj);
         return obj;
     }
 
     public void updateProcess(ProcessMetric processMetric) {
+        log.info("Call updateProcess {}", processMetric);
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<ProcessMetric> request = new HttpEntity<>(processMetric);
         try {
@@ -39,6 +41,7 @@ public class MetricServiceHTTP {
     }
 
     public void activateProcess(ProcessMetric processMetric) {
+        log.info("Call activateProcess {}", processMetric);
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.getForObject(generatorConfiguration.getBackend() + "/metric/activate?idProcess=" + processMetric.getIdProcess(), String.class);

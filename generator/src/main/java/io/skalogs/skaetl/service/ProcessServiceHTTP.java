@@ -18,6 +18,7 @@ public class ProcessServiceHTTP {
     }
 
     public ProcessConsumer findProcess(String idProcess) {
+        log.info("Call findProcess");
         RestTemplate restTemplate = new RestTemplate();
         ProcessConsumer obj = new ProcessConsumer();
         try {
@@ -25,10 +26,12 @@ public class ProcessServiceHTTP {
         } catch (Exception e) {
             log.error("status {}", e);
         }
+        log.info("Result Call findProcess {} ", obj);
         return obj;
     }
 
     public void saveOrUpdate(ProcessConsumer processConsumer) {
+        log.info("Call saveOrUpdate {}", processConsumer);
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<ProcessConsumer> request = new HttpEntity<>(processConsumer);
         try {
@@ -40,6 +43,7 @@ public class ProcessServiceHTTP {
     }
 
     public void activateProcess(ProcessConsumer processConsumer) {
+        log.info("Call activateProcess {}", processConsumer);
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.getForObject(generatorConfiguration.getBackend() + "/process/activate?idProcess=" + processConsumer.getIdProcess(), String.class);

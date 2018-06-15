@@ -18,6 +18,7 @@ public class ReferentialServiceHTTP {
     }
 
     public ProcessReferential findReferential(String idProcess) {
+        log.info("Call findReferential");
         RestTemplate restTemplate = new RestTemplate();
         ProcessReferential obj = new ProcessReferential();
         try {
@@ -25,10 +26,12 @@ public class ReferentialServiceHTTP {
         } catch (Exception e) {
             log.error("status {}", e);
         }
+        log.info("Result Call findReferential {} ", obj);
         return obj;
     }
 
     public void updateReferential(ProcessReferential processReferential) {
+        log.info("Call updateReferential {}", processReferential);
         RestTemplate restTemplate = new RestTemplate();
         HttpEntity<ProcessReferential> request = new HttpEntity<>(processReferential);
         try {
@@ -39,6 +42,7 @@ public class ReferentialServiceHTTP {
     }
 
     public void activateProcess(ProcessReferential processReferential) {
+        log.info("Call activateProcess {}", processReferential);
         RestTemplate restTemplate = new RestTemplate();
         try {
             restTemplate.getForObject(generatorConfiguration.getBackend() + "/referential/activate?idReferential=" + processReferential.getIdProcess(), String.class);
