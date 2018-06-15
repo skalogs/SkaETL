@@ -16,10 +16,126 @@ import static org.apache.commons.lang.RandomStringUtils.randomNumeric;
 @Slf4j
 public class UtilsProxy {
 
-    private final UtilsSecu utilsSecu;
     private static Random RANDOM = new Random();
-    public UtilsProxy(UtilsSecu utilsSecu){
+    private final UtilsSecu utilsSecu;
+    private String[] tabHost = new String[]{
+            "www.google.fr",
+            "www.nbc.com",
+            "weather.com",
+            "vs-business-contract-prod-application.intranet.infra",
+            "vs-business-contract-prod-application.intranet.infra",
+            "vs-business-contract-prod-application.intranet.infra",
+            "vs-business-product-prod-application.intranet.infra",
+            "vs-business-product-prod-application.intranet.infra",
+            "vs-business-product-prod-application.intranet.infra",
+            "vs-business-support-prod-application.intranet.infra",
+            "vs-business-support-prod-application.intranet.infra",
+            "alerting-application.intranet.com",
+            "platform.client.support.intranet.com",
+            "platform.client.support.intranet.com",
+            "platform.client.support.intranet.com",
+            "platform.client.support.intranet.com",
+            "platform.client.support.intranet.com",
+            "mysupport.intranet.com",
+            "mypasswport.intranet.com",
+            "mypasswport.intranet.com"
+    };
+    private String[] tabIntranetHost = new String[]{
+            "vs-business-contract-prod-application.intranet.infra",
+            "vs-business-contract-prod-application.intranet.infra",
+            "vs-business-contract-prod-application.intranet.infra",
+            "vs-business-product-prod-application.intranet.infra",
+            "vs-business-product-prod-application.intranet.infra",
+            "vs-business-product-prod-application.intranet.infra",
+            "vs-business-support-prod-application.intranet.infra",
+            "vs-business-support-prod-application.intranet.infra",
+            "alerting-application.intranet.com",
+            "platform.client.support.intranet.com",
+            "platform.client.support.intranet.com",
+            "platform.client.support.intranet.com",
+            "platform.client.support.intranet.com",
+            "platform.client.support.intranet.com",
+            "mysupport.intranet.com",
+            "mypasswport.intranet.com",
+            "mypasswport.intranet.com"
+    };
+    private Integer[] tabPort = new Integer[]{
+            443,
+            80,
+            8170,
+            8180,
+            8180,
+            9090,
+            9090,
+            443,
+            443,
+            443,
+            443,
+            443
+    };
+    private Integer[] tabStatus = new Integer[]{
+            200,
+            200,
+            201,
+            202,
+            200,
+            200,
+            201,
+            201,
+            500,
+            502,
+            200,
+            201
+    };
+    private String[] tabMethod = new String[]{
+            "PUT",
+            "PUT",
+            "PUT",
+            "POST",
+            "POST",
+            "POST",
+            "POST",
+            "PUT",
+            "PUT",
+            "PATCH",
+            "PUT",
+            "DELETE"
+    };
+    private String[] tabUri = new String[]{
+            "/user/" + randomUUID() + "/findAll",
+            "/product/" + randomUUID() + "/findAll",
+            "/client/" + randomUUID() + "/deleteAll",
+            "/",
+            "/index.html",
+            "/",
+            "/index.html",
+            "/contract/" + randomNumeric(10) + "/client/" + randomNumeric(10),
+            "/contract/" + randomNumeric(10) + "/client/" + randomNumeric(10),
+            "/contract/" + randomNumeric(10) + "/reporting/" + randomNumeric(10),
+            "/contract/" + randomNumeric(10) + "/product/" + randomNumeric(10),
+            "/user/" + randomUUID() + "/findByUserId",
+            "/user/" + randomUUID() + "/findByUserId",
+            "/user/" + randomUUID() + "/findByUserId",
+            "/product/" + randomNumeric(6) + "/findByOrderName",
+            "/product/" + randomNumeric(6) + "/findByOrderName",
+            "/product/" + randomNumeric(6) + "/findByOrderName",
+            "/login",
+            "/login",
+            "/admin",
+            "/admin",
+            "/admin"
+    };
+
+    public UtilsProxy(UtilsSecu utilsSecu) {
         this.utilsSecu = utilsSecu;
+    }
+
+    public static  <T> T random(T[] tab) {
+        return tab[RANDOM.nextInt(tab.length)];
+    }
+
+    public static <T> T random(List<T> list) {
+        return list.get(RANDOM.nextInt(list.size()));
     }
 
     public void generateData(int minute) {
@@ -31,7 +147,7 @@ public class UtilsProxy {
                 .componentProxy("artica")
                 .cookieSession(rq.cookieSession)
                 .hostname(client.hostname)
-                .proxyIp("123.15.18."+RANDOM.nextInt(3))
+                .proxyIp("123.15.18." + RANDOM.nextInt(3))
                 .remoteIp(rq.remoteIp)
                 .sizeRequest(rq.sizeRequest)
                 .sizeResponse(rq.sizeResponse)
@@ -52,7 +168,7 @@ public class UtilsProxy {
     private RequestGen randomRequest(String remoteIp) {
         String jsessionid = "JSESSIONID=" + randomUUID();
         int rand = RANDOM.nextInt(4);
-        if(rand == 3) {
+        if (rand == 3) {
             return randomPutRequest(jsessionid, remoteIp);
         }
         return randomGETRequest(jsessionid, remoteIp);
@@ -112,124 +228,6 @@ public class UtilsProxy {
 
     public int randomPort() {
         return random(tabPort);
-    }
-
-    private String[] tabHost = new String[]{
-            "www.google.fr",
-            "www.nbc.com",
-            "weather.com",
-            "vs-business-contract-prod-application.intranet.infra",
-            "vs-business-contract-prod-application.intranet.infra",
-            "vs-business-contract-prod-application.intranet.infra",
-            "vs-business-product-prod-application.intranet.infra",
-            "vs-business-product-prod-application.intranet.infra",
-            "vs-business-product-prod-application.intranet.infra",
-            "vs-business-support-prod-application.intranet.infra",
-            "vs-business-support-prod-application.intranet.infra",
-            "alerting-application.intranet.com",
-            "platform.client.support.intranet.com",
-            "platform.client.support.intranet.com",
-            "platform.client.support.intranet.com",
-            "platform.client.support.intranet.com",
-            "platform.client.support.intranet.com",
-            "mysupport.intranet.com",
-            "mypasswport.intranet.com",
-            "mypasswport.intranet.com"
-    };
-
-    private String[] tabIntranetHost = new String[]{
-            "vs-business-contract-prod-application.intranet.infra",
-            "vs-business-contract-prod-application.intranet.infra",
-            "vs-business-contract-prod-application.intranet.infra",
-            "vs-business-product-prod-application.intranet.infra",
-            "vs-business-product-prod-application.intranet.infra",
-            "vs-business-product-prod-application.intranet.infra",
-            "vs-business-support-prod-application.intranet.infra",
-            "vs-business-support-prod-application.intranet.infra",
-            "alerting-application.intranet.com",
-            "platform.client.support.intranet.com",
-            "platform.client.support.intranet.com",
-            "platform.client.support.intranet.com",
-            "platform.client.support.intranet.com",
-            "platform.client.support.intranet.com",
-            "mysupport.intranet.com",
-            "mypasswport.intranet.com",
-            "mypasswport.intranet.com"
-    };
-
-    private Integer[] tabPort = new Integer[]{
-            443,
-            80,
-            8170,
-            8180,
-            8180,
-            9090,
-            9090,
-            443,
-            443,
-            443,
-            443,
-            443
-    };
-
-    private Integer[] tabStatus = new Integer[]{
-            200,
-            200,
-            201,
-            202,
-            200,
-            200,
-            201,
-            201,
-            500,
-            502,
-            200,
-            201
-    };
-
-    private String[] tabMethod = new String[]{
-            "PUT",
-            "PUT",
-            "PUT",
-            "POST",
-            "POST",
-            "POST",
-            "POST",
-            "PUT",
-            "PUT",
-            "PATCH",
-            "PUT",
-            "DELETE"
-    };
-
-    private String[] tabUri = new String[]{
-            "/user/" + randomUUID() + "/findAll",
-            "/product/" + randomUUID() + "/findAll",
-            "/client/" + randomUUID() + "/deleteAll",
-            "/",
-            "/index.html",
-            "/",
-            "/index.html",
-            "/contract/" + randomNumeric(10) + "/client/" + randomNumeric(10),
-            "/contract/" + randomNumeric(10) + "/client/" + randomNumeric(10),
-            "/contract/" + randomNumeric(10) + "/reporting/" + randomNumeric(10),
-            "/contract/" + randomNumeric(10) + "/product/" + randomNumeric(10),
-            "/user/" + randomUUID() + "/findByUserId",
-            "/user/" + randomUUID() + "/findByUserId",
-            "/user/" + randomUUID() + "/findByUserId",
-            "/product/" + randomNumeric(6) + "/findByOrderName",
-            "/product/" + randomNumeric(6) + "/findByOrderName",
-            "/product/" + randomNumeric(6) + "/findByOrderName"
-
-    };
-
-
-    public static  <T> T random(T[] tab) {
-        return tab[RANDOM.nextInt(tab.length)];
-    }
-
-    public static <T> T random(List<T> list) {
-        return list.get(RANDOM.nextInt(list.size()));
     }
 
 }
