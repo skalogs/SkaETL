@@ -12,6 +12,7 @@ import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.KStream;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -20,17 +21,17 @@ import javax.annotation.PostConstruct;
 @Component
 public class ReferentialESService {
 
-    private final ReferentialElasticsearchProcessor referentialElasticsearchProcessor;
     private final KafkaAdminService kafkaAdminService;
+    private final ApplicationContext applicationContext;
     private final String bootstrapServer;
     public static String TOPIC_REFERENTIAL_ES = "topicReferentialEs";
     public static String TOPIC_REFERENTIAL_NOTIFICATION_ES = "topicReferentialNotification";
     public static String TOPIC_REFERENTIAL_VALIDATION_ES = "topicReferentialValidation";
 
-    public ReferentialESService(KafkaConfiguration kafkaConfiguration, ReferentialElasticsearchProcessor referentialElasticsearchProcessor, KafkaAdminService kafkaAdminService) {
-        this.referentialElasticsearchProcessor = referentialElasticsearchProcessor;
+    public ReferentialESService(KafkaConfiguration kafkaConfiguration, KafkaAdminService kafkaAdminService, ApplicationContext applicationContext) {
         this.bootstrapServer = kafkaConfiguration.getBootstrapServers();
         this.kafkaAdminService = kafkaAdminService;
+        this.applicationContext = applicationContext;
     }
 
     @PostConstruct
@@ -44,7 +45,7 @@ public class ReferentialESService {
         kafkaAdminService.buildTopic(topic);
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, JsonNode> streamToES = builder.stream(topic, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
-        streamToES.process(() -> referentialElasticsearchProcessor);
+        streamToES.process(() -> applicationContext.getBean(ReferentialElasticsearchProcessor.class));
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(nameStream, bootstrapServer));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         streams.start();
