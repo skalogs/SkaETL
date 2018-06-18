@@ -11,7 +11,6 @@
 
     <groupId>io.skalogs.skaetl</groupId>
     <artifactId>generator</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <properties>
