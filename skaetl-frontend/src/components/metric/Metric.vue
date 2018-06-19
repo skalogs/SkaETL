@@ -266,7 +266,7 @@
             <v-select v-bind:items="joinTypes" v-model="metricProcess.joinType"
                       label="Select Join Type" item-value="text" required
                       :rules="[() => !!metricProcess.joinType || 'This field is required']"></v-select>
-            <div v-if="metricProcess.joinType != 'NONE'">
+            <div v-if="isJoinEnabled()">
               <v-card class="mb-3">
                 <v-card-title>
                   <div class="title">Join on Process Consumers</div>
@@ -452,15 +452,8 @@
             processDefinition.advanceBy + " " + processDefinition.advanceByUnit + ")";
         }
       },
-      changeJoinEnabled() {
-        if (!this.metricProcess.joinEnabled) {
-          this.metricProcess.sourceProcessConsumersB = [];
-          this.metricProcess.joinKeyFromA = "";
-          this.metricProcess.joinKeyFromB = "";
-          this.metricProcess.joinWhere = "";
-          this.metricProcess.joinWindowSize = 5;
-          this.metricProcess.joinWindowUnit = "MINUTES";
-        }
+      isJoinEnabled() {
+        return this.metricProcess.joinType != "NONE";
       }
     }
   }
