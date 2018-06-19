@@ -43,12 +43,14 @@ public class RuleMetricToJava {
                 "import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;\n" +
                 "import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;\n" +
                 "import io.skalogs.skaetl.domain.ProcessMetric;\n" +
+                "import io.skalogs.skaetl.domain.JoinType;\n" +
                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                 "import static java.util.concurrent.TimeUnit.*;\n" +
                 "\n" +
                 "import javax.annotation.Generated;\n" +
                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                 "\n" +
                 "import org.apache.kafka.streams.kstream.*;\n" +
@@ -60,22 +62,30 @@ public class RuleMetricToJava {
                 "public class " + ruleClassName + " extends GenericMetricProcessor {\n" +
                 "    public " + ruleClassName + "(ProcessMetric processMetric) {\n";
         if (StringUtils.isBlank(ruleMetricVisitor.getJoinFrom())) {
-            javaCode+="        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\");\n";
+            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\");\n";
         } else {
-            javaCode+="        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", \"" + ruleMetricVisitor.getJoinFrom() + "\");\n";
+            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", \"" + ruleMetricVisitor.getJoinFrom() + "\");\n";
         }
 
-        javaCode+=  "    }\n" +
-                "    \n" +
+        javaCode += "    }\n" +
+                "    \n";
+        if (ruleMetricVisitor.getJoinType() != null) {
+            javaCode += "    @Override\n" +
+                    "    protected JoinType joinType() {\n" +
+                    "        return " + ruleMetricVisitor.getJoinType() + ";\n" +
+                    "    }\n" +
+                    "    \n";
+        }
+        javaCode +=
                 "    @Override\n" +
-                "    protected AggregateFunction aggInitializer() {\n" +
-                "        return aggFunction(\"" + ruleMetricVisitor.getAggFunction() + "\");\n" +
-                "    }\n" +
-                "    \n" +
-                "    @Override\n" +
-                "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
-                "        return " + ruleMetricVisitor.getWindow() + ";\n" +
-                "    }\n";
+                        "    protected AggregateFunction aggInitializer() {\n" +
+                        "        return aggFunction(\"" + ruleMetricVisitor.getAggFunction() + "\");\n" +
+                        "    }\n" +
+                        "    \n" +
+                        "    @Override\n" +
+                        "    protected KTable<Windowed<Keys>, Double> aggregate(KGroupedStream<Keys, JsonNode> kGroupedStream) {\n" +
+                        "        return " + ruleMetricVisitor.getWindow() + ";\n" +
+                        "    }\n";
         if (StringUtils.isNotBlank(ruleMetricVisitor.getAggFunctionField())) {
             javaCode += "    \n" +
                     "    @Override\n" +

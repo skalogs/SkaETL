@@ -47,7 +47,7 @@ having
  ;
 
 join
- : 'JOIN' target (alias)? 'ON' '(' fieldname ',' fieldname ')'(where)? joinWindow
+ : joinType 'JOIN' target (alias)? 'ON' '(' fieldname ',' fieldname ')'(where)? joinWindow
  ;
 
 joinWindow
@@ -85,6 +85,13 @@ timeunit
  | ('MINUTES'|'M'|'m')
  | ('HOURS'|'H'|'h')
  | ('DAYS'|'D'|'d')
+ ;
+
+
+joinType
+ : 'INNER'? #innerJoin
+ | 'OUTER' #outerJoin
+ | 'LEFT' #leftJoin
  ;
 
 HIGH_PRIORITY_OPERATION

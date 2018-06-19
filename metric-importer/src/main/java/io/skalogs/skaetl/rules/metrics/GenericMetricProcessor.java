@@ -3,6 +3,7 @@ package io.skalogs.skaetl.rules.metrics;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import io.prometheus.client.Counter;
+import io.skalogs.skaetl.domain.JoinType;
 import io.skalogs.skaetl.domain.ParameterOutput;
 import io.skalogs.skaetl.domain.ProcessMetric;
 import io.skalogs.skaetl.domain.ProcessOutput;
@@ -20,7 +21,6 @@ import io.skalogs.skaetl.service.processor.LoggingProcessor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.*;
@@ -101,21 +101,42 @@ public abstract class GenericMetricProcessor {
                 .filter(this::having)
                 .map((key, value) -> new KeyValue<>(key.key(), new MetricResult(key, value)));
 
-        if (StringUtils.isBlank(srcTopic2)) {
+        if (joinType() == JoinType.NONE) {
             return result;
         }
+
+
         KStream<Keys, JsonNode> secondStream = builder.stream(srcTopic2, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()))
                 .filter(this::filterKeyJoin)
                 .filter(this::filterJoin)
                 .selectKey(this::selectKeyJoin);
 
-        KStream<Keys, MetricResult> joinedStream = result
-                .join(secondStream,
-                        (metricResult, jsonNodeFromTopic2) -> join(metricResult, jsonNodeFromTopic2),
-                        joinWindow(),
-                        Joined.with(MetricsSerdes.keysSerde(), MetricsSerdes.metricResultSerdes(), GenericSerdes.jsonNodeSerde()));
+        switch (joinType()) {
+            case INNER:
+                return result
+                        .join(secondStream,
+                                (metricResult, jsonNodeFromTopic2) -> join(metricResult, jsonNodeFromTopic2),
+                                joinWindow(),
+                                Joined.with(MetricsSerdes.keysSerde(), MetricsSerdes.metricResultSerdes(), GenericSerdes.jsonNodeSerde()));
+            case OUTER:
+                return result
+                        .outerJoin(secondStream,
+                                (metricResult, jsonNodeFromTopic2) -> join(metricResult, jsonNodeFromTopic2),
+                                joinWindow(),
+                                Joined.with(MetricsSerdes.keysSerde(), MetricsSerdes.metricResultSerdes(), GenericSerdes.jsonNodeSerde()));
+            case LEFT:
+                return result
+                        .leftJoin(secondStream,
+                                (metricResult, jsonNodeFromTopic2) -> join(metricResult, jsonNodeFromTopic2),
+                                joinWindow(),
+                                Joined.with(MetricsSerdes.keysSerde(), MetricsSerdes.metricResultSerdes(), GenericSerdes.jsonNodeSerde()));
+                default:
+                    throw new IllegalArgumentException(joinType() + " not supported");
+        }
+    }
 
-        return joinedStream;
+    protected JoinType joinType() {
+        return JoinType.NONE;
     }
 
     protected JoinWindows joinWindow() {

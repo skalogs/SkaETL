@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.rules.codegeneration.metrics;
 
+import io.skalogs.skaetl.domain.JoinType;
 import io.skalogs.skaetl.rules.RuleMetricBaseVisitor;
 import io.skalogs.skaetl.rules.RuleMetricParser;
 import io.skalogs.skaetl.rules.codegeneration.exceptions.RuleVisitorException;
@@ -22,6 +23,7 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
     private String aggFunction;
     private String aggFunctionField;
 
+    private JoinType joinType;
     private String joinFrom;
     private String joinKeyFromA;
     private String joinKeyFromB;
@@ -54,6 +56,7 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
 
     @Override
     public String visitJoin(RuleMetricParser.JoinContext ctx) {
+        visit(ctx.joinType());
         joinFrom = visit(ctx.target());
         joinKeyFromA = visit(ctx.fieldname(0));
         joinKeyFromB = visit(ctx.fieldname(1));
@@ -62,6 +65,24 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
         }
         joinWindow = visitJoinWindow(ctx.joinWindow());
         return "";
+    }
+
+    @Override
+    public String visitInnerJoin(RuleMetricParser.InnerJoinContext ctx) {
+        joinType = JoinType.INNER;
+        return super.visitInnerJoin(ctx);
+    }
+
+    @Override
+    public String visitOuterJoin(RuleMetricParser.OuterJoinContext ctx) {
+        joinType = JoinType.OUTER;
+        return super.visitOuterJoin(ctx);
+    }
+
+    @Override
+    public String visitLeftJoin(RuleMetricParser.LeftJoinContext ctx) {
+        joinType = JoinType.LEFT;
+        return super.visitLeftJoin(ctx);
     }
 
     @Override

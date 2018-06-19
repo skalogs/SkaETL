@@ -35,6 +35,7 @@ public class ProcessMetric extends ProcessDefinition {
 
     @Builder.Default
     private List<String> sourceProcessConsumersB = new ArrayList<>();
+    private JoinType joinType;
     private String joinKeyFromA;
     private String joinKeyFromB;
     private String joinWhere;
@@ -77,7 +78,7 @@ public class ProcessMetric extends ProcessDefinition {
     }
 
     private String join() {
-        String dsl = " JOIN " + getFromTopicB() + " ON (" + joinKeyFromA + ", " + joinKeyFromB + ") WINDOWED BY " +  joinWindowSize + " " + joinWindowUnit;
+        String dsl = joinType + " JOIN " + getFromTopicB() + " ON (" + joinKeyFromA + ", " + joinKeyFromB + ") WINDOWED BY " +  joinWindowSize + " " + joinWindowUnit;
         if (StringUtils.isNotBlank(joinWhere)) {
             dsl += " WHERE " + joinWhere;
         }

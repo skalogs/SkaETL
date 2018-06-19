@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.rules.codegeneration.metrics;
 
+import io.skalogs.skaetl.domain.JoinType;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -206,6 +207,7 @@ public class RuleMetricVisitorImplTest {
     @Test
     public void join() {
         RuleMetricVisitorImpl convert = convert("SELECT MIN(duration)  FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 2 MINUTES");
+        assertThat(convert.getJoinType()).isEqualTo(JoinType.INNER);
         assertThat(convert.getJoinFrom()).isEqualTo("mytopic2");
         assertThat(convert.getJoinKeyFromA()).isEqualTo("userFromA");
         assertThat(convert.getJoinKeyFromB()).isEqualTo("userFromB");

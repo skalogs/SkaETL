@@ -33,12 +33,14 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;\n" +
                                 "import io.skalogs.skaetl.domain.ProcessMetric;\n" +
+                                "import io.skalogs.skaetl.domain.JoinType;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                                "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
@@ -79,12 +81,14 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;\n" +
                                 "import io.skalogs.skaetl.domain.ProcessMetric;\n" +
+                                "import io.skalogs.skaetl.domain.JoinType;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                                "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
@@ -132,12 +136,14 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;\n" +
                                 "import io.skalogs.skaetl.domain.ProcessMetric;\n" +
+                                "import io.skalogs.skaetl.domain.JoinType;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                                "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
@@ -189,12 +195,14 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;\n" +
                                 "import io.skalogs.skaetl.domain.ProcessMetric;\n" +
+                                "import io.skalogs.skaetl.domain.JoinType;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                                "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
@@ -252,12 +260,14 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;\n" +
                                 "import io.skalogs.skaetl.domain.ProcessMetric;\n" +
+                                "import io.skalogs.skaetl.domain.JoinType;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                                "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
@@ -309,12 +319,14 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;\n" +
                                 "import io.skalogs.skaetl.domain.ProcessMetric;\n" +
+                                "import io.skalogs.skaetl.domain.JoinType;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                                "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
@@ -328,6 +340,11 @@ public class RuleMetricToJavaTest {
                                 "        super(processMetric, \"mytopic\", \"mytopic2\");\n" +
                                 "    }\n" +
                                 "    \n" +
+                                "    @Override\n" +
+                                "    protected JoinType joinType() {\n" +
+                                "        return INNER;\n" +
+                                "    }\n" +
+                                "    \n"+
                                 "    @Override\n" +
                                 "    protected AggregateFunction aggInitializer() {\n" +
                                 "        return aggFunction(\"MIN\");\n" +
@@ -379,12 +396,14 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;\n" +
                                 "import io.skalogs.skaetl.domain.ProcessMetric;\n" +
+                                "import io.skalogs.skaetl.domain.JoinType;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
+                                "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
@@ -398,6 +417,11 @@ public class RuleMetricToJavaTest {
                                 "        super(processMetric, \"mytopic\", \"mytopic2\");\n" +
                                 "    }\n" +
                                 "    \n" +
+                                "    @Override\n" +
+                                "    protected JoinType joinType() {\n" +
+                                "        return INNER;\n" +
+                                "    }\n" +
+                                "    \n"+
                                 "    @Override\n" +
                                 "    protected AggregateFunction aggInitializer() {\n" +
                                 "        return aggFunction(\"MIN\");\n" +

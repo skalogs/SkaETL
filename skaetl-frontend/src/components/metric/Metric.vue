@@ -263,9 +263,10 @@
             </div>
           </v-card-title>
           <v-card-text>
-            <v-switch label="Use correlation" v-model="metricProcess.joinEnabled"
-                      @click.native="changeJoinEnabled()"></v-switch>
-            <div v-if="metricProcess.joinEnabled">
+            <v-select v-bind:items="joinTypes" v-model="metricProcess.joinType"
+                      label="Select Join Type" item-value="text" required
+                      :rules="[() => !!metricProcess.joinType || 'This field is required']"></v-select>
+            <div v-if="metricProcess.joinType != 'NONE'">
               <v-card class="mb-3">
                 <v-card-title>
                   <div class="title">Join on Process Consumers</div>
@@ -348,7 +349,7 @@
           sourceProcessConsumers: [],
           selectedProcessB: [],
           sourceProcessConsumersB: [],
-          joinEnabled: false,
+          joinType: "NONE",
           joinKeyFromA: "",
           joinKeyFromB: "",
           joinWhere: "",
@@ -369,6 +370,7 @@
         functions: ["COUNT", "COUNT-DISTINCT", "SUM", "AVG", "MIN", "MAX", "STDDEV", "MEAN"],
         windowTypes: ["TUMBLING", "HOPPING", "SESSION"],
         timeunits: ["SECONDS", "MINUTES", "HOURS", "DAYS"],
+        joinTypes: ["NONE", "INNER", "OUTER", "LEFT" ],
         metricWizardStep: 1,
         message: "",
         listProcess: [],

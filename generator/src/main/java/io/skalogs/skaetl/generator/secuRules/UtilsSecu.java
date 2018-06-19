@@ -299,6 +299,7 @@ public class UtilsSecu {
                 .size(5)
                 .sizeUnit(TimeUnit.MINUTES)
                 .sourceProcessConsumersB(Lists.newArrayList("idProcessConnexion"))
+                .joinType(JoinType.INNER)
                 .joinKeyFromA("databaseIp")
                 .joinKeyFromB("serverIp")
                 .joinWindowSize(15)

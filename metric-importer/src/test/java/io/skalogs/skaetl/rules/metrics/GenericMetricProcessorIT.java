@@ -464,6 +464,11 @@ public class GenericMetricProcessorIT {
         GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count-incident-payment", destTopic), "operation-cb", "payment") {
 
             @Override
+            protected JoinType joinType() {
+                return JoinType.INNER;
+            }
+
+            @Override
             protected AggregateFunction aggInitializer() {
                 return aggFunction("count");
             }

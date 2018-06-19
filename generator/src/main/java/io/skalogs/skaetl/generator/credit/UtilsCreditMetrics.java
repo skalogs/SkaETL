@@ -52,6 +52,7 @@ public class UtilsCreditMetrics {
                     .size(1)
                     .sizeUnit(TimeUnit.MINUTES)
                     .sourceProcessConsumersB(Lists.newArrayList(idProcessFrontData, idProcessCustomerData, idProcessProductData, idProcessProviderData, idProcessCreditData))
+                    .joinType(JoinType.INNER)
                     .joinKeyFromA("requestId")
                     .joinKeyFromB("requestId")
                     .joinWindowUnit(TimeUnit.MINUTES)
