@@ -1,64 +1,59 @@
 package io.skalogs.skaetl.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Streams;
-import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.MetadataItem;
 import io.skalogs.skaetl.domain.ProcessReferential;
 import io.skalogs.skaetl.domain.Referential;
-import io.skalogs.skaetl.serdes.JsonNodeSerialializer;
-import io.skalogs.skaetl.utils.JSONUtils;
-import io.skalogs.skaetl.utils.KafkaUtils;
+import io.skalogs.skaetl.domain.TypeReferential;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.apache.kafka.streams.processor.AbstractProcessor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.PunctuationType;
 import org.apache.kafka.streams.state.KeyValueStore;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-import static io.skalogs.skaetl.service.referential.ReferentialESService.*;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
-public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> implements ReferentialService {
+public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,List<Referential>> {
 
     public static final String REFERENTIAL = "referential";
     private final ProcessReferential processReferential;
-    private final Producer<String, JsonNode> referentialProducer;
     private KeyValueStore<String, Referential> referentialStateStore;
 
-    public ReferentialProcessor(ProcessReferential processReferential, KafkaConfiguration kafkaConfiguration) {
+    public ReferentialTransformer(ProcessReferential processReferential) {
         this.processReferential = processReferential;
-        this.referentialProducer = KafkaUtils.kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, JsonNodeSerialializer.class);
     }
 
     @Override
     public void init(ProcessorContext context) {
-        super.init(context);
         referentialStateStore = (KeyValueStore<String, Referential>) context.getStateStore(REFERENTIAL);
 
         context.schedule(5 * 60 * 1000, PunctuationType.WALL_CLOCK_TIME, (timestamp) -> flush());
     }
 
     @Override
-    public void process(String key, JsonNode jsonNode) {
-        save(processReferential, processReferential.getListAssociatedKeys().stream()
+    public List<Referential> transform(JsonNode jsonNode) {
+        return save(processReferential.getListAssociatedKeys().stream()
                 .filter(keyTrack -> jsonNode.has(keyTrack))
                 .filter(keyTrack -> !jsonNode.get(keyTrack).asText().equals("null"))
                 .map(keyTrack -> createReferential(keyTrack, jsonNode))
                 .collect(toList()));
+    }
+
+    @Override
+    public List<Referential> punctuate(long timestamp) {
+        return null;
+    }
+
+    @Override
+    public void close() {
+
     }
 
     private Referential createReferential(String keyTrack, JsonNode jsonNode) {
@@ -93,71 +88,79 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
 
     public void flush() {
         List<Referential> referentials = Streams.stream(referentialStateStore.all()).map(entry -> entry.value).filter(entry -> entry != null) .collect(Collectors.toList());
-        log.info("{} Persist Referential size {}", context().applicationId(), referentials.size());
+        log.info("{} Persist Referential size {}", getContext().applicationId(), referentials.size());
         referentials.stream()
-                .forEach(referential -> referentialToKafka(referential));
+                .forEach(referential -> computeValidation(referential));
     }
 
-    private void referentialToKafka(Referential referential) {
-        validationTime(processReferential, referential);
-        referentialProducer.send(new ProducerRecord<>(TOPIC_REFERENTIAL_ES, JSONUtils.getInstance().toJsonNode(referential)));
+    private void computeValidation(Referential referential) {
+        validationTime( referential, new ArrayList<>());
     }
 
-    public void save(ProcessReferential processReferential, List<Referential> referentialList) {
-        referentialList.stream().forEach(item -> compute(processReferential, item));
+    public List<Referential> save(List<Referential> referentialList) {
+        return referentialList
+                .stream()
+                .map(item -> compute(item))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
-    public void compute(ProcessReferential processReferential, Referential newReferential) {
+    public List<Referential> compute(Referential newReferential) {
         String key = newReferential.getIdProcessReferential() + "#" + newReferential.getKey() + "#" + newReferential.getValue();
-        Referential ref = referentialStateStore.get(key);
-        if (ref == null) {
+        List<Referential> referentials =new ArrayList<>();
+        Referential oldReferential = referentialStateStore.get(key);
+        if (oldReferential == null) {
+            referentials.add(newReferential);
             referentialStateStore.put(key, newReferential);
         } else {
             //we must validate before update
-            validationTime(processReferential,ref);
+            validationTime(oldReferential,referentials);
             //we must notificate before update
-            notification(processReferential, ref, newReferential);
-            referentialStateStore.put(key,
-                    mergeMetadata(ref.withValue(newReferential.getValue()).withTimestamp(newReferential.getTimestamp()), newReferential.getMetadataItemSet()));
+            notification(oldReferential, newReferential,referentials);
+            Referential value = mergeMetadata(oldReferential.withValue(newReferential.getValue()).withTimestamp(newReferential.getTimestamp()), newReferential.getMetadataItemSet());
+            referentials.add(value);
+            referentialStateStore.put(key,value);
         }
+        return referentials;
     }
 
-    private void validationTime(ProcessReferential processReferential, Referential referential) {
+    private void validationTime(Referential referential, List<Referential> referentials) {
         if (processReferential.getIsValidationTimeAllField()) {
-            validationTimeAllField(processReferential, referential);
+            validationTimeAllField(referential,referentials);
         } else if (processReferential.getIsValidationTimeField()) {
-            validationTimeField(processReferential, referential);
+            validationTimeField(referential,referentials);
         }
     }
 
-    private void validationTimeAllField(ProcessReferential processReferential, Referential referential) {
+    private void validationTimeAllField(Referential referential, List<Referential> referentials) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         long diffInSec = differenceTime(referential.getTimestamp(), df.format(new Date()));
         log.debug("referential {} validationTimeAllField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),referential.getTimestampETL(),df.format(new Date()),diffInSec);
         if (diffInSec > processReferential.getTimeValidationAllFieldInSec()) {
-            ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
-            jsonNode.put("typeReferential", "validation");
-            jsonNode.put("type", referential.getType()+"-validation");
-            jsonNode.put("timeExceeded", diffInSec);
-            jsonNode.put("timeValidationAllFieldInSec", processReferential.getTimeValidationAllFieldInSec());
-            referentialProducer.send(new ProducerRecord<>(TOPIC_REFERENTIAL_VALIDATION_ES, jsonNode));
+            referentials.add(referential
+                    .withType(referential.getType()+"-validation")
+                    .withTypeReferential(TypeReferential.VALIDATION)
+                    .withTimeExceeded(diffInSec)
+                    .withTimeValidationAllFieldInSec(processReferential.getTimeValidationAllFieldInSec())
+            );
+
         }
     }
 
-    private void validationTimeField(ProcessReferential processReferential, Referential referential) {
+    private void validationTimeField(Referential referential, List<Referential> referentials) {
         MetadataItem item = getItem(processReferential.getFieldChangeValidation(), referential.getMetadataItemSet());
         if (item != null) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             long diffInSec = differenceTime(item.getTimestamp(), df.format(new Date()));
             log.debug("referential {}  validationTimeField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),item.getTimestampETL(),df.format(new Date()),diffInSec);
             if (diffInSec > processReferential.getTimeValidationFieldInSec()) {
-                ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
-                jsonNode.put("type", referential.getType()+"-validation");
-                jsonNode.put("typeReferential", "validation");
-                jsonNode.put("timeExceeded", diffInSec);
-                jsonNode.put("fieldChangeValidation", processReferential.getFieldChangeValidation());
-                jsonNode.put("timeValidationFieldInSec", processReferential.getTimeValidationFieldInSec());
-                referentialProducer.send(new ProducerRecord<>(TOPIC_REFERENTIAL_VALIDATION_ES, jsonNode));
+                referentials.add(referential
+                        .withType(referential.getType()+"-validation")
+                        .withTypeReferential(TypeReferential.VALIDATION)
+                        .withTimeExceeded(diffInSec)
+                        .withFieldChangeValidation(processReferential.getFieldChangeValidation())
+                        .withTimeValidationFieldInSec(processReferential.getTimeValidationFieldInSec())
+                );
             }
         }
     }
@@ -187,14 +190,14 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         }
     }
 
-    private void notification(ProcessReferential processReferential, Referential referential, Referential referentialNew) {
+    private void notification(Referential referential, Referential referentialNew, List<Referential> referentials) {
         if (processReferential.getIsNotificationChange()) {
             MetadataItem itemOld = getItem(processReferential.getFieldChangeNotification(), referential.getMetadataItemSet());
             MetadataItem itemNew = getItem(processReferential.getFieldChangeNotification(), referentialNew.getMetadataItemSet());
             if (itemNew != null && itemOld == null) {
-                notificationReferentialToKafka(referential, itemNew.getTimestamp(), new Long(0L), processReferential.getFieldChangeNotification(), itemNew.getValue());
+                referentials.add(notificationReferentialToKafka(referential, itemNew.getTimestamp(), new Long(0L), processReferential.getFieldChangeNotification(), itemNew.getValue()));
             } else if (itemNew != null && !itemOld.getValue().equals(itemNew.getValue())) {
-                notificationReferentialToKafka(referential, itemNew.getTimestamp(), Long.valueOf(differenceTime(itemOld.getTimestamp(), itemNew.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue());
+                referentials.add(notificationReferentialToKafka(referential, itemNew.getTimestamp(), Long.valueOf(differenceTime(itemOld.getTimestamp(), itemNew.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue()));
             }
         }
     }
@@ -215,15 +218,14 @@ public class ReferentialProcessor extends AbstractProcessor<String, JsonNode> im
         return diffInSeconds;
     }
 
-    private void notificationReferentialToKafka(Referential referential, String newTimeStamp, Long timeBetweenEventSec, String keyMetadata, String newMetadataValue) {
-        ObjectNode jsonNode = (ObjectNode) JSONUtils.getInstance().toJsonNode(referential);
-        jsonNode.put("type", referential.getType()+"-notification");
-        jsonNode.put("typeReferential", "notification");
-        jsonNode.put("newTimeStamp", newTimeStamp);
-        jsonNode.put("keyMetadataModified", keyMetadata);
-        jsonNode.put("newMetadataValue", newMetadataValue);
-        jsonNode.put("timeBetweenEventSec", timeBetweenEventSec);
-        referentialProducer.send(new ProducerRecord<>(TOPIC_REFERENTIAL_NOTIFICATION_ES, jsonNode));
+    private Referential notificationReferentialToKafka(Referential referential, String newTimeStamp, Long timeBetweenEventSec, String keyMetadata, String newMetadataValue) {
+        return referential
+                .withType(referential.getType()+"-notification")
+                .withTypeReferential(TypeReferential.NOTIFICATION)
+                .withNewTimestamp(newTimeStamp)
+                .withKeyMetadataModified(keyMetadata)
+                .withNewMetadataValue(newMetadataValue)
+                .withTimeBetweenEventSec(timeBetweenEventSec);
     }
 
     private MetadataItem getItem(String field, Set<MetadataItem> metadataItemSet) {

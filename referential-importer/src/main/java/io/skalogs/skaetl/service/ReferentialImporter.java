@@ -8,6 +8,8 @@ import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.serdes.GenericDeserializer;
 import io.skalogs.skaetl.serdes.GenericSerdes;
 import io.skalogs.skaetl.serdes.GenericSerializer;
+import io.skalogs.skaetl.service.processor.ReferentialElasticsearchProcessor;
+import io.skalogs.skaetl.service.processor.ReferentialNotificationElasticsearchProcessor;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +22,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.StoreBuilder;
 import org.apache.kafka.streams.state.Stores;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -44,6 +47,7 @@ public class ReferentialImporter {
     private final KafkaAdminService kafkaAdminService;
     private final KafkaConfiguration kafkaConfiguration;
     private final ProcessConfiguration processConfiguration;
+    private final ApplicationContext applicationContext;
     private final Map<ProcessReferential, List<KafkaStreams>> runningProcessReferential = new HashMap();
     private final Map<ProcessReferential, List<KafkaStreams>> runningMergeProcess = new HashMap();
     private final Map<ProcessReferential, List<ReferentialService>> runningService = new HashMap();
@@ -102,7 +106,7 @@ public class ReferentialImporter {
         StreamsBuilder builder = new StreamsBuilder();
 
         StoreBuilder referentialStore = Stores
-                .keyValueStoreBuilder(Stores.persistentKeyValueStore(ReferentialProcessor.REFERENTIAL),
+                .keyValueStoreBuilder(Stores.persistentKeyValueStore(ReferentialTransformer.REFERENTIAL),
                         Serdes.String(),
                         Serdes.serdeFrom(new GenericSerializer<Referential>(), new GenericDeserializer(Referential.class)))
                 .withLoggingEnabled(new HashMap<>());
@@ -110,13 +114,29 @@ public class ReferentialImporter {
 
         KStream<String, JsonNode> streamToRef = builder.stream(topicMerge, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
 
-        ReferentialProcessor referentialProcessor = new ReferentialProcessor(processReferential, kafkaConfiguration);
-        streamToRef.process(() -> referentialProcessor,ReferentialProcessor.REFERENTIAL);
-        runningService.get(processReferential).add(referentialProcessor);
+        ReferentialTransformer referentialTransformer = new ReferentialTransformer(processReferential);
+        KStream<String, Referential>[] referentialStreams = streamToRef.transformValues(() -> referentialTransformer, ReferentialTransformer.REFERENTIAL)
+                .flatMapValues((value -> value))
+                .branch((k, referential) -> referential.getTypeReferential() == null,
+                        (k, referential) -> referential.getTypeReferential() == TypeReferential.NOTIFICATION,
+                        (k, referential) -> referential.getTypeReferential() == TypeReferential.VALIDATION);
+
+        referentialStreams[0].process(() -> toEs());
+        referentialStreams[1].process(() -> toNotificationEs());
+        referentialStreams[2].process(() -> toEs());
+
         KafkaStreams stream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "_" + TOPIC_MERGE_REFERENTIAL, kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(stream::close));
         runningProcessReferential.get(processReferential).add(stream);
         stream.start();
+    }
+
+    private ReferentialElasticsearchProcessor toEs() {
+        return applicationContext.getBean(ReferentialElasticsearchProcessor.class);
+    }
+
+    private ReferentialNotificationElasticsearchProcessor toNotificationEs() {
+        return applicationContext.getBean(ReferentialNotificationElasticsearchProcessor.class);
     }
 
     private void sendToRegistry(String action) {

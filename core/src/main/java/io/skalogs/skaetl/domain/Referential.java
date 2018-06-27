@@ -14,16 +14,32 @@ import java.util.Set;
 @ToString
 @Wither
 public class Referential {
-    public String idProcessReferential;
-    public String nameProcessReferential;
-    public String key;
-    public String value;
-    public String timestamp;
-    public String project;
-    public String type;
+    private String idProcessReferential;
+    private String nameProcessReferential;
+    private String key;
+    private String value;
+    private String timestamp;
+    private String project;
+    private String type;
     @Builder.Default
-    public RetentionLevel retentionLevel = RetentionLevel.year;
+    private RetentionLevel retentionLevel = RetentionLevel.year;
     @JsonProperty("metadataItemSet_nested")
-    public Set<MetadataItem> metadataItemSet = new HashSet<MetadataItem>();
-    public String timestampETL;
+    private Set<MetadataItem> metadataItemSet = new HashSet<MetadataItem>();
+    private String timestampETL;
+
+    //notification & validation
+    private TypeReferential typeReferential;
+    private String newTimestamp;
+
+    //notification
+    private String keyMetadataModified;
+    private String newMetadataValue;
+    private Long timeBetweenEventSec;
+
+
+    //validation
+    private Long timeExceeded;
+    private Integer timeValidationAllFieldInSec;
+    private String fieldChangeValidation;
+    private Integer timeValidationFieldInSec;
 }
