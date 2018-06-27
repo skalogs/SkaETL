@@ -29,8 +29,10 @@ public class ReferentialBeanFactory {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public ReferentialNotificationElasticsearchProcessor referentialNotificationElasticsearchProcessor(RetentionLevel retentionLevel) {
+    public ReferentialEventToElasticSearchProcessor referentialEventToElasticSearchProcessor(RetentionLevel retentionLevel) {
         ESBuffer esBuffer = new ESBuffer(client, esBufferConfiguration, esConfiguration);
-        return new ReferentialNotificationElasticsearchProcessor(esBuffer, esErrorRetryWriter, retentionLevel);
+        return new ReferentialEventToElasticSearchProcessor(esBuffer, esErrorRetryWriter, retentionLevel);
     }
+
+
 }

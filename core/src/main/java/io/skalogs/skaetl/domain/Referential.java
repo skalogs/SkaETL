@@ -26,12 +26,15 @@ public class Referential {
     @JsonProperty("metadataItemSet_nested")
     private Set<MetadataItem> metadataItemSet = new HashSet<MetadataItem>();
     private String timestampETL;
+    private String creationDate;
 
-    //notification & validation
+    //tracking & validation
     private TypeReferential typeReferential;
     private String newTimestamp;
 
-    //notification
+    //tracking
+    @Builder.Default
+    private Long nbChange = 0L;
     private String keyMetadataModified;
     private String newMetadataValue;
     private Long timeBetweenEventSec;

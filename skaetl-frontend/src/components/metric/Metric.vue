@@ -328,7 +328,7 @@
       </v-stepper-content>
 
       <v-stepper-content step="9">
-        <Output :process-output="metricProcess.processOutputs" v-on:previousStep="previousStep" v-on:saveProcess="save"/>
+        <Output :process-output="metricProcess.processOutputs" v-on:previousStep="previousStep" v-on:saveProcess="save" can-save="true"/>
       </v-stepper-content>
     </v-stepper>
   </v-container>

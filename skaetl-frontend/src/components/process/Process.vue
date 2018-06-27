@@ -99,7 +99,7 @@
       </v-stepper-content>
 
       <v-stepper-content step="7">
-        <Output :process-output="process.processOutput" v-on:previousStep="previousStep" v-on:saveProcess="saveProcess" />
+        <Output :process-output="process.processOutput" v-on:previousStep="previousStep" v-on:saveProcess="saveProcess" can-save="true"/>
       </v-stepper-content>
     </v-stepper>
   </v-container>

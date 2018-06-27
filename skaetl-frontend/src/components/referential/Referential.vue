@@ -12,9 +12,11 @@
                 <v-divider></v-divider>
                 <v-stepper-step step="5" v-bind:complete="referentialWizardStep > 5" :editable="referentialWizardStep > 4">Extract Meta-data</v-stepper-step>
                 <v-divider></v-divider>
-                <v-stepper-step step="5" v-bind:complete="referentialWizardStep > 6" :editable="referentialWizardStep > 5">Validation</v-stepper-step>
+                <v-stepper-step step="6" v-bind:complete="referentialWizardStep > 6" :editable="referentialWizardStep > 5">Outputs / Notifications</v-stepper-step>
                 <v-divider></v-divider>
-                <v-stepper-step step="5" v-bind:complete="referentialWizardStep > 7" :editable="referentialWizardStep > 6">Notification</v-stepper-step>
+                <v-stepper-step step="7" v-bind:complete="referentialWizardStep > 6" :editable="referentialWizardStep > 5">Validation</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="8" v-bind:complete="referentialWizardStep > 6" :editable="referentialWizardStep > 5">Tracking</v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-header v-if="editMode">
@@ -28,9 +30,11 @@
                 <v-divider></v-divider>
                 <v-stepper-step step="5" editable>Extract Meta-data</v-stepper-step>
                 <v-divider></v-divider>
-                <v-stepper-step step="6" editable>Validation</v-stepper-step>
+                <v-stepper-step step="6" editable>Outputs / Notifications</v-stepper-step>
                 <v-divider></v-divider>
-                <v-stepper-step step="7" editable>Notification</v-stepper-step>
+                <v-stepper-step step="7" editable>Validation</v-stepper-step>
+                <v-divider></v-divider>
+                <v-stepper-step step="8" editable>Tracking</v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-content step="1">
@@ -131,6 +135,10 @@
           </v-stepper-content>
 
           <v-stepper-content step="6">
+            <Output :process-output="itemToEdit.processOutputs" v-on:previousStep="previousStep" v-on:nextStep="nextStep" can-use-next="true"/>
+          </v-stepper-content>
+
+          <v-stepper-content step="7">
             <v-card class="mb-5">
               <v-card-title><div class="headline">Validation</div></v-card-title>
               <v-card-text>
@@ -152,16 +160,13 @@
                   </v-flex>
                 </v-layout>
               </v-card-text>
-              <v-card-actions>
-                <v-btn color="primary" style="width: 120px" @click.native="previousStep()"><v-icon>navigate_before</v-icon>Previous</v-btn>
-                <v-btn color="primary" style="width: 120px" @click.native="nextStep()" >Next<v-icon>navigate_next</v-icon></v-btn>
-              </v-card-actions>
             </v-card>
+            <Output :process-output="itemToEdit.validationOutputs" v-on:previousStep="previousStep" v-on:nextStep="nextStep" can-use-next="true"/>
           </v-stepper-content>
 
-          <v-stepper-content step="7">
+          <v-stepper-content step="8">
             <v-card class="mb-5">
-              <v-card-title><div class="headline">Notification</div></v-card-title>
+              <v-card-title><div class="headline">Tracking</div></v-card-title>
               <v-card-text>
                 <v-layout row>
                   <v-flex xs6 sm6 md6>
@@ -172,11 +177,8 @@
                   </v-flex>
                 </v-layout>
               </v-card-text>
-              <v-card-actions>
-                <v-btn color="primary" style="width: 120px" @click.native="previousStep()"><v-icon>navigate_before</v-icon>Previous</v-btn>
-                <v-btn color="success" style="width: 120px" @click.native="updateReferential()">Save&nbsp;<v-icon>save</v-icon></v-btn>
-              </v-card-actions>
             </v-card>
+            <Output :process-output="itemToEdit.trackingOutputs" v-on:previousStep="previousStep" v-on:saveProcess="updateReferential" can-save="true"/>
           </v-stepper-content>
     </v-stepper>
   </v-container>
@@ -190,7 +192,10 @@
 </style>
 
 <script>
-  export default{
+  import Output from "../process/Output";
+
+  export default {
+   components: {Output},
    data () {
       return {
         referentialWizardStep: '',
@@ -208,7 +213,10 @@
                      "timeValidationInSec": 0,
                      "isValidationTimeAllField": false,
                      "isValidationTimeField": false,
-                     "fieldChangeValidation": ""
+                     "fieldChangeValidation": "",
+                     "processOutputs": [],
+                     "trackingOutputs": [],
+                     "validationOutputs": [],
                     },
         viewError: false,
         msgError: '',

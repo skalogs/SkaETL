@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
-public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,List<Referential>> {
+public class ReferentialTransformer extends AbstractValueTransformer<JsonNode, List<Referential>> {
 
     public static final String REFERENTIAL = "referential";
     private final ProcessReferential processReferential;
@@ -32,6 +32,7 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
 
     @Override
     public void init(ProcessorContext context) {
+        super.init(context);
         referentialStateStore = (KeyValueStore<String, Referential>) context.getStateStore(REFERENTIAL);
 
         context.schedule(5 * 60 * 1000, PunctuationType.WALL_CLOCK_TIME, (timestamp) -> flush());
@@ -46,16 +47,6 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
                 .collect(toList()));
     }
 
-    @Override
-    public List<Referential> punctuate(long timestamp) {
-        return null;
-    }
-
-    @Override
-    public void close() {
-
-    }
-
     private Referential createReferential(String keyTrack, JsonNode jsonNode) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Referential ref = Referential.builder()
@@ -68,6 +59,7 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
                 .project("REFERENTIAL")
                 .type(processReferential.getName())
                 .timestampETL(df.format(new Date()))
+                .creationDate(df.format(new Date()))
                 .build();
         return ref;
     }
@@ -82,19 +74,20 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
                         .value(jsonNode.path(metadata).asText())
                         .timestamp(jsonNode.path("timestamp").asText())
                         .timestampETL(df.format(new Date()))
+                        .creationDate(df.format(new Date()))
                         .build())
                 .collect(Collectors.toCollection(HashSet::new));
     }
 
     public void flush() {
-        List<Referential> referentials = Streams.stream(referentialStateStore.all()).map(entry -> entry.value).filter(entry -> entry != null) .collect(Collectors.toList());
+        List<Referential> referentials = Streams.stream(referentialStateStore.all()).map(entry -> entry.value).filter(entry -> entry != null).collect(Collectors.toList());
         log.info("{} Persist Referential size {}", getContext().applicationId(), referentials.size());
         referentials.stream()
                 .forEach(referential -> computeValidation(referential));
     }
 
     private void computeValidation(Referential referential) {
-        validationTime( referential, new ArrayList<>());
+        validationTime(referential, new ArrayList<>());
     }
 
     public List<Referential> save(List<Referential> referentialList) {
@@ -107,38 +100,42 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
 
     public List<Referential> compute(Referential newReferential) {
         String key = newReferential.getIdProcessReferential() + "#" + newReferential.getKey() + "#" + newReferential.getValue();
-        List<Referential> referentials =new ArrayList<>();
+        List<Referential> referentials = new ArrayList<>();
         Referential oldReferential = referentialStateStore.get(key);
         if (oldReferential == null) {
             referentials.add(newReferential);
             referentialStateStore.put(key, newReferential);
         } else {
             //we must validate before update
-            validationTime(oldReferential,referentials);
+            validationTime(oldReferential, referentials);
             //we must notificate before update
-            notification(oldReferential, newReferential,referentials);
-            Referential value = mergeMetadata(oldReferential.withValue(newReferential.getValue()).withTimestamp(newReferential.getTimestamp()), newReferential.getMetadataItemSet());
+            tracking(oldReferential, newReferential, referentials);
+            Referential value = mergeMetadata(oldReferential
+                            .withValue(newReferential.getValue())
+                            .withTimestamp(newReferential.getTimestamp())
+                            .withNbChange(oldReferential.getNbChange() + 1)
+                    , newReferential.getMetadataItemSet());
             referentials.add(value);
-            referentialStateStore.put(key,value);
+            referentialStateStore.put(key, value);
         }
         return referentials;
     }
 
     private void validationTime(Referential referential, List<Referential> referentials) {
         if (processReferential.getIsValidationTimeAllField()) {
-            validationTimeAllField(referential,referentials);
+            validationTimeAllField(referential, referentials);
         } else if (processReferential.getIsValidationTimeField()) {
-            validationTimeField(referential,referentials);
+            validationTimeField(referential, referentials);
         }
     }
 
     private void validationTimeAllField(Referential referential, List<Referential> referentials) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         long diffInSec = differenceTime(referential.getTimestamp(), df.format(new Date()));
-        log.debug("referential {} validationTimeAllField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),referential.getTimestampETL(),df.format(new Date()),diffInSec);
+        log.debug("referential {} validationTimeAllField old : {} new: {} diff {}", referential.getKey() + "---" + referential.getValue(), referential.getTimestampETL(), df.format(new Date()), diffInSec);
         if (diffInSec > processReferential.getTimeValidationAllFieldInSec()) {
             referentials.add(referential
-                    .withType(referential.getType()+"-validation")
+                    .withType(referential.getType() + "-validation")
                     .withTypeReferential(TypeReferential.VALIDATION)
                     .withTimeExceeded(diffInSec)
                     .withTimeValidationAllFieldInSec(processReferential.getTimeValidationAllFieldInSec())
@@ -152,10 +149,10 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
         if (item != null) {
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
             long diffInSec = differenceTime(item.getTimestamp(), df.format(new Date()));
-            log.debug("referential {}  validationTimeField old : {} new: {} diff {}",referential.getKey()+"---"+referential.getValue(),item.getTimestampETL(),df.format(new Date()),diffInSec);
+            log.debug("referential {}  validationTimeField old : {} new: {} diff {}", referential.getKey() + "---" + referential.getValue(), item.getTimestampETL(), df.format(new Date()), diffInSec);
             if (diffInSec > processReferential.getTimeValidationFieldInSec()) {
                 referentials.add(referential
-                        .withType(referential.getType()+"-validation")
+                        .withType(referential.getType() + "-validation")
                         .withTypeReferential(TypeReferential.VALIDATION)
                         .withTimeExceeded(diffInSec)
                         .withFieldChangeValidation(processReferential.getFieldChangeValidation())
@@ -175,7 +172,7 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
     private void updateRefMetadata(Referential referential, MetadataItem itemNew) {
         Boolean noTreat = true;
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        if(referential.getMetadataItemSet() !=null && !referential.getMetadataItemSet().isEmpty()) {
+        if (referential.getMetadataItemSet() != null && !referential.getMetadataItemSet().isEmpty()) {
             for (MetadataItem itemRef : referential.getMetadataItemSet()) {
                 if (itemRef.getKey().equals(itemNew.getKey())) {
                     itemRef.setValue(itemNew.getValue());
@@ -190,14 +187,14 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
         }
     }
 
-    private void notification(Referential referential, Referential referentialNew, List<Referential> referentials) {
+    private void tracking(Referential referential, Referential referentialNew, List<Referential> referentials) {
         if (processReferential.getIsNotificationChange()) {
             MetadataItem itemOld = getItem(processReferential.getFieldChangeNotification(), referential.getMetadataItemSet());
             MetadataItem itemNew = getItem(processReferential.getFieldChangeNotification(), referentialNew.getMetadataItemSet());
             if (itemNew != null && itemOld == null) {
-                referentials.add(notificationReferentialToKafka(referential, itemNew.getTimestamp(), new Long(0L), processReferential.getFieldChangeNotification(), itemNew.getValue()));
+                referentials.add(trackChange(referential, itemNew.getTimestamp(), new Long(0L), processReferential.getFieldChangeNotification(), itemNew.getValue()));
             } else if (itemNew != null && !itemOld.getValue().equals(itemNew.getValue())) {
-                referentials.add(notificationReferentialToKafka(referential, itemNew.getTimestamp(), Long.valueOf(differenceTime(itemOld.getTimestamp(), itemNew.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue()));
+                referentials.add(trackChange(referential, itemNew.getTimestamp(), Long.valueOf(differenceTime(itemOld.getTimestamp(), itemNew.getTimestamp())), processReferential.getFieldChangeNotification(), itemNew.getValue()));
             }
         }
     }
@@ -218,10 +215,10 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
         return diffInSeconds;
     }
 
-    private Referential notificationReferentialToKafka(Referential referential, String newTimeStamp, Long timeBetweenEventSec, String keyMetadata, String newMetadataValue) {
+    private Referential trackChange(Referential referential, String newTimeStamp, Long timeBetweenEventSec, String keyMetadata, String newMetadataValue) {
         return referential
-                .withType(referential.getType()+"-notification")
-                .withTypeReferential(TypeReferential.NOTIFICATION)
+                .withType(referential.getType() + "-tracking")
+                .withTypeReferential(TypeReferential.TRACKING)
                 .withNewTimestamp(newTimeStamp)
                 .withKeyMetadataModified(keyMetadata)
                 .withNewMetadataValue(newMetadataValue)
@@ -229,7 +226,7 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode,Li
     }
 
     private MetadataItem getItem(String field, Set<MetadataItem> metadataItemSet) {
-        if(metadataItemSet !=null && !metadataItemSet.isEmpty()) {
+        if (metadataItemSet != null && !metadataItemSet.isEmpty()) {
             for (MetadataItem item : metadataItemSet) {
                 if (item.getKey().equals(field)) {
                     return item;

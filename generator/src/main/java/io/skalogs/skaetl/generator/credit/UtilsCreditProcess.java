@@ -27,7 +27,7 @@ public class UtilsCreditProcess {
     private final String idProcessCustomerData = "idProcessCustomerData";
     private final String idProcessFrontData = "idProcessFrontData";
 
-    private final HashMap<String,String> mapProduct;
+    private final HashMap<String, String> mapProduct;
 
     public UtilsCreditProcess(ProcessServiceHTTP processServiceHTTP, UtilsCreditData utilsCreditData, KafkaConfiguration kafkaConfiguration, ReferentialServiceHTTP referentialServiceHTTP) {
         this.processServiceHTTP = processServiceHTTP;
@@ -35,11 +35,11 @@ public class UtilsCreditProcess {
         this.host = kafkaConfiguration.getBootstrapServers().split(":")[0];
         this.port = kafkaConfiguration.getBootstrapServers().split(":")[1];
         this.mapProduct = new HashMap<>();
-        this.mapProduct.put("AUTOM","credit automobile");
-        this.mapProduct.put("CONSO","credit consommation");
-        this.mapProduct.put("TRAVA","credit travaux");
-        this.mapProduct.put("ECOLO","credit renovation ecologique");
-        this.mapProduct.put("REVOL","credit revolving");
+        this.mapProduct.put("AUTOM", "credit automobile");
+        this.mapProduct.put("CONSO", "credit consommation");
+        this.mapProduct.put("TRAVA", "credit travaux");
+        this.mapProduct.put("ECOLO", "credit renovation ecologique");
+        this.mapProduct.put("REVOL", "credit revolving");
     }
 
     private void createReferentialCredit() {
@@ -48,33 +48,36 @@ public class UtilsCreditProcess {
         //notification -> if statusCredit change -> produce a message for change
         if (referentialServiceHTTP.findReferential("demoReferentialCreditStatus") == null) {
             referentialServiceHTTP.updateReferential(ProcessReferential.builder()
-                        .name("referentialCreditStatus")
-                        .idProcess("demoReferentialCreditStatus")
-                        .referentialKey("Client")
-                        .listIdProcessConsumer(Lists.newArrayList(idProcessCreditData))
-                        .listAssociatedKeys(Lists.newArrayList("email"))
-                        .listMetadata(Lists.newArrayList("statusCredit", "creditDuration", "productName", "user"))
-                        .isValidationTimeField(true)
-                        .fieldChangeValidation("statusCredit")
-                        .timeValidationAllFieldInSec(2 * 60 * 60)
-                        .timeValidationFieldInSec(2 * 60 * 60)
-                        .isNotificationChange(true)
-                        .fieldChangeNotification("statusCredit")
-                        .build());
+                    .name("referentialCreditStatus")
+                    .idProcess("demoReferentialCreditStatus")
+                    .referentialKey("Client")
+                    .listIdProcessConsumer(Lists.newArrayList(idProcessCreditData))
+                    .listAssociatedKeys(Lists.newArrayList("email"))
+                    .listMetadata(Lists.newArrayList("statusCredit", "creditDuration", "productName", "user"))
+                    .isValidationTimeField(true)
+                    .fieldChangeValidation("statusCredit")
+                    .timeValidationAllFieldInSec(2 * 60 * 60)
+                    .timeValidationFieldInSec(2 * 60 * 60)
+                    .isNotificationChange(true)
+                    .fieldChangeNotification("statusCredit")
+                    .processOutputs(Lists.newArrayList(toEsOutput()))
+                    .trackingOuputs(Lists.newArrayList(toEsOutput()))
+                    .validationOutputs(Lists.newArrayList(toEsOutput()))
+                    .build());
             try {
                 Thread.sleep(2000);
-                referentialServiceHTTP.activateProcess((ProcessReferential) referentialServiceHTTP.findReferential("demoReferentialCreditStatus"));
+                referentialServiceHTTP.activateProcess(referentialServiceHTTP.findReferential("demoReferentialCreditStatus"));
             } catch (Exception e) {
                 log.error("Exception {}", e);
             }
         }
     }
 
-    public void createAllReferential(){
+    public void createAllReferential() {
         createReferentialCredit();
     }
 
-    public void createAllProcess(){
+    public void createAllProcess() {
         createAndActiveProcessConsumerCredit();
         createAndActiveProcessConsumerCustomer();
         createAndActiveProcessConsumerFront();

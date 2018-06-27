@@ -11,8 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class MetadataItem {
-    public String key;
-    public String value;
-    public String timestamp;
-    public String timestampETL;
+    private String key;
+    private String value;
+    private String timestamp;
+    private String timestampETL;
+    private String creationDate;
 }

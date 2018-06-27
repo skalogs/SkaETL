@@ -8,8 +8,8 @@ import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.serdes.GenericDeserializer;
 import io.skalogs.skaetl.serdes.GenericSerdes;
 import io.skalogs.skaetl.serdes.GenericSerializer;
-import io.skalogs.skaetl.service.processor.ReferentialElasticsearchProcessor;
-import io.skalogs.skaetl.service.processor.ReferentialNotificationElasticsearchProcessor;
+import io.skalogs.skaetl.service.processor.*;
+import io.skalogs.skaetl.utils.JSONUtils;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -118,12 +118,13 @@ public class ReferentialImporter {
         KStream<String, Referential>[] referentialStreams = streamToRef.transformValues(() -> referentialTransformer, ReferentialTransformer.REFERENTIAL)
                 .flatMapValues((value -> value))
                 .branch((k, referential) -> referential.getTypeReferential() == null,
-                        (k, referential) -> referential.getTypeReferential() == TypeReferential.NOTIFICATION,
+                        (k, referential) -> referential.getTypeReferential() == TypeReferential.TRACKING,
                         (k, referential) -> referential.getTypeReferential() == TypeReferential.VALIDATION);
 
-        referentialStreams[0].process(() -> toEs());
-        referentialStreams[1].process(() -> toNotificationEs());
-        referentialStreams[2].process(() -> toEs());
+
+        routeResult(referentialStreams[0], processReferential.getProcessOutputs(), ReferentialElasticsearchProcessor.class);
+        routeResult(referentialStreams[1], processReferential.getTrackingOuputs(), ReferentialEventToElasticSearchProcessor.class);
+        routeResult(referentialStreams[2], processReferential.getValidationOutputs(), ReferentialEventToElasticSearchProcessor.class);
 
         KafkaStreams stream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(processReferential.getIdProcess() + "_" + TOPIC_MERGE_REFERENTIAL, kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(stream::close));
@@ -131,12 +132,58 @@ public class ReferentialImporter {
         stream.start();
     }
 
-    private ReferentialElasticsearchProcessor toEs() {
-        return applicationContext.getBean(ReferentialElasticsearchProcessor.class);
+    public void routeResult(KStream<String, Referential> result, List<ProcessOutput> processOutputs, Class<? extends AbstractElasticsearchProcessor> toElasticsearchProcessorClass) {
+        KStream<String, JsonNode> resultAsJsonNode = result.mapValues(value -> JSONUtils.getInstance().toJsonNode(value));
+        for (ProcessOutput processOutput : processOutputs) {
+            switch (processOutput.getTypeOutput()) {
+                case KAFKA:
+                    toKafkaTopic(resultAsJsonNode, processOutput.getParameterOutput());
+                    break;
+                case ELASTICSEARCH:
+                    toElasticsearch(resultAsJsonNode, processOutput.getParameterOutput(),toElasticsearchProcessorClass);
+                    break;
+                case SYSTEM_OUT:
+                    toSystemOut(resultAsJsonNode);
+                    break;
+                case EMAIL:
+                    toEmail(resultAsJsonNode, processOutput.getParameterOutput());
+                    break;
+                case SLACK:
+                    toSlack(resultAsJsonNode, processOutput.getParameterOutput());
+                    break;
+                case SNMP:
+                    toSnmp(resultAsJsonNode, processOutput.getParameterOutput());
+            }
+        }
+
     }
 
-    private ReferentialNotificationElasticsearchProcessor toNotificationEs() {
-        return applicationContext.getBean(ReferentialNotificationElasticsearchProcessor.class);
+    private void toKafkaTopic(KStream<String, JsonNode> result, ParameterOutput parameterOutput) {
+        result.to(parameterOutput.getTopicOut(), Produced.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
+    }
+
+    private void toElasticsearch(KStream<String, JsonNode> result, ParameterOutput parameterOutput, Class<? extends AbstractElasticsearchProcessor> toElasticsearchProcessorClass) {
+        result.process(() -> applicationContext.getBean(toElasticsearchProcessorClass, parameterOutput.getElasticsearchRetentionLevel()));
+    }
+
+    private void toSystemOut(KStream<String, JsonNode> result) {
+        result.process(() -> new LoggingProcessor<>());
+    }
+
+    private void toEmail(KStream<String, JsonNode> result, ParameterOutput parameterOutput) {
+        String email = parameterOutput.getEmail();
+            String template = parameterOutput.getTemplate();
+
+
+        result.process(() -> new JsonNodeEmailProcessor(email, template, applicationContext.getBean(EmailService.class)));
+    }
+
+    private void toSlack(KStream<String, JsonNode> result, ParameterOutput parameterOutput) {
+        result.process(() -> new JsonNodeSlackProcessor(parameterOutput.getWebHookURL(),parameterOutput.getTemplate()));
+    }
+
+    private void toSnmp(KStream<String, JsonNode> result, ParameterOutput parameterOutput) {
+        result.process(() -> new JsonNodeSnmpProcessor(applicationContext.getBean(SnmpService.class)));
     }
 
     private void sendToRegistry(String action) {

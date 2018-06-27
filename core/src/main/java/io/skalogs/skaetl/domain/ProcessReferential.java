@@ -40,4 +40,14 @@ public class ProcessReferential extends ProcessDefinition {
     private Integer timeValidationFieldInSec = 0;
     @Builder.Default
     private String fieldChangeValidation = "";
+
+    @Builder.Default
+    private List<ProcessOutput> processOutputs = new ArrayList<>();
+
+    @Builder.Default
+    private List<ProcessOutput> trackingOuputs = new ArrayList<>();
+
+    @Builder.Default
+    private List<ProcessOutput> validationOutputs = new ArrayList<>();
+
 }

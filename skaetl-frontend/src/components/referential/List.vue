@@ -92,7 +92,7 @@
                    { text: 'Key',align: 'center',sortable: 0,value: '', width: '20%'},
                    { text: 'Metadata',align: 'center',sortable: 0,value: '', width: '20%'},
                    { text: 'Process',align: 'center',sortable: 0,value: '', width: '20%'},
-                   { text: 'Notification',align: 'center',sortable: 0,value: '', width: '5%'},
+                   { text: 'Tracking',align: 'center',sortable: 0,value: '', width: '5%'},
                    { text: 'Validation All',align: 'center',sortable: 0,value: '', width: '5%'},
                    { text: 'Validation Field',align: 'center',sortable: 0,value: '', width: '5%'}
                  ],
