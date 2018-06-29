@@ -14,13 +14,37 @@
      </v-layout>
      <v-data-table v-bind:headers="headers" :items="listReferential" hide-actions >
          <template slot="items" slot-scope="props">
-           <td class="text-md-center">
-                  <v-btn color="warning" style="width: 120px" small v-on:click.native="editReferential(props.item.id)">Edit<v-icon right>edit</v-icon></v-btn>
-                  <v-btn color="success" style="width: 120px" small text-color="white" v-if="props.item.statusProcess == 'INIT' || props.item.statusProcess == 'DISABLE'" v-on:click.native="activateReferential(props.item.id)">Activate<v-icon right>touch_app</v-icon></v-btn>
-                  <v-btn color="pink darken-2" style="width: 120px" small text-color="white" v-if="props.item.statusProcess == 'ENABLE'" v-on:click.native="deactivateReferential(props.item.id)">DeActivate<v-icon right>close</v-icon></v-btn>
-                  <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'ERROR'" v-on:click.native="deactivateReferential(props.item.idConfiguration)">ERROR<v-icon right>error_outline</v-icon></v-btn>
-                  <v-btn color="error" style="width: 120px" small v-if="props.item.statusProcess == 'DEGRADED'" v-on:click.native="deactivateReferential(props.item.idConfiguration)">DEGRADED<v-icon right>error_outline</v-icon></v-btn>
-                  <v-btn color="red" style="width: 120px" small v-on:click.native="deleteReferential(props.item.id)">delete<v-icon right>delete</v-icon></v-btn>
+           <td>
+               <v-menu bottom left>
+                  <v-btn slot="activator" icon>
+                     <v-icon v-if="props.item.statusProcess == 'DEGRADED'" color="red">warning</v-icon>
+                     <v-icon v-if="props.item.statusProcess == 'ERROR'" color="red">error_outline</v-icon>
+                     <v-icon v-if="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" color="orange">pause_circle_filled</v-icon>
+                     <v-icon v-if="props.item.statusProcess == 'ENABLE'" color="green">play_circle_filled</v-icon>
+                  </v-btn>
+                  <v-list>
+                    <v-list-tile>
+                      <v-list-tile-title style="height: 40px" >
+                            <v-btn v-if="props.item.statusProcess == 'DEGRADED'" color="purple">{{props.item.statusProcess}}</v-btn>
+                            <v-btn v-if="props.item.statusProcess == 'ERROR'" color="red">{{props.item.statusProcess}}</v-btn>
+                            <v-btn v-if="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" color="orange">{{props.item.statusProcess}}</v-btn>
+                            <v-btn v-if="props.item.statusProcess == 'ENABLE'" color="green">{{props.item.statusProcess}}</v-btn>
+                      </v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile v-on:click.native="editReferential(props.item.id)">
+                      <v-list-tile-title class="justify-center layout px-0">Edit</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile :disabled="props.item.statusProcess == 'ENABLE' || props.item.statusProcess == 'ERROR' || props.item.statusProcess == 'DEGRADED'" v-on:click.native="deactivateReferential(props.item.id)">
+                      <v-list-tile-title class="justify-center layout px-0">Deactivate</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile  :disabled="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" v-on:click.native="activateReferential(props.item.id)">
+                      <v-list-tile-title class="justify-center layout px-0">Activate</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile v-on:click.native="deleteReferential(props.item.id)">
+                      <v-list-tile-title class="justify-center layout px-0">Delete</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+               </v-menu>
            </td>
            <td class="text-xs-center">{{props.item.processDefinition.name}}</td>
            <td class="text-xs-center">{{props.item.processDefinition.referentialKey}}</td>
