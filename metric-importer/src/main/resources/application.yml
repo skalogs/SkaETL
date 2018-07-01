@@ -53,4 +53,6 @@ snmp.community: Public
 snmp.trapOid: .1.3.6.1.2.1.1.6
 snmp.ipAddress: 127.0.0.1
 snmp.port: 162
+
+registry.active: true
 ---

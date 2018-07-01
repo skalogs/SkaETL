@@ -2,6 +2,7 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.ProcessConfiguration;
+import io.skalogs.skaetl.config.RegistryConfiguration;
 import io.skalogs.skaetl.domain.ProcessConstants;
 import io.skalogs.skaetl.domain.ProcessConsumer;
 import io.skalogs.skaetl.domain.ProcessFilter;
@@ -36,8 +37,8 @@ public class ImporterGeneric extends AbstractGenericImporter {
         sendToRegistry("addService");
     }
 
-    public ImporterGeneric(ESErrorRetryWriter esErrorRetryWriter, GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, RuleFilterExecutor ruleFilterExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService, ApplicationContext applicationContext, EmailService emailService, SnmpService snmpService) {
-        super(genericValidator, transformValidator, genericParser, genericFilterService, processConfiguration, externalHTTPService);
+    public ImporterGeneric(ESErrorRetryWriter esErrorRetryWriter, GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, RuleFilterExecutor ruleFilterExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService, ApplicationContext applicationContext, EmailService emailService, SnmpService snmpService, RegistryConfiguration registryConfiguration) {
+        super(genericValidator, transformValidator, genericParser, genericFilterService, processConfiguration, externalHTTPService, registryConfiguration);
         this.ruleFilterExecutor = ruleFilterExecutor;
         this.esErrorRetryWriter = esErrorRetryWriter;
         this.kafkaAdminService = kafkaAdminService;

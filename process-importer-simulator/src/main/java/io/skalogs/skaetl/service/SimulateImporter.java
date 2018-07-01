@@ -2,6 +2,7 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.ProcessConfiguration;
+import io.skalogs.skaetl.config.RegistryConfiguration;
 import io.skalogs.skaetl.domain.ProcessConsumer;
 import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.filters.GenericFilter;
@@ -24,8 +25,8 @@ public class SimulateImporter extends AbstractGenericImporter {
     private final RuleFilterExecutor ruleExecutor;
     private final KafkaAdminService kafkaAdminService;
 
-    public SimulateImporter(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, RuleFilterExecutor ruleExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService) {
-        super(genericValidator, transformValidator, genericParser, genericFilterService, processConfiguration, externalHTTPService);
+    public SimulateImporter(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, RuleFilterExecutor ruleExecutor, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration, ExternalHTTPService externalHTTPService, RegistryConfiguration registryConfiguration) {
+        super(genericValidator, transformValidator, genericParser, genericFilterService, processConfiguration, externalHTTPService, registryConfiguration);
         this.ruleExecutor = ruleExecutor;
         this.kafkaAdminService = kafkaAdminService;
     }

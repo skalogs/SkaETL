@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.config.ProcessConfiguration;
+import io.skalogs.skaetl.config.RegistryConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.serdes.GenericDeserializer;
 import io.skalogs.skaetl.serdes.GenericSerdes;
@@ -47,6 +48,7 @@ public class ReferentialImporter {
     private final KafkaAdminService kafkaAdminService;
     private final KafkaConfiguration kafkaConfiguration;
     private final ProcessConfiguration processConfiguration;
+    private final RegistryConfiguration registryConfiguration;
     private final ApplicationContext applicationContext;
     private final Map<ProcessReferential, List<KafkaStreams>> runningProcessReferential = new HashMap();
     private final Map<ProcessReferential, List<KafkaStreams>> runningMergeProcess = new HashMap();
@@ -187,22 +189,24 @@ public class ReferentialImporter {
     }
 
     private void sendToRegistry(String action) {
-        RegistryWorker registry = null;
-        try {
-            registry = RegistryWorker.builder()
-                    .workerType(WorkerType.REFERENTIAL_PROCESS)
-                    .ip(InetAddress.getLocalHost().getHostName())
-                    .name(InetAddress.getLocalHost().getHostName())
-                    .port(processConfiguration.getPortClient())
-                    .statusConsumerList(statusExecutor())
-                    .build();
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<RegistryWorker> request = new HttpEntity<>(registry);
-            String url = processConfiguration.getUrlRegistry();
-            String res = restTemplate.postForObject(url + "/process/registry/" + action, request, String.class);
-            log.debug("sendToRegistry result {}", res);
-        } catch (Exception e) {
-            log.error("Exception on sendToRegistry", e);
+        if (registryConfiguration.getActive()) {
+            RegistryWorker registry = null;
+            try {
+                registry = RegistryWorker.builder()
+                        .workerType(WorkerType.REFERENTIAL_PROCESS)
+                        .ip(InetAddress.getLocalHost().getHostName())
+                        .name(InetAddress.getLocalHost().getHostName())
+                        .port(processConfiguration.getPortClient())
+                        .statusConsumerList(statusExecutor())
+                        .build();
+                RestTemplate restTemplate = new RestTemplate();
+                HttpEntity<RegistryWorker> request = new HttpEntity<>(registry);
+                String url = processConfiguration.getUrlRegistry();
+                String res = restTemplate.postForObject(url + "/process/registry/" + action, request, String.class);
+                log.debug("sendToRegistry result {}", res);
+            } catch (Exception e) {
+                log.error("Exception on sendToRegistry", e);
+            }
         }
 
     }

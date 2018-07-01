@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.config.ProcessConfiguration;
+import io.skalogs.skaetl.config.RegistryConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.rules.metrics.GenericMetricProcessor;
 import io.skalogs.skaetl.rules.metrics.RuleMetricExecutor;
@@ -39,6 +40,7 @@ public class MetricImporter {
     private final ProcessConfiguration processConfiguration;
     private final KafkaAdminService kafkaAdminService;
     private final ApplicationContext applicationContext;
+    private final RegistryConfiguration registryConfiguration;
     private final Map<ProcessMetric, List<KafkaStreams>> runningMetricProcessors = new HashMap();
 
     @PostConstruct
@@ -122,24 +124,25 @@ public class MetricImporter {
     }
 
     private void sendToRegistry(String action) {
-        RegistryWorker registry = null;
-        try {
-            registry = RegistryWorker.builder()
-                    .workerType(WorkerType.METRIC_PROCESS)
-                    .ip(InetAddress.getLocalHost().getHostName())
-                    .name(InetAddress.getLocalHost().getHostName())
-                    .port(processConfiguration.getPortClient())
-                    .statusConsumerList(statusExecutor())
-                    .build();
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<RegistryWorker> request = new HttpEntity<>(registry);
-            String url = processConfiguration.getUrlRegistry();
-            String res = restTemplate.postForObject(url + "/process/registry/" + action, request, String.class);
-            log.debug("sendToRegistry result {}", res);
-        } catch (Exception e) {
-            log.error("Exception on sendToRegistry", e);
+        if (registryConfiguration.getActive()) {
+            RegistryWorker registry = null;
+            try {
+                registry = RegistryWorker.builder()
+                        .workerType(WorkerType.METRIC_PROCESS)
+                        .ip(InetAddress.getLocalHost().getHostName())
+                        .name(InetAddress.getLocalHost().getHostName())
+                        .port(processConfiguration.getPortClient())
+                        .statusConsumerList(statusExecutor())
+                        .build();
+                RestTemplate restTemplate = new RestTemplate();
+                HttpEntity<RegistryWorker> request = new HttpEntity<>(registry);
+                String url = processConfiguration.getUrlRegistry();
+                String res = restTemplate.postForObject(url + "/process/registry/" + action, request, String.class);
+                log.debug("sendToRegistry result {}", res);
+            } catch (Exception e) {
+                log.error("Exception on sendToRegistry", e);
+            }
         }
-
     }
 
     public List<StatusConsumer> statusExecutor() {

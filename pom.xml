@@ -366,6 +366,7 @@
         <module>process-importer-impl</module>
         <module>services</module>
         <module>generator</module>
+        <module>standalone-importer</module>
     </modules>
     <repositories>
         <repository>

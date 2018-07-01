@@ -1,6 +1,7 @@
 package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.config.ProcessConfiguration;
+import io.skalogs.skaetl.config.RegistryConfiguration;
 import io.skalogs.skaetl.domain.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,24 +32,28 @@ public abstract class AbstractGenericImporter {
     private final GenericFilterService genericFilterService;
     private final ProcessConfiguration processConfiguration;
     private final ExternalHTTPService externalHTTPService;
+    private final RegistryConfiguration registryConfiguration;
+
 
     public void sendToRegistry(String action) {
-        RegistryWorker registry = null;
-        try {
-            registry = RegistryWorker.builder()
-                    .workerType(WorkerType.PROCESS_CONSUMER)
-                    .ip(InetAddress.getLocalHost().getHostName())
-                    .name(InetAddress.getLocalHost().getHostName())
-                    .port(getProcessConfiguration().getPortClient())
-                    .statusConsumerList(statusExecutor())
-                    .build();
-            RestTemplate restTemplate = new RestTemplate();
-            HttpEntity<RegistryWorker> request = new HttpEntity<>(registry);
-            String url = getProcessConfiguration().getUrlRegistry();
-            String res = restTemplate.postForObject(url + "/process/registry/" + action, request, String.class);
-            log.debug("sendToRegistry result {}", res);
-        } catch (Exception e) {
-            log.error("Exception on sendToRegistry", e);
+        if (registryConfiguration.getActive()) {
+            RegistryWorker registry = null;
+            try {
+                registry = RegistryWorker.builder()
+                        .workerType(WorkerType.PROCESS_CONSUMER)
+                        .ip(InetAddress.getLocalHost().getHostName())
+                        .name(InetAddress.getLocalHost().getHostName())
+                        .port(getProcessConfiguration().getPortClient())
+                        .statusConsumerList(statusExecutor())
+                        .build();
+                RestTemplate restTemplate = new RestTemplate();
+                HttpEntity<RegistryWorker> request = new HttpEntity<>(registry);
+                String url = getProcessConfiguration().getUrlRegistry();
+                String res = restTemplate.postForObject(url + "/process/registry/" + action, request, String.class);
+                log.debug("sendToRegistry result {}", res);
+            } catch (Exception e) {
+                log.error("Exception on sendToRegistry", e);
+            }
         }
     }
 

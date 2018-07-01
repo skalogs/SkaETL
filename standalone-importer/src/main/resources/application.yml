@@ -1,5 +1,5 @@
 info:
-  component: Importer !
+  component: Standalone !
 
 spring.profiles.active: dev
 
@@ -16,12 +16,13 @@ logging:
     ROOT: INFO
     org.springframework.web: INFO
     io.skalogs: INFO
-server.port: 8082
 
+---
+spring.profiles: dev
 
 process.urlRegistry: "http://localhost:8090"
 process.frequency: 5
-process.portClient: "8082"
+process.portClient: "8080"
 
 validator.maxFields: 100
 validator.maxSize: 20000
@@ -60,5 +61,9 @@ kafka.groupId: importer
 spring.mail.host: ""
 spring.mail.port: 25
 
-registry.active: true
----
+snmp.community: Public
+snmp.trapOid: .1.3.6.1.2.1.1.6
+snmp.ipAddress: 127.0.0.1
+snmp.port: 162
+
+registry.active: false
