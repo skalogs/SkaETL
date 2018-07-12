@@ -1,0 +1,64 @@
+info:
+  component: Importer !
+
+spring.profiles.active: dev
+
+management.security.enabled: false
+
+security:
+  basic.enabled: false
+  user:
+    name: admin
+    password: admin
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework.web: INFO
+    io.skalogs: INFO
+server.port: 8082
+
+
+process.urlRegistry: "http://localhost:8090"
+process.frequency: 5
+process.portClient: "8082"
+
+validator.maxFields: 100
+validator.maxSize: 20000
+validator.maximumInThePastAllowed: 1
+validator.maximumInTheFutureAllowed: 1
+validator.mandatoryFields:
+- "@timestamp"
+- "project"
+- "type"
+- "project"
+validator.blacklistType:
+- "auditd"
+- "kernel"
+validator.whitelistType:
+validator.cardinalityFieldChecks:
+
+elasticsearch.host: localhost
+elasticsearch.port: 9200
+elasticsearch.clusterName: docker-cluster
+elasticsearch.serviceElasticsearchUsername: elastic
+elasticsearch.serviceElasticsearchPassword: changeme
+elasticsearch.clientTransportPingTimeout: 10
+elasticsearch.clientNodesSamplerInterval: 10
+elasticsearch.customIndexPrefix: "index-dev"
+
+bufferElasticsearch.maxElements: 10
+bufferElasticsearch.maxSizeInBytes: 10000
+bufferElasticsearch.maxTime: 1
+
+kafka.topic: processtopic
+kafka.bootstrapServers: localhost:9092
+kafka.pollingTime: 1000
+kafka.pollRecord: 50
+kafka.groupId: importer
+
+spring.mail.host: ""
+spring.mail.port: 25
+
+registry.active: true
+---

@@ -34,7 +34,16 @@
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>io.skalogs.skaetl</groupId>
+            <artifactId>services</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.skalogs.skaetl</groupId>
+            <artifactId>rule-executor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

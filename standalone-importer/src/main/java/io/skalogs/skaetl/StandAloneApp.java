@@ -16,6 +16,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class StandAloneApp {
 
     public static void main(String[] args) throws Exception {
-        new SpringApplication(ImporterApp.class).run(args);
+        new SpringApplication(StandAloneApp.class).run(args);
     }
 }

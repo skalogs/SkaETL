@@ -351,22 +351,23 @@
         <module>core</module>
         <module>compiler</module>
         <module>rule-executor</module>
-        <module>process-importer</module>
         <module>error-importer</module>
         <module>retry-importer</module>
         <module>process-importer-simulator</module>
         <module>kafka-unit</module>
         <module>metric-api</module>
         <module>metric-importer</module>
+        <module>referential-importer-impl</module>
         <module>referential-importer</module>
         <module>skaetl-backend</module>
         <module>skaetl-frontend</module>
         <module>enduser-doc</module>
         <module>process-importer-api</module>
         <module>process-importer-impl</module>
+        <module>process-importer</module>
         <module>services</module>
         <module>generator</module>
-        <!--   <module>standalone-importer</module>-->
+        <module>standalone-importer</module>
     </modules>
     <repositories>
         <repository>

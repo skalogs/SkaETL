@@ -25,17 +25,17 @@
         </dependency>
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
-            <artifactId>process-importer</artifactId>
+            <artifactId>process-importer-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
-            <artifactId>metric-importer</artifactId>
+            <artifactId>metric-api</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
-            <artifactId>referential-importer</artifactId>
+            <artifactId>referential-importer-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

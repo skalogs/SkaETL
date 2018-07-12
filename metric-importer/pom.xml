@@ -16,18 +16,8 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>io.skalogs.skaetl</groupId>
-            <artifactId>services</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.skalogs.skaetl</groupId>
-            <artifactId>rule-executor</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
