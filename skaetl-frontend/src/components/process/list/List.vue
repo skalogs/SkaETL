@@ -48,10 +48,10 @@
                       <v-list-tile v-on:click.native="nextProcess(props.item.id)">
                         <v-list-tile-title class="justify-center layout px-0">Action</v-list-tile-title>
                       </v-list-tile>
-                      <v-list-tile :disabled="props.item.statusProcess == 'ENABLE' || props.item.statusProcess == 'ERROR' || props.item.statusProcess == 'DEGRADED'" v-on:click.native="deactivateProcess(props.item.id)">
+                      <v-list-tile :disabled="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" v-on:click.native="deactivateProcess(props.item.id)">
                         <v-list-tile-title class="justify-center layout px-0">Deactivate</v-list-tile-title>
                       </v-list-tile>
-                      <v-list-tile  :disabled="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" v-on:click.native="activateProcess(props.item.id)">
+                      <v-list-tile  :disabled="props.item.statusProcess == 'ENABLE' || props.item.statusProcess == 'ERROR' || props.item.statusProcess == 'DEGRADED'" v-on:click.native="activateProcess(props.item.id)">
                         <v-list-tile-title class="justify-center layout px-0">Activate</v-list-tile-title>
                       </v-list-tile>
                       <v-list-tile v-on:click.native="deleteProcess(props.item.id)">
