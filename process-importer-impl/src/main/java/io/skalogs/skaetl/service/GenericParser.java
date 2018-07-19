@@ -4,10 +4,7 @@ import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.ParserResult;
 import io.skalogs.skaetl.domain.ProcessConsumer;
 import io.skalogs.skaetl.domain.ProcessParser;
-import io.skalogs.skaetl.service.parser.CEFParser;
-import io.skalogs.skaetl.service.parser.CSVParser;
-import io.skalogs.skaetl.service.parser.GrokParser;
-import io.skalogs.skaetl.service.parser.NitroParser;
+import io.skalogs.skaetl.service.parser.*;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -24,13 +21,15 @@ public class GenericParser {
     private final CEFParser cefParser;
     private final NitroParser nitroParser;
     private final CSVParser csvParser;
+    private final JsonStringParser jsonStringParser;
     private final Producer<String, String> failParserProducer;
 
-    public GenericParser(GrokParser grokParser, CEFParser cefParser, NitroParser nitroParser, CSVParser csvParser,KafkaConfiguration kafkaConfiguration) {
+    public GenericParser(GrokParser grokParser, CEFParser cefParser, NitroParser nitroParser, CSVParser csvParser, JsonStringParser jsonStringParser, KafkaConfiguration kafkaConfiguration) {
         this.grokParser = grokParser;
         this.cefParser = cefParser;
         this.nitroParser = nitroParser;
         this.csvParser = csvParser;
+        this.jsonStringParser = jsonStringParser;
         this.failParserProducer = KafkaUtils.kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, StringSerializer.class);
     }
 
@@ -59,6 +58,8 @@ public class GenericParser {
                     return treatParseResult(grokParser.process(value, processParser),value, processParser);
                 case CSV:
                     return treatParseResult(csvParser.process(value, processParser),value, processParser);
+                case JSON_AS_STRING:
+                    return treatParseResult(jsonStringParser.process(value,processParser),value, processParser);
                 default:
                     log.error("Unsupported Type {}", processParser.getTypeParser());
                     return ParserResult.builder().result(value).build();

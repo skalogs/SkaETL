@@ -5,5 +5,6 @@ public enum TypeParser {
     GROK,
     CEF,
     NITRO,
-    CSV
+    CSV,
+    JSON_AS_STRING
 }

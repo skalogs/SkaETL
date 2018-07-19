@@ -71,7 +71,7 @@
     data: function () {
       return {
         dialog: false,
-        typeParser: ["CEF", "NITRO", "GROK", "CSV"],
+        typeParser: ["CEF", "NITRO", "GROK", "CSV", "JSON_AS_STRING"],
         editedItem: {},
         defaultItem: {},
         editedIndex: -1,
