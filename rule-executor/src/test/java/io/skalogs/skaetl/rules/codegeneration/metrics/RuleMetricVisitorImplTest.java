@@ -31,6 +31,7 @@ public class RuleMetricVisitorImplTest {
     @Test
     public void expr_field_atom() {
         assertThat(expr("name")).isEqualTo("get(jsonValue,\"name\")");
+        assertThat(expr("my.name")).isEqualTo("get(jsonValue,\"my.name\")");
     }
 
     @Test
