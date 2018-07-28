@@ -2,6 +2,7 @@ package io.skalogs.skaetl.service;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.domain.ParameterTransformation;
 import io.skalogs.skaetl.domain.TypeValidation;
@@ -26,30 +27,30 @@ public abstract class TransformatorProcess {
     public abstract void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value);
 
     protected boolean has(String path, JsonNode jsonNode) {
-        return jsonUtils.has(path,jsonNode);
+        return jsonUtils.has(path, jsonNode);
     }
 
     protected JsonNode at(String path, JsonNode jsonNode) {
-        return jsonUtils.at(path,jsonNode);
+        return jsonUtils.at(path, jsonNode);
     }
 
     protected void put(String path, JsonNode jsonNode, String value) {
-        jsonUtils.put(path,jsonNode,value);
+        jsonUtils.put(path, jsonNode, JsonNodeFactory.instance.textNode(value));
     }
 
     protected void put(String path, JsonNode jsonNode, Boolean value) {
-        jsonUtils.put(path,jsonNode,value);
+        jsonUtils.put(path, jsonNode, JsonNodeFactory.instance.booleanNode(value));
     }
 
     protected void put(String path, JsonNode jsonNode, Double value) {
-        jsonUtils.put(path,jsonNode,value);
+        jsonUtils.put(path, jsonNode, JsonNodeFactory.instance.numberNode(value));
     }
 
     protected void put(String path, JsonNode jsonNode, Long value) {
-        jsonUtils.put(path,jsonNode,value);
+        jsonUtils.put(path, jsonNode, JsonNodeFactory.instance.numberNode(value));
     }
 
     protected void put(String path, JsonNode jsonNode, JsonNode value) {
-        jsonUtils.put(path,jsonNode,value);
+        jsonUtils.put(path, jsonNode, value);
     }
 }

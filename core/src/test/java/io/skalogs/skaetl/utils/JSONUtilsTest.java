@@ -1,6 +1,7 @@
 package io.skalogs.skaetl.utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.JsonNodeType;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -14,7 +15,7 @@ public class JSONUtilsTest {
         String input = "{ \"name\":\"John\", \"age\":30}";
         JsonNode parse = jsonUtils.parse(input);
 
-        jsonUtils.put("car.type",parse,"test");
+        jsonUtils.put("car.type",parse,JsonNodeFactory.instance.textNode("test"));
 
         Assertions.assertThat(parse.at("/car").getNodeType()).isEqualTo(JsonNodeType.OBJECT);
         Assertions.assertThat(parse.at("/car/type").asText()).isEqualTo("test");
@@ -27,7 +28,7 @@ public class JSONUtilsTest {
         String input = "{ \"name\":\"John\", \"age\":30}";
         JsonNode parse = jsonUtils.parse(input);
 
-        jsonUtils.put("car.model.name",parse,"multipla");
+        jsonUtils.put("car.model.name",parse, JsonNodeFactory.instance.textNode("multipla"));
 
         Assertions.assertThat(parse.at("/car").getNodeType()).isEqualTo(JsonNodeType.OBJECT);
         Assertions.assertThat(parse.at("/car/model").getNodeType()).isEqualTo(JsonNodeType.OBJECT);

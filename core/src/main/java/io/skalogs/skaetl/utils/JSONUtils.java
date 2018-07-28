@@ -76,54 +76,6 @@ public class JSONUtils {
         return jsonNode.at(jsonPath);
     }
 
-    public void put(String path, JsonNode jsonNode, String value) {
-        JsonPointer valueNodePointer = JsonPointer.compile(asJsonPath(path));
-        JsonPointer parentPointer = valueNodePointer.head();
-        addMissingNodeIfNecessary(jsonNode, path);
-        JsonNode parentNode = jsonNode.at(parentPointer);
-
-        if (parentNode.getNodeType() == JsonNodeType.OBJECT) {
-            ObjectNode parentNodeToUpdate = (ObjectNode) parentNode;
-            parentNodeToUpdate.put(valueNodePointer.last().toString().replaceAll("/", ""), value);
-        }
-    }
-
-    public void put(String path, JsonNode jsonNode, Boolean value) {
-        JsonPointer valueNodePointer = JsonPointer.compile(asJsonPath(path));
-        JsonPointer parentPointer = valueNodePointer.head();
-        addMissingNodeIfNecessary(jsonNode, path);
-        JsonNode parentNode = jsonNode.at(parentPointer);
-
-        if (parentNode.getNodeType() == JsonNodeType.OBJECT) {
-            ObjectNode parentNodeToUpdate = (ObjectNode) parentNode;
-            parentNodeToUpdate.put(valueNodePointer.last().toString().replaceAll("/", ""), value);
-        }
-    }
-
-    public void put(String path, JsonNode jsonNode, Double value) {
-        JsonPointer valueNodePointer = JsonPointer.compile(asJsonPath(path));
-        JsonPointer parentPointer = valueNodePointer.head();
-        addMissingNodeIfNecessary(jsonNode, path);
-        JsonNode parentNode = jsonNode.at(parentPointer);
-
-        if (parentNode.getNodeType() == JsonNodeType.OBJECT) {
-            ObjectNode parentNodeToUpdate = (ObjectNode) parentNode;
-            parentNodeToUpdate.put(valueNodePointer.last().toString().replaceAll("/", ""), value);
-        }
-    }
-
-    public void put(String path, JsonNode jsonNode, Long value) {
-        JsonPointer valueNodePointer = JsonPointer.compile(asJsonPath(path));
-        JsonPointer parentPointer = valueNodePointer.head();
-        addMissingNodeIfNecessary(jsonNode, path);
-        JsonNode parentNode = jsonNode.at(parentPointer);
-
-        if (parentNode.getNodeType() == JsonNodeType.OBJECT) {
-            ObjectNode parentNodeToUpdate = (ObjectNode) parentNode;
-            parentNodeToUpdate.put(valueNodePointer.last().toString().replaceAll("/", ""), value);
-        }
-    }
-
     public void put(String path, JsonNode jsonNode, JsonNode value) {
         JsonPointer valueNodePointer = JsonPointer.compile(asJsonPath(path));
         JsonPointer parentPointer = valueNodePointer.head();
@@ -132,7 +84,7 @@ public class JSONUtils {
 
         if (parentNode.getNodeType() == JsonNodeType.OBJECT) {
             ObjectNode parentNodeToUpdate = (ObjectNode) parentNode;
-            parentNodeToUpdate.put(valueNodePointer.last().toString().replaceAll("/", ""), value);
+            parentNodeToUpdate.set(valueNodePointer.last().toString().replaceAll("/", ""), value);
         }
     }
 
