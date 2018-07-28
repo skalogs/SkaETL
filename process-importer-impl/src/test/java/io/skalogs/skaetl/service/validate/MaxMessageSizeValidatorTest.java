@@ -1,12 +1,12 @@
-package io.skalogs.skaetl;
+package io.skalogs.skaetl.service.validate;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.ParameterValidation;
 import io.skalogs.skaetl.domain.ProcessValidation;
 import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.domain.ValidateData;
-import io.skalogs.skaetl.service.validate.MaxMessageSizeValidator;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;

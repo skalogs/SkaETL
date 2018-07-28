@@ -17,19 +17,19 @@ public class FieldExistValidator extends ValidatorProcess {
 
     public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue, String value) {
         // fields count
-        if (jsonValue.get(processValidation.getParameterValidation().getFieldExist()) == null) {
+        if (has(processValidation.getParameterValidation().getFieldExist(),jsonValue)) {
             return ValidateData.builder()
-                    .success(false)
-                    .statusCode(StatusCode.field_not_exist)
-                    .typeValidation(TypeValidation.MAX_FIELD)
-                    .message("Field " + processValidation.getParameterValidation().getFieldExist() + " is not present")
+                    .success(true)
+                    .typeValidation(TypeValidation.FIELD_EXIST)
                     .jsonValue(jsonValue)
                     .build();
 
         } else {
             return ValidateData.builder()
-                    .success(true)
-                    .typeValidation(TypeValidation.FIELD_EXIST)
+                    .success(false)
+                    .statusCode(StatusCode.field_not_exist)
+                    .typeValidation(TypeValidation.MAX_FIELD)
+                    .message("Field " + processValidation.getParameterValidation().getFieldExist() + " is not present")
                     .jsonValue(jsonValue)
                     .build();
         }

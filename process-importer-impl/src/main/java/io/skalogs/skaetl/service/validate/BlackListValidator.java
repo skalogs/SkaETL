@@ -50,6 +50,6 @@ public class BlackListValidator extends ValidatorProcess {
 
 
     private Boolean isBlackList(JsonNode jsonValue, ProcessKeyValue processKeyValue) {
-        return jsonValue.path(processKeyValue.getKey()).asText().equals(processKeyValue.getValue());
+        return at(processKeyValue.getKey(),jsonValue).asText().equals(processKeyValue.getValue());
     }
 }

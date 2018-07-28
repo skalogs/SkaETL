@@ -49,7 +49,7 @@ public class MandatoryFieldValidator extends ValidatorProcess {
 
     private ValidateData validateMandatoryField(List<String> tabMandatory, ProcessValidation processValidation, JsonNode jsonValue, String value) {
         List<String> listItemNull = tabMandatory.stream()
-                .filter(e -> jsonValue.get(e) == null)
+                .filter(e -> at(e,jsonValue) == null)
                 .collect(toList());
         if (!listItemNull.isEmpty()) {
             listItemNull.forEach(item -> missingMandatoryFieldsCount.labels(item).inc());

@@ -25,31 +25,31 @@ public abstract class TransformatorProcess {
 
     public abstract void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value);
 
-    public boolean has(String path, JsonNode jsonNode) {
+    protected boolean has(String path, JsonNode jsonNode) {
         return jsonUtils.has(path,jsonNode);
     }
 
-    public JsonNode at(String path, JsonNode jsonNode) {
+    protected JsonNode at(String path, JsonNode jsonNode) {
         return jsonUtils.at(path,jsonNode);
     }
 
-    public void put(String path, JsonNode jsonNode, String value) {
+    protected void put(String path, JsonNode jsonNode, String value) {
         jsonUtils.put(path,jsonNode,value);
     }
 
-    public void put(String path, JsonNode jsonNode, Boolean value) {
+    protected void put(String path, JsonNode jsonNode, Boolean value) {
         jsonUtils.put(path,jsonNode,value);
     }
 
-    public void put(String path, JsonNode jsonNode, Double value) {
+    protected void put(String path, JsonNode jsonNode, Double value) {
         jsonUtils.put(path,jsonNode,value);
     }
 
-    public void put(String path, JsonNode jsonNode, Long value) {
+    protected void put(String path, JsonNode jsonNode, Long value) {
         jsonUtils.put(path,jsonNode,value);
     }
 
-    public void put(String path, JsonNode jsonNode, JsonNode value) {
+    protected void put(String path, JsonNode jsonNode, JsonNode value) {
         jsonUtils.put(path,jsonNode,value);
     }
 }
