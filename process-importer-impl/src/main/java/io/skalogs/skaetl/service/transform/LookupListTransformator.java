@@ -17,11 +17,11 @@ public class LookupListTransformator extends TransformatorProcess {
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
         String key = parameterTransformation.getKeyField();
         if (StringUtils.isNotBlank(key)) {
-            if (jsonValue.has(key)) {
+            if (has(key,jsonValue)) {
                 String oldValue = jsonValue.path(key).asText();
                 parameterTransformation.getMapLookup().entrySet().stream()
                         .filter(entry -> entry.getKey().equals(oldValue))
-                        .forEach(entry -> jsonValue.put(key, entry.getValue()));
+                        .forEach(entry -> put(key, jsonValue,  entry.getValue()));
             }
         }
     }

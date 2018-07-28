@@ -28,11 +28,11 @@ public class LookupHTTPServiceTransformator extends TransformatorProcess {
         if (workerHTTPService != null) {
             String key = parameterTransformation.getKeyField();
             if (StringUtils.isNotBlank(key)) {
-                if (jsonValue.has(key)) {
+                if (has(key,jsonValue)) {
                     String oldValue = jsonValue.path(key).asText();
                     workerHTTPService.getMapResult().entrySet().stream()
                             .filter(entry -> entry.getKey().equals(oldValue))
-                            .forEach(entry -> jsonValue.put(key, entry.getValue()));
+                            .forEach(entry -> put(key, jsonValue, entry.getValue()));
                 }
             } else {
                 //All Keys
@@ -47,7 +47,7 @@ public class LookupHTTPServiceTransformator extends TransformatorProcess {
             Map.Entry<String, JsonNode> entry = it.next();
             if (entry.getValue() != null && entry.getValue().asText().equals(oldValue)) {
                 //update
-                jsonValue.put(entry.getKey(), newValue);
+                put(entry.getKey(), jsonValue, newValue);
             }
         }
     }

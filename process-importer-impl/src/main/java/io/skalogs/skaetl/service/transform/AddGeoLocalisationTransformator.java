@@ -3,14 +3,12 @@ package io.skalogs.skaetl.service.transform;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.maxmind.db.CHMCache;
 import com.maxmind.geoip2.DatabaseReader;
-import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.model.CityResponse;
 import com.maxmind.geoip2.record.*;
 import io.skalogs.skaetl.domain.ParameterTransformation;
 import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.service.TransformatorProcess;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -51,10 +49,10 @@ public class AddGeoLocalisationTransformator extends TransformatorProcess {
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
 
         String key = parameterTransformation.getKeyField();
-        String ipToResolve = jsonValue.path(parameterTransformation.getKeyField()).asText();
+        String ipToResolve = getJsonUtils().at(parameterTransformation.getKeyField(), jsonValue).asText();
         log.debug("Start to localise IP address [{}]", ipToResolve);
         if (jsonValue.has(parameterTransformation.getKeyField())
-                && jsonValue.path(parameterTransformation.getKeyField()).asText()!=null
+                && jsonValue.path(parameterTransformation.getKeyField()).asText() != null
                 && !jsonValue.path(parameterTransformation.getKeyField()).asText().equals("null")) {
             try {
                 InetAddress ipAddress = InetAddress.getByName(ipToResolve);
@@ -65,18 +63,18 @@ public class AddGeoLocalisationTransformator extends TransformatorProcess {
                 Postal postal = response.getPostal();
                 Location location = response.getLocation();
 
-                jsonValue.
-                        put(key + "_country_name", country.getName()).
-                        put(key + "_country_isocode", country.getIsoCode()).
-                        put(key + "_city_name", response.getCity().getName()).
-                        put(key + "_subdivision_name", subdivision.getName()).
-                        put(key + "_subdivision_isocode", subdivision.getIsoCode()).
-                        put(key + "_city_name", city.getName()).
-                        put(key + "_city_postalcode", postal.getCode()).
-                        put(key + "_location_gp", location.getLatitude().toString() + "," + location.getLongitude().toString());
+
+                put(key + "_country_name", jsonValue, country.getName());
+                put(key + "_country_isocode", jsonValue, country.getIsoCode());
+                put(key + "_city_name", jsonValue, response.getCity().getName());
+                put(key + "_subdivision_name", jsonValue, subdivision.getName());
+                put(key + "_subdivision_isocode", jsonValue, subdivision.getIsoCode());
+                put(key + "_city_name", jsonValue, city.getName());
+                put(key + "_city_postalcode", jsonValue, postal.getCode());
+                put(key + "_location_gp", jsonValue, location.getLatitude().toString() + "," + location.getLongitude().toString());
 
             } catch (Exception ex) {
-                log.error("Exception during Geo IP Transformation {}",ipToResolve);
+                log.error("Exception during Geo IP Transformation {}", ipToResolve);
                 ex.printStackTrace();
             }
         }

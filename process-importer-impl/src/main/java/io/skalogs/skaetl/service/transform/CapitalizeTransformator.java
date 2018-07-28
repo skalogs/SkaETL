@@ -14,11 +14,11 @@ public class CapitalizeTransformator extends TransformatorProcess {
 
     @Override
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
-        if (jsonValue.get(parameterTransformation.getKeyField()) != null &&
-                jsonValue.has(parameterTransformation.getKeyField())) {
-            JsonNode valueField = jsonValue.path(parameterTransformation.getKeyField());
+        if (has(parameterTransformation.getKeyField(), jsonValue)) {
+            JsonNode valueField = at(parameterTransformation.getKeyField(), jsonValue);
+
             String capitalized = StringUtils.capitalize(valueField.textValue());
-            jsonValue.put(parameterTransformation.getKeyField(), capitalized);
+            put(parameterTransformation.getKeyField(), jsonValue, capitalized);
         }
     }
 }

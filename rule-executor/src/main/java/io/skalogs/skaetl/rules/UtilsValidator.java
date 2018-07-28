@@ -1,6 +1,7 @@
 package io.skalogs.skaetl.rules;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 
@@ -15,7 +16,7 @@ public final class UtilsValidator {
         if (!jsonValue.hasNonNull(key)) {
             return null;
         }
-        JsonNode jsonNode = jsonValue.path(key);
+        JsonNode jsonNode = JSONUtils.getInstance().at(key,jsonValue);
         switch (jsonNode.getNodeType()) {
             case BOOLEAN:
                 return (T) Boolean.valueOf(jsonNode.asBoolean());

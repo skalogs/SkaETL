@@ -6,6 +6,7 @@ import io.skalogs.skaetl.domain.MetadataItem;
 import io.skalogs.skaetl.domain.ProcessReferential;
 import io.skalogs.skaetl.domain.Referential;
 import io.skalogs.skaetl.domain.TypeReferential;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.processor.PunctuationType;
@@ -25,6 +26,7 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode, L
     public static final String REFERENTIAL = "referential";
     private final ProcessReferential processReferential;
     private KeyValueStore<String, Referential> referentialStateStore;
+    private final JSONUtils jsonUtils = JSONUtils.getInstance();
 
     public ReferentialTransformer(ProcessReferential processReferential) {
         this.processReferential = processReferential;
@@ -41,8 +43,8 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode, L
     @Override
     public List<Referential> transform(JsonNode jsonNode) {
         return save(processReferential.getListAssociatedKeys().stream()
-                .filter(keyTrack -> jsonNode.has(keyTrack))
-                .filter(keyTrack -> !jsonNode.get(keyTrack).asText().equals("null"))
+                .filter(keyTrack -> jsonUtils.has(keyTrack,jsonNode))
+                .filter(keyTrack -> !jsonUtils.at(keyTrack,jsonNode).asText().equals("null"))
                 .map(keyTrack -> createReferential(keyTrack, jsonNode))
                 .collect(toList()));
     }
@@ -51,7 +53,7 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode, L
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Referential ref = Referential.builder()
                 .key(processReferential.getReferentialKey())
-                .value(jsonNode.path(keyTrack).asText())
+                .value(jsonUtils.at(keyTrack,jsonNode).asText())
                 .timestamp(jsonNode.path("timestamp").asText())
                 .metadataItemSet(buildMetadata(jsonNode))
                 .idProcessReferential(processReferential.getIdProcess())
@@ -67,11 +69,11 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode, L
     private Set<MetadataItem> buildMetadata(JsonNode jsonNode) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         return processReferential.getListMetadata().stream()
-                .filter(metadata -> jsonNode.has(metadata))
-                .filter(metadata -> !jsonNode.get(metadata).asText().equals("null"))
+                .filter(metadata -> jsonUtils.has(metadata,jsonNode))
+                .filter(metadata -> !jsonUtils.at(metadata,jsonNode).asText().equals("null"))
                 .map(metadata -> MetadataItem.builder()
                         .key(metadata)
-                        .value(jsonNode.path(metadata).asText())
+                        .value(jsonUtils.at(metadata,jsonNode).asText())
                         .timestamp(jsonNode.path("timestamp").asText())
                         .timestampETL(df.format(new Date()))
                         .creationDate(df.format(new Date()))

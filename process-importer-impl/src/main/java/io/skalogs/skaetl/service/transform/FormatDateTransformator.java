@@ -19,14 +19,14 @@ public class FormatDateTransformator extends TransformatorProcess {
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
-        String valueToFormat = jsonValue.path(parameterTransformation.getFormatDateValue().getKeyField()).asText();
+        String valueToFormat = at(parameterTransformation.getFormatDateValue().getKeyField(), jsonValue).asText();
         if (StringUtils.isNotBlank(valueToFormat)) {
             try {
                 SimpleDateFormat simpleDateFormatSource = new SimpleDateFormat(parameterTransformation.getFormatDateValue().getSrcFormat());
                 Date date = simpleDateFormatSource.parse(valueToFormat);
                 SimpleDateFormat simpleDateFormatTarget = new SimpleDateFormat(parameterTransformation.getFormatDateValue().getTargetFormat());
                 String result = simpleDateFormatTarget.format(date);
-                jsonValue.put(parameterTransformation.getFormatDateValue().getKeyField(), result);
+                put(parameterTransformation.getFormatDateValue().getKeyField(), jsonValue, result);
             } catch (ParseException e) {
                 log.error("ParseException on field {} for value {}", parameterTransformation.getFormatDateValue(), value);
             }

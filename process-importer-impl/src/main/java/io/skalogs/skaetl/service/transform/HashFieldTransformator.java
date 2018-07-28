@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.service.transform;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.hash.HashFunction;
 import com.google.common.hash.Hashing;
@@ -17,18 +18,19 @@ public class HashFieldTransformator extends TransformatorProcess {
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
-        if(jsonValue.has(parameterTransformation.getProcessHashData().getField()) &&
-                StringUtils.isNotBlank(jsonValue.path(parameterTransformation.getProcessHashData().getField()).asText())){
+        JsonNode valueField = at(parameterTransformation.getProcessHashData().getField(), jsonValue);
+        if(valueField != null &&
+                StringUtils.isNotBlank(valueField.asText())){
             switch (parameterTransformation.getProcessHashData().getTypeHash()){
                 case SHA256:
                     HashFunction m_hash256 = Hashing.sha256();
-                    String valueHash256 = m_hash256.hashBytes(jsonValue.path(parameterTransformation.getProcessHashData().getField()).asText().getBytes()).toString();
-                    jsonValue.put(parameterTransformation.getProcessHashData().getField(),valueHash256);
+                    String valueHash256 = m_hash256.hashBytes(valueField.asText().getBytes()).toString();
+                    put(parameterTransformation.getProcessHashData().getField(),jsonValue, valueHash256);
                     break;
                 case MURMUR3:
                     HashFunction m_hashMurmur3 = Hashing.murmur3_128();
-                    String valueHashMurmur3 = m_hashMurmur3.hashBytes(jsonValue.path(parameterTransformation.getProcessHashData().getField()).asText().getBytes()).toString();
-                    jsonValue.put(parameterTransformation.getProcessHashData().getField(),valueHashMurmur3);
+                    String valueHashMurmur3 = m_hashMurmur3.hashBytes(valueField.asText().getBytes()).toString();
+                    put(parameterTransformation.getProcessHashData().getField(),jsonValue,valueHashMurmur3);
                     break;
                 default:
                     log.error("Type Hash not manage {}",parameterTransformation.getProcessHashData().getTypeHash());
