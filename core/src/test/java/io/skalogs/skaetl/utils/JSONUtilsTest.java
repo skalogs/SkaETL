@@ -35,4 +35,27 @@ public class JSONUtilsTest {
         Assertions.assertThat(parse.at("/car/model/name").asText()).isEqualTo("multipla");
 
     }
+
+    @Test
+    public void remove() {
+        String input = "{\n" +
+                "    \"name\":\"John\",\n" +
+                "    \"age\":30,\n" +
+                "    \"cars\": {\n" +
+                "        \"car1\":\"Ford\",\n" +
+                "        \"car2\":\"BMW\",\n" +
+                "        \"car3\":\"Fiat\"\n" +
+                "    }\n" +
+                " }";
+        JsonNode parse = jsonUtils.parse(input);
+
+        jsonUtils.remove(parse, "age");
+
+        Assertions.assertThat(parse.at("/age").getNodeType()).isEqualTo(JsonNodeType.MISSING);
+
+        jsonUtils.remove(parse, "cars.car3");
+
+        Assertions.assertThat(parse.at("/cars/cars3").getNodeType()).isEqualTo(JsonNodeType.MISSING);
+
+    }
 }

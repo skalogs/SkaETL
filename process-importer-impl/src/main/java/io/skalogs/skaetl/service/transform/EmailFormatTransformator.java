@@ -18,7 +18,7 @@ public class EmailFormatTransformator extends TransformatorProcess {
         String valueToFormat = at(parameterTransformation.getKeyField(), jsonValue).asText();
         if (StringUtils.isNotBlank(valueToFormat)) {
             put(jsonValue, parameterTransformation.getKeyField() + "_ue", valueToFormat);
-            jsonValue.remove(parameterTransformation.getKeyField());
+            remove(jsonValue,parameterTransformation.getKeyField());
         }
     }
 }

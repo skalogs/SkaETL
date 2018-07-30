@@ -14,6 +14,6 @@ public class DeleteFieldTransformator extends TransformatorProcess {
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
-        jsonValue.remove(parameterTransformation.getKeyField());
+        remove(jsonValue,parameterTransformation.getKeyField());
     }
 }

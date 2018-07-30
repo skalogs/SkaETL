@@ -53,4 +53,8 @@ public abstract class TransformatorProcess {
     protected void put(JsonNode jsonNode, String path, JsonNode value) {
         jsonUtils.put(jsonNode, path, value);
     }
+
+    protected void remove(JsonNode jsonValue, String path) {
+        jsonUtils.remove(jsonValue,path);
+    }
 }

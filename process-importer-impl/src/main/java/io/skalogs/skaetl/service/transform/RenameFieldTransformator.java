@@ -18,7 +18,7 @@ public class RenameFieldTransformator extends TransformatorProcess {
         if (has(parameterTransformation.getComposeField().getKey(), jsonValue)) {
             JsonNode valueField = at(parameterTransformation.getComposeField().getKey(), jsonValue);
             put(jsonValue, parameterTransformation.getComposeField().getValue(), valueField.deepCopy());
-            jsonValue.remove(parameterTransformation.getComposeField().getKey());
+            remove(jsonValue, parameterTransformation.getComposeField().getKey());
         }
     }
 }

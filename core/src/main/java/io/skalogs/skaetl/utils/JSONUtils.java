@@ -101,4 +101,15 @@ public class JSONUtils {
 
         }
     }
+
+    public void remove(JsonNode jsonNode, String path) {
+        JsonPointer valueNodePointer = JsonPointer.compile(asJsonPath(path));
+        JsonPointer parentPointer = valueNodePointer.head();
+        JsonNode parentNode = jsonNode.at(parentPointer);
+        if (parentNode.getNodeType() == JsonNodeType.OBJECT) {
+            ObjectNode parentNodeToUpdate = (ObjectNode) parentNode;
+            parentNodeToUpdate.remove(valueNodePointer.last().toString().replaceAll("/",""));
+        }
+
+    }
 }
