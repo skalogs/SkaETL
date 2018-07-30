@@ -26,7 +26,7 @@ public class FormatDateTransformator extends TransformatorProcess {
                 Date date = simpleDateFormatSource.parse(valueToFormat);
                 SimpleDateFormat simpleDateFormatTarget = new SimpleDateFormat(parameterTransformation.getFormatDateValue().getTargetFormat());
                 String result = simpleDateFormatTarget.format(date);
-                put(parameterTransformation.getFormatDateValue().getKeyField(), jsonValue, result);
+                put(jsonValue, parameterTransformation.getFormatDateValue().getKeyField(), result);
             } catch (ParseException e) {
                 log.error("ParseException on field {} for value {}", parameterTransformation.getFormatDateValue(), value);
             }

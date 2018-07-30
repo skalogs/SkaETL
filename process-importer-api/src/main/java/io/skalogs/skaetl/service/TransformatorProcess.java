@@ -27,30 +27,30 @@ public abstract class TransformatorProcess {
     public abstract void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value);
 
     protected boolean has(String path, JsonNode jsonNode) {
-        return jsonUtils.has(path, jsonNode);
+        return jsonUtils.has(jsonNode, path);
     }
 
     protected JsonNode at(String path, JsonNode jsonNode) {
-        return jsonUtils.at(path, jsonNode);
+        return jsonUtils.at(jsonNode, path);
     }
 
-    protected void put(String path, JsonNode jsonNode, String value) {
-        jsonUtils.put(path, jsonNode, JsonNodeFactory.instance.textNode(value));
+    protected void put(JsonNode jsonNode, String path, String value) {
+        jsonUtils.put(jsonNode, path, JsonNodeFactory.instance.textNode(value));
     }
 
-    protected void put(String path, JsonNode jsonNode, Boolean value) {
-        jsonUtils.put(path, jsonNode, JsonNodeFactory.instance.booleanNode(value));
+    protected void put(JsonNode jsonNode, String path, Boolean value) {
+        jsonUtils.put(jsonNode, path, JsonNodeFactory.instance.booleanNode(value));
     }
 
-    protected void put(String path, JsonNode jsonNode, Double value) {
-        jsonUtils.put(path, jsonNode, JsonNodeFactory.instance.numberNode(value));
+    protected void put(JsonNode jsonNode, String path, Double value) {
+        jsonUtils.put(jsonNode, path, JsonNodeFactory.instance.numberNode(value));
     }
 
-    protected void put(String path, JsonNode jsonNode, Long value) {
-        jsonUtils.put(path, jsonNode, JsonNodeFactory.instance.numberNode(value));
+    protected void put(JsonNode jsonNode, String path, Long value) {
+        jsonUtils.put(jsonNode, path, JsonNodeFactory.instance.numberNode(value));
     }
 
-    protected void put(String path, JsonNode jsonNode, JsonNode value) {
-        jsonUtils.put(path, jsonNode, value);
+    protected void put(JsonNode jsonNode, String path, JsonNode value) {
+        jsonUtils.put(jsonNode, path, value);
     }
 }

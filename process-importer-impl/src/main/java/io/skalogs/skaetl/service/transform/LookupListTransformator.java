@@ -21,7 +21,7 @@ public class LookupListTransformator extends TransformatorProcess {
                 String oldValue = jsonValue.path(key).asText();
                 parameterTransformation.getMapLookup().entrySet().stream()
                         .filter(entry -> entry.getKey().equals(oldValue))
-                        .forEach(entry -> put(key, jsonValue,  entry.getValue()));
+                        .forEach(entry -> put(jsonValue, key, entry.getValue()));
             }
         }
     }

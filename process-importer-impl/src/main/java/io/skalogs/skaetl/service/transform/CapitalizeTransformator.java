@@ -18,7 +18,7 @@ public class CapitalizeTransformator extends TransformatorProcess {
             JsonNode valueField = at(parameterTransformation.getKeyField(), jsonValue);
 
             String capitalized = StringUtils.capitalize(valueField.textValue());
-            put(parameterTransformation.getKeyField(), jsonValue, capitalized);
+            put(jsonValue, parameterTransformation.getKeyField(), capitalized);
         }
     }
 }

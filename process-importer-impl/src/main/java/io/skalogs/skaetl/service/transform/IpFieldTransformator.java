@@ -17,7 +17,7 @@ public class IpFieldTransformator extends TransformatorProcess {
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
         String valueToFormat = at(parameterTransformation.getKeyField(), jsonValue).asText();
         if (StringUtils.isNotBlank(valueToFormat)) {
-            put(parameterTransformation.getKeyField() + "_ip", jsonValue,valueToFormat);
+            put(jsonValue, parameterTransformation.getKeyField() + "_ip", valueToFormat);
             jsonValue.remove(parameterTransformation.getKeyField());
         }
     }

@@ -26,10 +26,10 @@ public abstract class ValidatorProcess {
     }
 
     protected boolean has(String path, JsonNode jsonNode) {
-        return jsonUtils.has(path,jsonNode);
+        return jsonUtils.has(jsonNode, path);
     }
 
     protected JsonNode at(String path, JsonNode jsonNode) {
-        return jsonUtils.at(path,jsonNode);
+        return jsonUtils.at(jsonNode, path);
     }
 }

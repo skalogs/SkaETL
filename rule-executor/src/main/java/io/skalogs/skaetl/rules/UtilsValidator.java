@@ -16,7 +16,7 @@ public final class UtilsValidator {
         if (!jsonValue.hasNonNull(key)) {
             return null;
         }
-        JsonNode jsonNode = JSONUtils.getInstance().at(key,jsonValue);
+        JsonNode jsonNode = JSONUtils.getInstance().at(jsonValue, key);
         switch (jsonNode.getNodeType()) {
             case BOOLEAN:
                 return (T) Boolean.valueOf(jsonNode.asBoolean());

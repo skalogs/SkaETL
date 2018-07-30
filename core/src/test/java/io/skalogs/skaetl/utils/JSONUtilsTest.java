@@ -15,7 +15,7 @@ public class JSONUtilsTest {
         String input = "{ \"name\":\"John\", \"age\":30}";
         JsonNode parse = jsonUtils.parse(input);
 
-        jsonUtils.put("car.type",parse,JsonNodeFactory.instance.textNode("test"));
+        jsonUtils.put(parse, "car.type", JsonNodeFactory.instance.textNode("test"));
 
         Assertions.assertThat(parse.at("/car").getNodeType()).isEqualTo(JsonNodeType.OBJECT);
         Assertions.assertThat(parse.at("/car/type").asText()).isEqualTo("test");
@@ -28,7 +28,7 @@ public class JSONUtilsTest {
         String input = "{ \"name\":\"John\", \"age\":30}";
         JsonNode parse = jsonUtils.parse(input);
 
-        jsonUtils.put("car.model.name",parse, JsonNodeFactory.instance.textNode("multipla"));
+        jsonUtils.put(parse, "car.model.name", JsonNodeFactory.instance.textNode("multipla"));
 
         Assertions.assertThat(parse.at("/car").getNodeType()).isEqualTo(JsonNodeType.OBJECT);
         Assertions.assertThat(parse.at("/car/model").getNodeType()).isEqualTo(JsonNodeType.OBJECT);

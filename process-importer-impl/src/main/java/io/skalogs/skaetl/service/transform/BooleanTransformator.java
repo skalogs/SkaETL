@@ -17,7 +17,7 @@ public class BooleanTransformator extends TransformatorProcess {
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
         String valueToFormat = at(parameterTransformation.getKeyField(), jsonValue).asText();
         if (StringUtils.isNotBlank(valueToFormat)) {
-            put(parameterTransformation.getKeyField(), jsonValue, Boolean.valueOf(valueToFormat.toLowerCase()));
+            put(jsonValue, parameterTransformation.getKeyField(), Boolean.valueOf(valueToFormat.toLowerCase()));
         }
     }
 }

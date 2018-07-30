@@ -25,12 +25,12 @@ public class HashFieldTransformator extends TransformatorProcess {
                 case SHA256:
                     HashFunction m_hash256 = Hashing.sha256();
                     String valueHash256 = m_hash256.hashBytes(valueField.asText().getBytes()).toString();
-                    put(parameterTransformation.getProcessHashData().getField(),jsonValue, valueHash256);
+                    put(jsonValue, parameterTransformation.getProcessHashData().getField(), valueHash256);
                     break;
                 case MURMUR3:
                     HashFunction m_hashMurmur3 = Hashing.murmur3_128();
                     String valueHashMurmur3 = m_hashMurmur3.hashBytes(valueField.asText().getBytes()).toString();
-                    put(parameterTransformation.getProcessHashData().getField(),jsonValue,valueHashMurmur3);
+                    put(jsonValue, parameterTransformation.getProcessHashData().getField(), valueHashMurmur3);
                     break;
                 default:
                     log.error("Type Hash not manage {}",parameterTransformation.getProcessHashData().getTypeHash());

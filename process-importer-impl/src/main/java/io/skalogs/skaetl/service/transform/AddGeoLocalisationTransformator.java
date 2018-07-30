@@ -49,7 +49,7 @@ public class AddGeoLocalisationTransformator extends TransformatorProcess {
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
 
         String key = parameterTransformation.getKeyField();
-        String ipToResolve = getJsonUtils().at(parameterTransformation.getKeyField(), jsonValue).asText();
+        String ipToResolve = getJsonUtils().at(jsonValue, parameterTransformation.getKeyField()).asText();
         log.debug("Start to localise IP address [{}]", ipToResolve);
         if (jsonValue.has(parameterTransformation.getKeyField())
                 && jsonValue.path(parameterTransformation.getKeyField()).asText() != null
@@ -64,14 +64,14 @@ public class AddGeoLocalisationTransformator extends TransformatorProcess {
                 Location location = response.getLocation();
 
 
-                put(key + "_country_name", jsonValue, country.getName());
-                put(key + "_country_isocode", jsonValue, country.getIsoCode());
-                put(key + "_city_name", jsonValue, response.getCity().getName());
-                put(key + "_subdivision_name", jsonValue, subdivision.getName());
-                put(key + "_subdivision_isocode", jsonValue, subdivision.getIsoCode());
-                put(key + "_city_name", jsonValue, city.getName());
-                put(key + "_city_postalcode", jsonValue, postal.getCode());
-                put(key + "_location_gp", jsonValue, location.getLatitude().toString() + "," + location.getLongitude().toString());
+                put(jsonValue, key + "_country_name", country.getName());
+                put(jsonValue, key + "_country_isocode", country.getIsoCode());
+                put(jsonValue, key + "_city_name", response.getCity().getName());
+                put(jsonValue, key + "_subdivision_name", subdivision.getName());
+                put(jsonValue, key + "_subdivision_isocode", subdivision.getIsoCode());
+                put(jsonValue, key + "_city_name", city.getName());
+                put(jsonValue, key + "_city_postalcode", postal.getCode());
+                put(jsonValue, key + "_location_gp", location.getLatitude().toString() + "," + location.getLongitude().toString());
 
             } catch (Exception ex) {
                 log.error("Exception during Geo IP Transformation {}", ipToResolve);

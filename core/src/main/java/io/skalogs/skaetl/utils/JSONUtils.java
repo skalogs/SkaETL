@@ -65,18 +65,18 @@ public class JSONUtils {
         return "/" + path.replaceAll("\\.", "/");
     }
 
-    public boolean has(String path, JsonNode jsonNode) {
+    public boolean has(JsonNode jsonNode, String path) {
         String jsonPath = asJsonPath(path);
         JsonNode targetNode = jsonNode.at(jsonPath);
         return targetNode != null && targetNode.getNodeType() != JsonNodeType.NULL && targetNode.getNodeType() != JsonNodeType.MISSING;
     }
 
-    public JsonNode at(String path, JsonNode jsonNode) {
+    public JsonNode at(JsonNode jsonNode, String path) {
         String jsonPath = asJsonPath(path);
         return jsonNode.at(jsonPath);
     }
 
-    public void put(String path, JsonNode jsonNode, JsonNode value) {
+    public void put(JsonNode jsonNode, String path, JsonNode value) {
         JsonPointer valueNodePointer = JsonPointer.compile(asJsonPath(path));
         JsonPointer parentPointer = valueNodePointer.head();
         addMissingNodeIfNecessary(jsonNode, path);

@@ -45,7 +45,7 @@ public class RenameFieldTransformatorTest {
                         .value("my.project.name")
                         .build()
                 ).build(), jsonValue, value);
-        assertThat(JSONUtils.getInstance().at("my.project.name",jsonValue).asText()).isEqualTo("projectvalue");
+        assertThat(JSONUtils.getInstance().at(jsonValue, "my.project.name").asText()).isEqualTo("projectvalue");
     }
 
     @Test

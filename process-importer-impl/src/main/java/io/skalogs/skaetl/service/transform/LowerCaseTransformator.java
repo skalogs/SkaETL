@@ -17,7 +17,7 @@ public class LowerCaseTransformator extends TransformatorProcess {
         if (has(parameterTransformation.getKeyField(),jsonValue)) {
             JsonNode valueField = at(parameterTransformation.getKeyField(), jsonValue);
             String capitalized = StringUtils.lowerCase(valueField.textValue());
-            put(parameterTransformation.getKeyField(),jsonValue, capitalized);
+            put(jsonValue, parameterTransformation.getKeyField(), capitalized);
         }
     }
 }

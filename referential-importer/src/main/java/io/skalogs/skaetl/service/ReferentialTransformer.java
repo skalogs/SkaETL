@@ -43,8 +43,8 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode, L
     @Override
     public List<Referential> transform(JsonNode jsonNode) {
         return save(processReferential.getListAssociatedKeys().stream()
-                .filter(keyTrack -> jsonUtils.has(keyTrack,jsonNode))
-                .filter(keyTrack -> !jsonUtils.at(keyTrack,jsonNode).asText().equals("null"))
+                .filter(keyTrack -> jsonUtils.has(jsonNode, keyTrack))
+                .filter(keyTrack -> !jsonUtils.at(jsonNode, keyTrack).asText().equals("null"))
                 .map(keyTrack -> createReferential(keyTrack, jsonNode))
                 .collect(toList()));
     }
@@ -53,7 +53,7 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode, L
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         Referential ref = Referential.builder()
                 .key(processReferential.getReferentialKey())
-                .value(jsonUtils.at(keyTrack,jsonNode).asText())
+                .value(jsonUtils.at(jsonNode, keyTrack).asText())
                 .timestamp(jsonNode.path("timestamp").asText())
                 .metadataItemSet(buildMetadata(jsonNode))
                 .idProcessReferential(processReferential.getIdProcess())
@@ -69,11 +69,11 @@ public class ReferentialTransformer extends AbstractValueTransformer<JsonNode, L
     private Set<MetadataItem> buildMetadata(JsonNode jsonNode) {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         return processReferential.getListMetadata().stream()
-                .filter(metadata -> jsonUtils.has(metadata,jsonNode))
-                .filter(metadata -> !jsonUtils.at(metadata,jsonNode).asText().equals("null"))
+                .filter(metadata -> jsonUtils.has(jsonNode, metadata))
+                .filter(metadata -> !jsonUtils.at(jsonNode, metadata).asText().equals("null"))
                 .map(metadata -> MetadataItem.builder()
                         .key(metadata)
-                        .value(jsonUtils.at(metadata,jsonNode).asText())
+                        .value(jsonUtils.at(jsonNode, metadata).asText())
                         .timestamp(jsonNode.path("timestamp").asText())
                         .timestampETL(df.format(new Date()))
                         .creationDate(df.format(new Date()))

@@ -32,7 +32,7 @@ public class LookupHTTPServiceTransformator extends TransformatorProcess {
                     String oldValue = jsonValue.path(key).asText();
                     workerHTTPService.getMapResult().entrySet().stream()
                             .filter(entry -> entry.getKey().equals(oldValue))
-                            .forEach(entry -> put(key, jsonValue, entry.getValue()));
+                            .forEach(entry -> put(jsonValue, key, entry.getValue()));
                 }
             } else {
                 //All Keys
@@ -47,7 +47,7 @@ public class LookupHTTPServiceTransformator extends TransformatorProcess {
             Map.Entry<String, JsonNode> entry = it.next();
             if (entry.getValue() != null && entry.getValue().asText().equals(oldValue)) {
                 //update
-                put(entry.getKey(), jsonValue, newValue);
+                put(jsonValue, entry.getKey(), newValue);
             }
         }
     }

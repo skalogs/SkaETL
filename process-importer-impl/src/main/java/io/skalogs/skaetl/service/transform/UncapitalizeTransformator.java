@@ -17,7 +17,7 @@ public class UncapitalizeTransformator extends TransformatorProcess {
         if (has(parameterTransformation.getKeyField(),jsonValue)) {
             JsonNode valueField = at(parameterTransformation.getKeyField(), jsonValue);
             String capitalized = StringUtils.uncapitalize(valueField.textValue());
-            put(parameterTransformation.getKeyField(), jsonValue, capitalized);
+            put(jsonValue, parameterTransformation.getKeyField(), capitalized);
         }
     }
 }

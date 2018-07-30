@@ -17,7 +17,7 @@ public class SwapCaseTransformator extends TransformatorProcess {
         if (has(parameterTransformation.getKeyField(), jsonValue)) {
             JsonNode valueField = at(parameterTransformation.getKeyField(), jsonValue);
             String capitalized = StringUtils.swapCase(valueField.textValue());
-            put(parameterTransformation.getKeyField(), jsonValue, capitalized);
+            put(jsonValue, parameterTransformation.getKeyField(), capitalized);
         }
     }
 }
