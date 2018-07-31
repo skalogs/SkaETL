@@ -90,7 +90,7 @@
         Next
         <v-icon>navigate_next</v-icon>
       </v-btn>
-      <v-btn color="primary" style="width: 120px" :disabled="!processOutput.length>0" @click.native="$emit('saveProcess')" v-show="canSave">Save<v-icon>create</v-icon></v-btn>
+      <v-btn color="primary" style="width: 120px" :disabled="!processOutput.length>0" @click.native="$emit('saveProcess')">Save<v-icon>create</v-icon></v-btn>
     </v-card-actions>
   </v-card>
 </template>
@@ -102,10 +102,6 @@
       processOutput: {
         type: Array,
         required: true
-      },
-      canSave: {
-        type: Boolean,
-        required: false
       },
       canUseNext: {
         type: Boolean,
