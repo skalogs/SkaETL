@@ -16,10 +16,12 @@ public class ProcessService {
 
     private final RegistryService registryService;
     private final KafkaConfiguration kafkaConfiguration;
+    private final UtilsProcessService utilsProcessService;
 
-    public ProcessService(RegistryService registryService, KafkaConfiguration kafkaConfiguration) {
+    public ProcessService(RegistryService registryService, KafkaConfiguration kafkaConfiguration, UtilsProcessService utilsProcessService) {
         this.registryService = registryService;
         this.kafkaConfiguration = kafkaConfiguration;
+        this.utilsProcessService = utilsProcessService;
     }
 
     public List<ConsumerState> findAll() {
@@ -53,8 +55,9 @@ public class ProcessService {
         return processConsumer;
     }
 
+
     public void saveOrUpdate(ProcessConsumer processConsumer) {
-        registryService.createOrUpdateProcessDefinition(processConsumer,WorkerType.PROCESS_CONSUMER,StatusProcess.INIT);
+        registryService.createOrUpdateProcessDefinition(treatTransformator(processConsumer), WorkerType.PROCESS_CONSUMER, StatusProcess.INIT);
     }
 
     public void deleteProcess(String idProcess) {
@@ -68,4 +71,22 @@ public class ProcessService {
     public ConsumerState findConsumerState(String idProcess) {
         return registryService.findConsumerStateById(idProcess);
     }
+
+    private ProcessConsumer treatTransformator(ProcessConsumer processConsumer) {
+        if (processConsumer.getProcessTransformation() != null && !processConsumer.getProcessTransformation().isEmpty()) {
+            for (ProcessTransformation processTransformation : processConsumer.getProcessTransformation()) {
+                if (processTransformation.getTypeTransformation() == TypeValidation.ADD_CSV_LOOKUP) {
+                    processTransformation.getParameterTransformation().setCsvLookupData(
+                            CsvLookupData.builder()
+                                    .data(processTransformation.getParameterTransformation().getCsvLookupData().getData())
+                                    .field(processTransformation.getParameterTransformation().getCsvLookupData().getField())
+                                    .map(utilsProcessService.computeDataFromCsv(processTransformation.getParameterTransformation().getCsvLookupData().getData()))
+                                    .build());
+                }
+            }
+        }
+        return processConsumer;
+    }
+
+
 }

@@ -24,5 +24,8 @@ public class ParameterTransformation {
     private ExternalHTTPData externalHTTPData = new ExternalHTTPData();
     @Builder.Default
     private ProcessHashData processHashData = new ProcessHashData();
+    @Builder.Default
+    private CsvLookupData csvLookupData = new CsvLookupData();
+
 }
 

@@ -26,5 +26,6 @@ public enum TypeValidation {
     LOWER_CASE,
     SWAP_CASE,
     TRIM,
-    FORMAT_EMAIL;
+    FORMAT_EMAIL,
+    ADD_CSV_LOOKUP;
 }

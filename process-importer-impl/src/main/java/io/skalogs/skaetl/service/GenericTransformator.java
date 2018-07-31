@@ -19,9 +19,9 @@ import java.util.List;
 @Component
 public class GenericTransformator {
 
-    private List<TransformatorProcess> listTransformator = new ArrayList<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ExternalHTTPService externalHTTPService;
+    private List<TransformatorProcess> listTransformator = new ArrayList<>();
 
     public GenericTransformator(ExternalHTTPService externalHTTPService) {
         this.externalHTTPService = externalHTTPService;
@@ -48,6 +48,7 @@ public class GenericTransformator {
         listTransformator.add(new LookupHTTPServiceTransformator(TypeValidation.LOOKUP_EXTERNAL, externalHTTPService));
         listTransformator.add(new AddGeoLocalisationTransformator(TypeValidation.ADD_GEO_LOCALISATION));
         listTransformator.add(new EmailFormatTransformator(TypeValidation.FORMAT_EMAIL));
+        listTransformator.add(new AddCsvLookupTransformator(TypeValidation.ADD_CSV_LOOKUP));
     }
 
     public JsonNode createJsonObject(String value) {

@@ -28,6 +28,16 @@
                             v-model="editedItem.parameterTransformation.composeField.value" required></v-text-field>
             </v-layout>
 
+            <v-layout row wrap v-show="isCsvLookup()">
+              <v-text-field label="Key Field"
+                            v-model="editedItem.parameterTransformation.csvLookupData.field" required></v-text-field>
+            </v-layout>
+            <v-layout row wrap v-show="isCsvLookup()">
+              <v-text-field label="Value Field" textarea
+                            v-model="editedItem.parameterTransformation.csvLookupData.data" required></v-text-field>
+            </v-layout>
+
+
             <v-layout row wrap v-show="isDateField()">
               <v-text-field label="Key Field"
                             v-model="editedItem.parameterTransformation.formatDateValue.keyField"
@@ -39,6 +49,8 @@
                             v-model="editedItem.parameterTransformation.formatDateValue.targetFormat"
                             required></v-text-field>
             </v-layout>
+
+
 
             <v-layout row wrap v-show="isLookupList()">
               <v-text-field label="Limit on field (Optional) "
@@ -142,7 +154,8 @@
             "keyField": "",
             "mapLookup": {},
             "externalHTTPData": {"url": "http://url:port", "refresh": "10", "httpMethod": "GET", "body": ""},
-            "processHashData": {"field": "", "typeHash": "SHA256"}
+            "processHashData": {"field": "", "typeHash": "SHA256"},
+            "csvLookupData": {"field": "", "data": ""}
           }
         },
         editedIndex: -1,
@@ -158,14 +171,15 @@
             "keyField": "",
             "mapLookup": {},
             "externalHTTPData": {"url": "http://url:port", "refresh": "10", "httpMethod": "GET", "body": ""},
-            "processHashData": {"field": "", "typeHash": "SHA256"}
+            "processHashData": {"field": "", "typeHash": "SHA256"},
+            "csvLookupData": {"field": "", "data": "value;keyToAdd1;valueToAdd1;keyToAdd2;valueToAdd2;....."}
           }
         },
         methodCall: ["GET", "POST"],
         typeHash: ["MURMUR3", "SHA256"],
         type: ["ADD_FIELD", "DELETE_FIELD", "RENAME_FIELD", "FORMAT_DATE", "FORMAT_BOOLEAN", "FORMAT_GEOPOINT",
           "FORMAT_DOUBLE", "FORMAT_LONG", "FORMAT_IP", "LOOKUP_LIST", "LOOKUP_EXTERNAL", "HASH", "ADD_GEO_LOCALISATION",
-          "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL"],
+          "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL", "ADD_CSV_LOOKUP"],
         replaceValue: '',
         replaceNewValue: '',
         listLookup: []
@@ -177,6 +191,9 @@
       }
     },
     methods: {
+      isCsvLookup(){
+        return this.editedItem.typeTransformation == "ADD_CSV_LOOKUP";
+      },
       isComposeField() {
         return this.editedItem.typeTransformation == "ADD_FIELD" || this.editedItem.typeTransformation == "RENAME_FIELD";
       },
@@ -201,6 +218,8 @@
           return item.parameterTransformation.composeField.key;
         } else if (item.typeTransformation == "HASH") {
           return item.parameterTransformation.processHashData.field;
+        } else if (item.typeTransformation == "ADD_CSV_LOOKUP") {
+                  return item.parameterTransformation.csvLookupData.field;
         } else {
           return item.parameterTransformation.keyField;
         }
