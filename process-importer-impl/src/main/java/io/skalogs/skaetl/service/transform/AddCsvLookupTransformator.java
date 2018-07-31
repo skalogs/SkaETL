@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.service.transform;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.domain.ParameterTransformation;
 import io.skalogs.skaetl.domain.TypeValidation;
@@ -18,10 +19,11 @@ public class AddCsvLookupTransformator extends TransformatorProcess {
         String field = parameterTransformation.getCsvLookupData().getField();
         if (StringUtils.isNotBlank(field)) {
             if (has(field, jsonValue)) {
-                String valueField = jsonValue.path(field).asText();
-                if (parameterTransformation.getCsvLookupData().getMap().get(valueField) != null &&
-                        !parameterTransformation.getCsvLookupData().getMap().get(valueField).isEmpty()) {
-                    parameterTransformation.getCsvLookupData().getMap().get(valueField)
+                //String valueField = jsonValue.path(field).asText();
+                JsonNode valueField = at(field, jsonValue);
+                if (parameterTransformation.getCsvLookupData().getMap().get(valueField.asText()) != null &&
+                        !parameterTransformation.getCsvLookupData().getMap().get(valueField.asText()).isEmpty()) {
+                    parameterTransformation.getCsvLookupData().getMap().get(valueField.asText())
                             .stream()
                             .forEach(processKeyValue -> put(jsonValue, processKeyValue.getKey(), processKeyValue.getValue()));
                 }
