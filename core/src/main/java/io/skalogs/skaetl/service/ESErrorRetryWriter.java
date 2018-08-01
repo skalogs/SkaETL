@@ -2,7 +2,9 @@ package io.skalogs.skaetl.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import io.prometheus.client.Counter;
+import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.ErrorData;
 import io.skalogs.skaetl.domain.ValidateData;
@@ -23,16 +25,6 @@ public class ESErrorRetryWriter {
     private final KafkaConfiguration kafkaConfiguration;
     private final Producer<String, ErrorData> errorProducer;
     private final Producer<String, JsonNode> retryProducer;
-    private static final Counter producerErrorKafkaCount = Counter.build()
-            .name("skaetl_nb_produce_error_kafka_count")
-            .help("count nb error elements.")
-            .labelNames("processConsumerName", "type", "reason")
-            .register();
-    private static final Counter produceMessageToKafka = Counter.build()
-            .name("skaetl_nb_produce_message_kafka_count")
-            .help("count nb produce kafka")
-            .labelNames("processConsumerName", "topic", "type")
-            .register();
 
     public ESErrorRetryWriter(KafkaConfiguration kafkaConfiguration) {
         this.kafkaConfiguration = kafkaConfiguration;
@@ -41,7 +33,7 @@ public class ESErrorRetryWriter {
     }
 
     public void sendToErrorTopic(String applicationId, ValidateData validateData) {
-        sendToErrorTopic(applicationId,toErrorData(validateData));
+        sendToErrorTopic(applicationId, toErrorData(validateData));
     }
 
     private ErrorData toErrorData(ValidateData validateData) {
@@ -57,8 +49,20 @@ public class ESErrorRetryWriter {
 
 
     public void sendToErrorTopic(String applicationId, ErrorData errorData) {
-        producerErrorKafkaCount.labels(applicationId, errorData.getTypeValidation(), errorData.getErrorReason()).inc();
-        produceMessageToKafka.labels(applicationId, kafkaConfiguration.getErrorTopic(), errorData.getTypeValidation()).inc();
+        Metrics.counter("skaetl_nb_produce_message_kafka_count",
+                Lists.newArrayList(
+                        Tag.of("processConsumerName", applicationId),
+                        Tag.of("topic", kafkaConfiguration.getErrorTopic()),
+                        Tag.of("type", errorData.getTypeValidation())
+                )
+        ).increment();
+        Metrics.counter("skaetl_nb_produce_error_kafka_count",
+                Lists.newArrayList(
+                        Tag.of("processConsumerName", applicationId),
+                        Tag.of("type", errorData.getTypeValidation()),
+                        Tag.of("reason", errorData.getErrorReason())
+                )
+        ).increment();
         errorProducer.send(new ProducerRecord<>(kafkaConfiguration.getErrorTopic(), errorData));
     }
 
@@ -67,7 +71,13 @@ public class ESErrorRetryWriter {
     }
 
     public void sendToRetryTopic(String applicationId, JsonNode jsonNode) {
-        produceMessageToKafka.labels(applicationId, kafkaConfiguration.getRetryTopic(), jsonNode.path("type").asText()).inc();
+        Metrics.counter("skaetl_nb_produce_message_kafka_count",
+                Lists.newArrayList(
+                        Tag.of("processConsumerName", applicationId),
+                        Tag.of("topic", kafkaConfiguration.getRetryTopic()),
+                        Tag.of("type", jsonNode.path("type").asText())
+                )
+        ).increment();
         retryProducer.send(new ProducerRecord<>(kafkaConfiguration.getRetryTopic(), jsonNode));
     }
 }

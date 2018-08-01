@@ -1,7 +1,9 @@
 package io.skalogs.skaetl.service.processor;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import io.prometheus.client.Counter;
+import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
 import lombok.AllArgsConstructor;
@@ -22,11 +24,6 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
 
     private final ESBuffer esBuffer;
     private final ESErrorRetryWriter esErrorRetryWriter;
-    private static final Counter esWriteEs = Counter.build()
-            .name("skaetl_nb_write_es_common")
-            .help("count nb elements to write into ES")
-            .labelNames("processConsumerName", "project", "type")
-            .register();
 
     protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, String valueAsString) {
         processToElasticsearch(date, project, type, retentionLevel, valueAsString, null);
@@ -34,7 +31,13 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     }
 
     protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, String valueAsString, String id) {
-        esWriteEs.labels(getApplicationId() != null ? getApplicationId() : "forRetryApplication", project, type).inc();
+        Metrics.counter("skaetl_nb_write_es_common",
+                Lists.newArrayList(
+                        Tag.of("processConsumerName",getApplicationId() != null ? getApplicationId() : "forRetryApplication"),
+                        Tag.of("project",project),
+                        Tag.of("type",type)
+                )
+        ).increment();
         esBuffer.add(date, project, type, retentionLevel, valueAsString, id);
         if (esBuffer.needFlush()) {
             log.info("{} Flushing {}", getApplicationId() != null ? getApplicationId() : "forRetryApplication", esBuffer.values().size());

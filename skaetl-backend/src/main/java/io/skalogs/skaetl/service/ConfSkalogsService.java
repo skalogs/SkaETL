@@ -1,7 +1,9 @@
 package io.skalogs.skaetl.service;
 
 
-import io.prometheus.client.Gauge;
+import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.domain.ClientLogstash;
 import io.skalogs.skaetl.domain.ConfData;
 import io.skalogs.skaetl.domain.ConfigurationLogstash;
@@ -30,22 +32,17 @@ public class ConfSkalogsService {
         this.utilsConfig=utilsConfig;
     }
 
-    public static final Gauge fetchConf = Gauge.build()
-            .name("skaetl_fetch_skalogs_conf")
-            .help("fetch skalogs conf")
-            .labelNames("category","env")
-            .register();
-
-    public static final Gauge fetchConfError = Gauge.build()
-            .name("skaetl_fetch_skalogs_conf_error")
-            .help("fetch skalogs conf")
-            .register();
-
     public String fetch(String env, String category, String apiKey, String hostname){
         log.error("Call env {} category {} apiKey {} hostname {}",env,category,apiKey,hostname);
         if(checkData(env,category,apiKey,hostname)){
             ConfData confData = ConfData.builder().apiKey(apiKey).category(category).env(env).build();
-            fetchConf.labels(category,env).inc();
+            Metrics.counter("skaetl_fetch_skalogs_conf",
+                    Lists.newArrayList(
+                            Tag.of("category",category),
+                            Tag.of("env", env)
+                    )
+            ).increment();
+
             updateHost(hostname,env);
             ConfigurationLogstash configFecth = confService.findAll().stream()
                     .filter(cl -> cl.getConfData().equals(confData))
@@ -56,7 +53,7 @@ public class ConfSkalogsService {
                 return utilsConfig.generateConfig(configFecth);
             }
         }else{
-            fetchConfError.inc();
+            Metrics.counter("skaetl_fetch_skalogs_conf_error").increment();
             return utilsConfig.generateConfig(ConfigurationLogstash.builder().build());
         }
     }

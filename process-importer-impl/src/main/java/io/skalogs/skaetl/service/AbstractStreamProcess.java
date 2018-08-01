@@ -1,6 +1,5 @@
 package io.skalogs.skaetl.service;
 
-import io.prometheus.client.Counter;
 import io.skalogs.skaetl.domain.ProcessConsumer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,18 +22,6 @@ public abstract class AbstractStreamProcess implements Runnable {
     private final ProcessConsumer processConsumer;
     private final AtomicBoolean closed = new AtomicBoolean(false);
     private final HashMap<String, KafkaStreams> mapStreams = new HashMap<>();
-
-    public static final Counter readKafkaCount = Counter.build()
-            .name("skaetl_nb_read_kafka_count")
-            .help("nb read")
-            .labelNames("processConsumerName")
-            .register();
-    public static final Counter transformationAndValidationCount = Counter.build()
-            .name("skaetl_nb_transformation_validation_count")
-            .help("nb transfo & validation")
-            .labelNames("processConsumerName")
-            .register();
-
 
     public abstract void createStreamProcess();
 

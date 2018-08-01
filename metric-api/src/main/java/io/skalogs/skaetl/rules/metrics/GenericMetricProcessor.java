@@ -2,7 +2,9 @@ package io.skalogs.skaetl.rules.metrics;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import io.prometheus.client.Counter;
+import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.domain.JoinType;
 import io.skalogs.skaetl.domain.ParameterOutput;
 import io.skalogs.skaetl.domain.ProcessMetric;
@@ -42,18 +44,6 @@ public abstract class GenericMetricProcessor {
     private final String srcTopic2;
     @Setter
     private ApplicationContext applicationContext;
-
-    private static final Counter inputMessageCount = Counter.build()
-            .name("skaetl_nb_metric_input")
-            .help("nb input")
-            .labelNames("metricConsumerName")
-            .register();
-
-    private static final Counter outputMessageCount = Counter.build()
-            .name("skaetl_nb_metric_output")
-            .help("nb output")
-            .labelNames("metricConsumerName")
-            .register();
 
 
     protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic) {
@@ -160,11 +150,11 @@ public abstract class GenericMetricProcessor {
     }
 
     private void countInput(Keys keys, JsonNode jsonNode) {
-        inputMessageCount.labels(processMetric.getName()).inc();
+        Metrics.counter("skaetl_nb_metric_input", Lists.newArrayList(Tag.of("metricConsumerName",processMetric.getName()))).increment();
     }
 
     private void countOutput(Keys keys, MetricResult metricResult) {
-        outputMessageCount.labels(processMetric.getName()).inc();
+        Metrics.counter("skaetl_nb_metric_output", Lists.newArrayList(Tag.of("metricConsumerName",processMetric.getName()))).increment();
     }
 
     public void routeResult(KStream<Keys, MetricResult> result) {

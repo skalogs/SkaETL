@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import io.prometheus.client.Counter;
+import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.validate.*;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +27,6 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class GenericValidator {
 
-    private static final Counter nbMandatoryImporter = Counter.build()
-            .name("skaetl_nb_mandatory_importer")
-            .labelNames("type")
-            .help("nb message not json.")
-            .register();
-
     private final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
     private final ObjectMapper objectMapper = new ObjectMapper();
     private List<ValidatorProcess> listValidator = new ArrayList<>();
@@ -48,7 +44,7 @@ public class GenericValidator {
         try {
             return objectMapper.readTree(value);
         } catch (IOException e) {
-            nbMandatoryImporter.labels("jsonFormat").inc();
+            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","jsonFormat"))).increment();
             return null;
         }
     }
@@ -57,19 +53,19 @@ public class GenericValidator {
     public ValidateData mandatoryImporter(String value, ObjectNode jsonValue) {
         //JSON
         if (jsonValue == null) {
-            nbMandatoryImporter.labels("jsonFormat").inc();
+            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","jsonFormat"))).increment();
             return createValidateData(false, StatusCode.invalid_json, TypeValidation.FORMAT_JSON, value);
         }
         //PROJECT
         String project = jsonValue.path("project").asText();
         if (StringUtils.isBlank(project)) {
-            nbMandatoryImporter.labels("project").inc();
+            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","project"))).increment();
             return createValidateData(false, StatusCode.missing_mandatory_field_project, TypeValidation.MANDATORY_FIELD, value, "missing project");
         }
         //TYPE
         String type = jsonValue.path("type").asText();
         if (StringUtils.isBlank(type)) {
-            nbMandatoryImporter.labels("type").inc();
+            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","type"))).increment();
             return createValidateData(false, StatusCode.missing_mandatory_field_type, TypeValidation.MANDATORY_FIELD, value, "missing type");
         }
         //TIMESTAMP

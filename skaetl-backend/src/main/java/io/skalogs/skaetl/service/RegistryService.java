@@ -1,6 +1,8 @@
 package io.skalogs.skaetl.service;
 
-import io.prometheus.client.Gauge;
+import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.config.ProcessConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.repository.ConsumerStateRepository;
@@ -18,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Component
@@ -28,11 +31,10 @@ public class RegistryService {
     private final WorkerRepository workerRepository;
     private final ConsumerStateRepository consumerStateRepository;
 
-    public static final Gauge worker = Gauge.build()
-            .name("skaetl_nb_worker")
-            .help("nb worker")
-            .labelNames("status")
-            .register();
+    private final AtomicLong workerOK = Metrics.gauge("skaetl_nb_worker", Lists.newArrayList(Tag.of("status", StatusWorker.OK.name())), new AtomicLong(0));
+    private final AtomicLong workerKO = Metrics.gauge("skaetl_nb_worker", Lists.newArrayList(Tag.of("status", StatusWorker.KO.name())), new AtomicLong(0));
+    private final AtomicLong workerFULL = Metrics.gauge("skaetl_nb_worker", Lists.newArrayList(Tag.of("status", StatusWorker.FULL.name())), new AtomicLong(0));
+
 
     public RegistryService(ProcessConfiguration processConfiguration, WorkerRepository workerRepository, ConsumerStateRepository consumerStateRepository) {
         this.processConfiguration = processConfiguration;
@@ -57,8 +59,7 @@ public class RegistryService {
                 .status(StatusWorker.OK)
                 .statusConsumerList(registryWorker.getStatusConsumerList())
                 .build());
-
-        worker.labels(StatusWorker.OK.name()).inc();
+        workerOK.incrementAndGet();
         flagAssignedTaskAsDegraded(registryWorker);
     }
 
@@ -216,15 +217,23 @@ public class RegistryService {
                 .forEach(registry -> registry.setStatus(statusWorker(registry.getDateRefresh(), registry)));
         rescheduleConsumerFromDeadWorkers();
         rescheduleConsumersInError();
-        worker.labels(StatusWorker.OK.name()).set(workers.stream()
+        workerOK.set(
+                workers.stream()
                 .filter(registryWorker -> registryWorker.getStatus() == StatusWorker.OK)
-                .count());
-        worker.labels(StatusWorker.KO.name()).set(workers.stream()
-                .filter(registryWorker -> registryWorker.getStatus() == StatusWorker.KO)
-                .count());
-        worker.labels(StatusWorker.FULL.name()).set(workers.stream()
-                .filter(registryWorker -> registryWorker.getStatus() == StatusWorker.FULL)
-                .count());
+                .count()
+        );
+
+        workerKO.set(
+                workers.stream()
+                        .filter(registryWorker -> registryWorker.getStatus() == StatusWorker.KO)
+                        .count()
+        );
+
+        workerFULL.set(
+                workers.stream()
+                        .filter(registryWorker -> registryWorker.getStatus() == StatusWorker.FULL)
+                        .count()
+        );
     }
 
     private void rescheduleConsumerFromDeadWorkers() {

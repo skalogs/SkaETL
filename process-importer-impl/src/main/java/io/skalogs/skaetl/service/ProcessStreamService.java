@@ -1,6 +1,9 @@
 package io.skalogs.skaetl.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.rules.filters.GenericFilter;
 import io.skalogs.skaetl.serdes.GenericSerdes;
@@ -78,7 +81,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KStream<String, String> streamInput = builder.stream(inputTopic, Consumed.with(Serdes.String(), Serdes.String()));
 
         KStream<String, String> streamParsed = streamInput.map((key, value) -> {
-            readKafkaCount.labels(getProcessConsumer().getName()).inc();
+            Metrics.counter("skaetl_nb_read_kafka_count", Lists.newArrayList(Tag.of("processConsumerName",getProcessConsumer().getName()))).increment();
             String resultParsing = getGenericParser().apply(value, getProcessConsumer());
             return new KeyValue<>("input", resultParsing);
         }).filter((key, value) -> StringUtils.isNotBlank(value));
@@ -100,7 +103,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KStream<String, ValidateData> streamValidation = streamInput.map((key, value) -> {
             String resultTransformer = getGenericTransformator().apply(value, getProcessConsumer());
             ValidateData item = getGenericValidator().process(resultTransformer, getProcessConsumer());
-            transformationAndValidationCount.labels(getProcessConsumer().getName()).inc();
+            Metrics.counter("skaetl_nb_transformation_validation_count", Lists.newArrayList(Tag.of("processConsumerName",getProcessConsumer().getName()))).increment();
             return new KeyValue<>(item.type, item);
         }).filter((key, value) -> {
             //Validation

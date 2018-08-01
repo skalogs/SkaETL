@@ -17,6 +17,10 @@ logging:
     org.springframework.web: INFO
     io.skalogs: INFO
 
+management.endpoint.metrics.enabled: true
+management.endpoints.web.exposure.include: health,metrics,info,prometheus
+management.endpoint.prometheus.enabled: true
+management.metrics.export.prometheus.enabled: true
 ---
 spring.profiles: dev
 
