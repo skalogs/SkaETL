@@ -10,9 +10,8 @@ import io.skalogs.skaetl.domain.GrokDomain;
 import io.skalogs.skaetl.domain.GrokResult;
 import io.skalogs.skaetl.domain.GrokResultSimulate;
 import io.skalogs.skaetl.repository.GrokRepository;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

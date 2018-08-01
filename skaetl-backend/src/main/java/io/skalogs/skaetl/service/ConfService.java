@@ -10,7 +10,7 @@ import io.skalogs.skaetl.domain.ConfigurationLogstash;
 import io.skalogs.skaetl.domain.StatusConfig;
 import io.skalogs.skaetl.web.domain.ConfLogstashWeb;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.delete.DeleteRequest;

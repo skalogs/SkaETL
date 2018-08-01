@@ -8,7 +8,7 @@ import io.skalogs.skaetl.domain.WorkerHTTPService;
 import io.skalogs.skaetl.service.ExternalHTTPService;
 import io.skalogs.skaetl.service.TransformatorProcess;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;

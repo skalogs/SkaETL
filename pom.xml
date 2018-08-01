@@ -12,7 +12,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jackson.version>2.9.1</jackson.version>
-        <spring.boot.version>1.5.8.RELEASE</spring.boot.version>
+        <spring.boot.version>2.0.4.RELEASE</spring.boot.version>
         <springfox-swagger-ui.version>2.6.1</springfox-swagger-ui.version>
         <springfox-swagger2.version>2.6.1</springfox-swagger2.version>
         <elasticsearch.version>6.2.3</elasticsearch.version>
@@ -85,11 +85,13 @@
                 <version>1.16.16</version>
                 <scope>provided</scope>
             </dependency>
+
             <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.5</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>3.7</version>
             </dependency>
+
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
@@ -189,8 +191,14 @@
                 <groupId>org.thymeleaf</groupId>
                 <artifactId>thymeleaf</artifactId>
                 <version>3.0.9.RELEASE</version>
-                <scope>compile</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.thymeleaf</groupId>
+                <artifactId>thymeleaf-spring5</artifactId>
+                <version>3.0.9.RELEASE</version>
+            </dependency>
+
 
             <!-- test -->
             <dependency>
@@ -223,11 +231,7 @@
                 <version>2.10.0</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>com.moelholm</groupId>
-                <artifactId>prometheus-spring-boot-starter</artifactId>
-                <version>1.0.2</version>
-            </dependency>
+
             <dependency>
                 <groupId>net.logstash.logback</groupId>
                 <artifactId>logstash-logback-encoder</artifactId>

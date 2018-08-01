@@ -2,7 +2,7 @@ package io.skalogs.skaetl.domain;
 
 import lombok.*;
 import lombok.experimental.Wither;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;

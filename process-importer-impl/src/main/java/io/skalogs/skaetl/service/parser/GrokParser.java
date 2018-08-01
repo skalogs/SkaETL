@@ -7,7 +7,7 @@ import io.skalogs.skaetl.service.GrokService;
 import io.skalogs.skaetl.service.ParserProcess;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 

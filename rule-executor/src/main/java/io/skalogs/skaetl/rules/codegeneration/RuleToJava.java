@@ -1,7 +1,7 @@
 package io.skalogs.skaetl.rules.codegeneration;
 
 import io.skalogs.skaetl.rules.functions.FunctionRegistry;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

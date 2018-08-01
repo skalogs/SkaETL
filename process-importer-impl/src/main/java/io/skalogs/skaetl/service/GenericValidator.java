@@ -8,7 +8,7 @@ import io.prometheus.client.Counter;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.validate.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

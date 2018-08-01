@@ -13,7 +13,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Getter
 @Setter
 @Configuration
-@ConfigurationProperties(prefix = "bufferElasticsearch")
+@ConfigurationProperties(prefix = "buffer-elasticsearch")
 public class ESBufferConfiguration {
     public Integer maxElements;
     public Integer maxSizeInBytes;

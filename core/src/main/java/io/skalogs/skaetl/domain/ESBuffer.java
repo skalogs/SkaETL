@@ -4,7 +4,7 @@ import com.google.common.base.Stopwatch;
 import io.skalogs.skaetl.config.ESBufferConfiguration;
 import io.skalogs.skaetl.config.ESConfiguration;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.action.index.IndexRequest;

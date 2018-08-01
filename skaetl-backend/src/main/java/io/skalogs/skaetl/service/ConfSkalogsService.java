@@ -6,7 +6,7 @@ import io.skalogs.skaetl.domain.ClientLogstash;
 import io.skalogs.skaetl.domain.ConfData;
 import io.skalogs.skaetl.domain.ConfigurationLogstash;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;

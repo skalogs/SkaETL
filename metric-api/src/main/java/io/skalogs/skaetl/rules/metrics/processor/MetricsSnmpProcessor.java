@@ -5,7 +5,7 @@ import io.skalogs.skaetl.rules.metrics.domain.MetricResult;
 import io.skalogs.skaetl.service.SnmpService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 
 @AllArgsConstructor

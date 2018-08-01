@@ -7,8 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.substringAfterLast;
-import static org.apache.commons.lang.StringUtils.substringBeforeLast;
+import static org.apache.commons.lang3.StringUtils.substringAfterLast;
+import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 @AllArgsConstructor
 @Data

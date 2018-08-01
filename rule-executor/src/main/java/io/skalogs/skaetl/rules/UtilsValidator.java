@@ -3,7 +3,7 @@ package io.skalogs.skaetl.rules;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;

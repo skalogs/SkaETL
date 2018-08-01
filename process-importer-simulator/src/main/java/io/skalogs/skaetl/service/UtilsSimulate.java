@@ -3,7 +3,7 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.domain.SimulateData;
 import io.skalogs.skaetl.domain.ValidateData;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.stream.Collectors;
 

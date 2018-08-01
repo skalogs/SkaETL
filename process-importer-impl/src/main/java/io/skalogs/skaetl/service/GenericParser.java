@@ -7,7 +7,7 @@ import io.skalogs.skaetl.domain.ProcessParser;
 import io.skalogs.skaetl.service.parser.*;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;

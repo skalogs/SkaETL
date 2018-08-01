@@ -4,7 +4,7 @@ import io.skalogs.skaetl.config.PrometheusConfiguration;
 import io.skalogs.skaetl.domain.prometheus.PrometheusDataHack;
 import io.skalogs.skaetl.web.domain.DataCapture;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 

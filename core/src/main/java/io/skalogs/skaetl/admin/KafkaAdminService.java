@@ -8,7 +8,7 @@ import kafka.common.UnknownTopicOrPartitionException;
 import kafka.utils.ZkUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.errors.TopicExistsException;
 import org.springframework.stereotype.Component;

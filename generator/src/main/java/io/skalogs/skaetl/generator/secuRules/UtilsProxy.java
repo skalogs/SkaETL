@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import static java.util.UUID.randomUUID;
-import static org.apache.commons.lang.RandomStringUtils.randomNumeric;
+import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 
 @Component
 @Slf4j

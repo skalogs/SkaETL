@@ -1,7 +1,7 @@
 package io.skalogs.skaetl.rules.functions.numbers;
 
 import io.skalogs.skaetl.rules.functions.OneArgFilterFunction;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class IsNumberFunction extends OneArgFilterFunction<Number> {
     public IsNumberFunction() {

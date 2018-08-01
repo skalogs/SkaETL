@@ -6,7 +6,7 @@ import io.skalogs.skaetl.service.EmailService;
 import io.skalogs.skaetl.utils.TemplateUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.streams.processor.AbstractProcessor;
 
 @AllArgsConstructor

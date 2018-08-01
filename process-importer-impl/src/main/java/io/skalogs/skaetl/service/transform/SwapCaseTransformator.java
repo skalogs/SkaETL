@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.domain.ParameterTransformation;
 import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.service.TransformatorProcess;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class SwapCaseTransformator extends TransformatorProcess {
     public SwapCaseTransformator(TypeValidation type) {

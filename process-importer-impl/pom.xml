@@ -30,10 +30,7 @@
             <groupId>io.prometheus</groupId>
             <artifactId>simpleclient</artifactId>
         </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
             <artifactId>services</artifactId>
