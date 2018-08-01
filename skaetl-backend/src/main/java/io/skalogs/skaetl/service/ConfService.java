@@ -3,7 +3,9 @@ package io.skalogs.skaetl.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import io.prometheus.client.Gauge;
+import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.config.ESConfiguration;
 import io.skalogs.skaetl.domain.ConfEsSkalogs;
 import io.skalogs.skaetl.domain.ConfigurationLogstash;
@@ -32,6 +34,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static java.util.stream.Collectors.toList;
 
@@ -40,11 +43,10 @@ import static java.util.stream.Collectors.toList;
 public class ConfService {
 
     public HashMap<String, ConfigurationLogstash> map = new HashMap<>();
-    public static final Gauge conf = Gauge.build()
-            .name("skaetl_nb_configuration")
-            .help("nb Configuration")
-            .labelNames("status")
-            .register();
+    private final AtomicLong confActive = Metrics.gauge("skaetl_nb_worker", Lists.newArrayList(Tag.of("status", StatusConfig.ACTIVE.name())), new AtomicLong(0));
+    private final AtomicLong confDisable = Metrics.gauge("skaetl_nb_worker", Lists.newArrayList(Tag.of("status", StatusConfig.DISABLE.name())), new AtomicLong(0));
+    private final AtomicLong confError = Metrics.gauge("skaetl_nb_worker", Lists.newArrayList(Tag.of("status", StatusConfig.ERROR.name())), new AtomicLong(0));
+
     private final String INDEX_STORAGE = "skalogsconf";
     private final RestHighLevelClient restHighLevelClient;
     private final ESConfiguration esConfiguration;
@@ -126,13 +128,13 @@ public class ConfService {
     }
 
     private void updateStat() {
-        conf.labels(StatusConfig.ACTIVE.name()).set(map.values().stream()
+        confActive.set(map.values().stream()
                 .filter(configurationLogstash -> configurationLogstash.getStatusConfig() == StatusConfig.ACTIVE)
                 .count());
-        conf.labels(StatusConfig.ERROR.name()).set(map.values().stream()
+        confError.set(map.values().stream()
                 .filter(configurationLogstash -> configurationLogstash.getStatusConfig() == StatusConfig.ERROR)
                 .count());
-        conf.labels(StatusConfig.DISABLE.name()).set(map.values().stream()
+        confDisable.set(map.values().stream()
                 .filter(configurationLogstash -> configurationLogstash.getStatusConfig() == StatusConfig.DISABLE)
                 .count());
     }
