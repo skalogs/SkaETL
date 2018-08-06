@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.skalogs.skaetl</groupId>
     <artifactId>parent-importer</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -386,6 +386,6 @@
         <connection>scm:git:git@github.com:skalogs/SkaETL.git</connection>
         <developerConnection>scm:git:git@github.com:skalogs/SkaETL.git</developerConnection>
         <url>https://github.com/skalogs/SkaETL</url>
-        <tag>1.0.1</tag>
+        <tag>HEAD</tag>
     </scm>
 </project>
