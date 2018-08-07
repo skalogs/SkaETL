@@ -11,7 +11,7 @@ services:
     environment:
       - KAFKA_ADVERTISED_HOST_NAME=127.0.0.1
       - ZOOKEEPER_IP=zookeeper
-      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true
+      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=false
     ports:
       - "9092:9092"
   elasticsearch:
