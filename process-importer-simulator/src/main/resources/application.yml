@@ -61,25 +61,10 @@ kafka.pollingTime: 1000
 kafka.pollRecord: 50
 kafka.groupId: importer
 
-spring.h2.console.enabled: true
+spring.mail.host: ""
+spring.mail.port: 25
 
-spring.datasource:
-  platform: h2
-  driverClassName: org.h2.Driver
-  url: jdbc:h2:mem:skalogs;MODE=PostgreSQL
-  username: fu
-  password: fu
-
-spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
-spring.datasource.platform: h2
-spring.jpa:
-  open-in-view: false
-  hibernate:
-    ddl-view: none
-    naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
-    hbm2ddl.auto: update
-  show_sql: false
-  properties:
-    hibernate.cache.use_second_level_cache: false
-    hibernate.cache.use_query_cache: false
-    hibernate.generate_statistics: false
+snmp.community: Public
+snmp.trapOid: .1.3.6.1.2.1.1.6
+snmp.ipAddress: 127.0.0.1
+snmp.port: 162
