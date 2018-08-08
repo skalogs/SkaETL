@@ -62,7 +62,7 @@ public class JSONUtils {
         if (StringUtils.isBlank(path)) {
             return null;
         }
-        return "/" + path.replaceAll("\\.", "/");
+        return "/" + StringUtils.replace(path,".", "/");
     }
 
     public boolean has(JsonNode jsonNode, String path) {
@@ -84,7 +84,7 @@ public class JSONUtils {
 
         if (parentNode.getNodeType() == JsonNodeType.OBJECT) {
             ObjectNode parentNodeToUpdate = (ObjectNode) parentNode;
-            parentNodeToUpdate.set(valueNodePointer.last().toString().replaceAll("/", ""), value);
+            parentNodeToUpdate.set(StringUtils.replace(valueNodePointer.last().toString(),"/", ""), value);
         }
     }
 
@@ -108,7 +108,7 @@ public class JSONUtils {
         JsonNode parentNode = jsonNode.at(parentPointer);
         if (parentNode.getNodeType() == JsonNodeType.OBJECT) {
             ObjectNode parentNodeToUpdate = (ObjectNode) parentNode;
-            parentNodeToUpdate.remove(valueNodePointer.last().toString().replaceAll("/",""));
+            parentNodeToUpdate.remove(StringUtils.replace(valueNodePointer.last().toString(),"/",""));
         }
 
     }
