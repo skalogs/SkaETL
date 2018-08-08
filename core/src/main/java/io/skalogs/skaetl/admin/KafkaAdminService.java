@@ -78,7 +78,7 @@ public class KafkaAdminService {
     public void createTopic(TopicInfo topicInfo) {
 
         Properties paramTopic = new Properties();
-        Integer retention = topicInfo.getRetentionHours() * 60 * 1000;
+        Integer retention = topicInfo.getRetentionHours() * 60 *  60 * 1000;
         paramTopic.put(TopicConfig.RETENTION_MS_CONFIG, retention.toString());
         paramTopic.put(TopicConfig.CLEANUP_POLICY_CONFIG, topicInfo.getCleanupPolicy());
 
