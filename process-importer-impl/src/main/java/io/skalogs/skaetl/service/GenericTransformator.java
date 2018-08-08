@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,26 +50,17 @@ public class GenericTransformator {
         listTransformator.add(new AddCsvLookupTransformator(TypeValidation.ADD_CSV_LOOKUP));
     }
 
-    public JsonNode createJsonObject(String value) {
-        try {
-            return objectMapper.readTree(value);
-        } catch (IOException e) {
-            return null;
-        }
-    }
-
-    public String apply(String value, ProcessConsumer processConsumer) {
-        ObjectNode jsonValue = (ObjectNode) createJsonObject(value);
+    public ObjectNode apply(JsonNode value, ProcessConsumer processConsumer) {
+        ObjectNode jsonValue = (ObjectNode) value;
         if (jsonValue != null && processConsumer.getProcessTransformation() != null && !processConsumer.getProcessTransformation().isEmpty()) {
             for (ProcessTransformation pt : processConsumer.getProcessTransformation()) {
                 listTransformator.stream()
                         .filter(e -> e.type(pt.getTypeTransformation()))
-                        .forEach(e -> e.apply(processConsumer.getIdProcess(), pt.getParameterTransformation(), jsonValue, value));
+                        .forEach(e -> e.apply(processConsumer.getIdProcess(), pt.getParameterTransformation(), jsonValue));
             }
-            return jsonValue.toString();
-        } else {
-            return value;
+
         }
+        return jsonValue;
     }
 
 }

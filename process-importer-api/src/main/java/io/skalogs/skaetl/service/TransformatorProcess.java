@@ -24,7 +24,7 @@ public abstract class TransformatorProcess {
         return type.equals(typeValidation);
     }
 
-    public abstract void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value);
+    public abstract void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue);
 
     protected boolean has(String path, JsonNode jsonNode) {
         return jsonUtils.has(jsonNode, path);

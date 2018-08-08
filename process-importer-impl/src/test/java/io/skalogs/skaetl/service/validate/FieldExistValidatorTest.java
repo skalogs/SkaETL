@@ -28,7 +28,7 @@ public class FieldExistValidatorTest {
                 .parameterValidation(ParameterValidation.builder()
                         .fieldExist("messageSend")
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(v.success).isTrue();
     }
 
@@ -44,7 +44,7 @@ public class FieldExistValidatorTest {
                 .parameterValidation(ParameterValidation.builder()
                         .fieldExist("toto")
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(v.success).isFalse();
     }
 

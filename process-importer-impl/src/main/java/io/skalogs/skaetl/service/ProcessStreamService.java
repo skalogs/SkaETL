@@ -1,7 +1,9 @@
 package io.skalogs.skaetl.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.Lists;
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.domain.*;
@@ -98,12 +100,13 @@ public class ProcessStreamService extends AbstractStreamProcess {
 
     private void createStreamValidAndTransformAndFilter(String inputTopic, String outputTopic) {
         StreamsBuilder builder = new StreamsBuilder();
-        KStream<String, String> streamInput = builder.stream(inputTopic, Consumed.with(Serdes.String(), Serdes.String()));
+        KStream<String, JsonNode> streamInput = builder.stream(inputTopic, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
         String applicationId = getProcessConsumer().getIdProcess() + ProcessConstants.VALIDATE_PROCESS;
+        Counter counter = Metrics.counter("skaetl_nb_transformation_validation_count", Lists.newArrayList(Tag.of("processConsumerName", getProcessConsumer().getName())));
         KStream<String, ValidateData> streamValidation = streamInput.map((key, value) -> {
-            String resultTransformer = getGenericTransformator().apply(value, getProcessConsumer());
+            ObjectNode resultTransformer = getGenericTransformator().apply(value, getProcessConsumer());
             ValidateData item = getGenericValidator().process(resultTransformer, getProcessConsumer());
-            Metrics.counter("skaetl_nb_transformation_validation_count", Lists.newArrayList(Tag.of("processConsumerName",getProcessConsumer().getName()))).increment();
+            counter.increment();
             return new KeyValue<>(item.type, item);
         }).filter((key, value) -> {
             //Validation

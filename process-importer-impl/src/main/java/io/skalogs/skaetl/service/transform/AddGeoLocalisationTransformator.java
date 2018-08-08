@@ -46,7 +46,7 @@ public class AddGeoLocalisationTransformator extends TransformatorProcess {
         }
     }
 
-    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
+    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
 
         String key = parameterTransformation.getKeyField();
         String ipToResolve = getJsonUtils().at(jsonValue, parameterTransformation.getKeyField()).asText();

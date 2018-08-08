@@ -25,7 +25,7 @@ public class BlackListValidator extends ValidatorProcess {
             .labelNames("fieldname")
             .register();
 
-    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue, String value) {
+    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {
 
         if (processValidation.getParameterValidation().getBlackList() != null) {
             List<ProcessKeyValue> listBlack = processValidation.getParameterValidation().getBlackList()
@@ -34,7 +34,7 @@ public class BlackListValidator extends ValidatorProcess {
                     .collect(toList());
             if (!listBlack.isEmpty()) {
                 listBlack.forEach(item -> nbMessageBlackList.labels(item.getKey() + "-" + item.getValue()).inc());
-                return UtilsValidateData.createValidateData(false, StatusCode.blacklist, TypeValidation.BLACK_LIST_FIELD, value, listBlack.stream().map(e -> e.getKey() + "-" + e.getValue()).collect(Collectors.joining(";")));
+                return UtilsValidateData.createValidateData(false, StatusCode.blacklist, TypeValidation.BLACK_LIST_FIELD, jsonValue, listBlack.stream().map(e -> e.getKey() + "-" + e.getValue()).collect(Collectors.joining(";")));
             } else {
                 return ValidateData.builder()
                         .success(true)
@@ -44,7 +44,7 @@ public class BlackListValidator extends ValidatorProcess {
             }
         } else {
             nbMessageBlackList.labels("empty").inc();
-            return UtilsValidateData.createValidateData(false, StatusCode.blacklist, TypeValidation.BLACK_LIST_FIELD, value, "Blacklist array is null");
+            return UtilsValidateData.createValidateData(false, StatusCode.blacklist, TypeValidation.BLACK_LIST_FIELD, jsonValue, "Blacklist array is null");
         }
     }
 

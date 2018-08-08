@@ -29,7 +29,7 @@ public class HashFieldTransformatorTest {
                         .field("messageSend")
                         .typeHash(TypeHash.MURMUR3)
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(jsonValue.path("messageSend").asText()).isEqualTo("7dd5a4ac398698f085e216e25a330f58");
     }
 
@@ -47,7 +47,7 @@ public class HashFieldTransformatorTest {
                         .field("messageSend")
                         .typeHash(TypeHash.MURMUR3)
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(jsonValue.path("messageSend").asText()).isEqualTo("");
     }
 

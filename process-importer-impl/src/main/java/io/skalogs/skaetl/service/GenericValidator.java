@@ -14,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,40 +39,30 @@ public class GenericValidator {
         listValidator.add(new FieldExistValidator(TypeValidation.FIELD_EXIST));
     }
 
-    public JsonNode createJsonObject(String value) {
-        try {
-            return objectMapper.readTree(value);
-        } catch (IOException e) {
-            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","jsonFormat"))).increment();
-            return null;
-        }
-    }
-
-
-    public ValidateData mandatoryImporter(String value, ObjectNode jsonValue) {
+       public ValidateData mandatoryImporter(ObjectNode jsonValue) {
         //JSON
         if (jsonValue == null) {
             Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","jsonFormat"))).increment();
-            return createValidateData(false, StatusCode.invalid_json, TypeValidation.FORMAT_JSON, value);
+            return createValidateData(false, StatusCode.invalid_json, TypeValidation.FORMAT_JSON, jsonValue);
         }
         //PROJECT
         String project = jsonValue.path("project").asText();
         if (StringUtils.isBlank(project)) {
             Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","project"))).increment();
-            return createValidateData(false, StatusCode.missing_mandatory_field_project, TypeValidation.MANDATORY_FIELD, value, "missing project");
+            return createValidateData(false, StatusCode.missing_mandatory_field_project, TypeValidation.MANDATORY_FIELD, jsonValue, "missing project");
         }
         //TYPE
         String type = jsonValue.path("type").asText();
         if (StringUtils.isBlank(type)) {
             Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","type"))).increment();
-            return createValidateData(false, StatusCode.missing_mandatory_field_type, TypeValidation.MANDATORY_FIELD, value, "missing type");
+            return createValidateData(false, StatusCode.missing_mandatory_field_type, TypeValidation.MANDATORY_FIELD, jsonValue, "missing type");
         }
         //TIMESTAMP
         String timestampAnnotedAsString = jsonValue.path("@timestamp").asText();
         String timestampAsString = jsonValue.path("timestamp").asText();
 
         if (StringUtils.isBlank(timestampAsString) && StringUtils.isBlank(timestampAnnotedAsString)) {
-            return createValidateData(project, type, false, StatusCode.missing_timestamp, TypeValidation.MANDATORY_FIELD, value);
+            return createValidateData(project, type, false, StatusCode.missing_timestamp, TypeValidation.MANDATORY_FIELD, jsonValue);
         }
 
         Date timestamp;
@@ -85,40 +74,39 @@ public class GenericValidator {
                 timestamp = dateFormat.parse(timestampAsString);
             }
         } catch (ParseException e) {
-            return createValidateData(jsonValue, project, type, false, StatusCode.invalid_format_timestamp, TypeValidation.MANDATORY_FIELD, value);
+            return createValidateData(jsonValue, project, type, false, StatusCode.invalid_format_timestamp, TypeValidation.MANDATORY_FIELD);
         }
-        return createValidateData(jsonValue, timestamp, project, type, true, value);
+        return createValidateData(jsonValue, timestamp, project, type, true);
     }
 
-    public ValidateData process(String value, ProcessConsumer processConsumer) {
-        ObjectNode jsonValue = (ObjectNode) createJsonObject(value);
+    public ValidateData process(ObjectNode value, ProcessConsumer processConsumer) {
 
-        ValidateData validateMandatory = mandatoryImporter(value, jsonValue);
+        ValidateData validateMandatory = mandatoryImporter(value);
         if (!validateMandatory.success) {
             return createValidateData(false, validateMandatory.statusCode, validateMandatory.errorList, TypeValidation.MANDATORY_FIELD, value);
         }
-        List<ValidateData> result = treat(value, jsonValue, processConsumer);
+        List<ValidateData> result = treat(value, processConsumer);
         List<ValidateData> listNotSuccess = result.stream().filter(e -> !e.success).collect(toList());
         if (!listNotSuccess.isEmpty()) {
             return createValidateData(false, validateMandatory.statusCode, listNotSuccess.stream().map(e -> e.getStatusCode()).collect(toList()), TypeValidation.MANDATORY_FIELD, value);
         }
         return ValidateData.builder()
                 .success(true)
-                .jsonValue(jsonValue)
+                .jsonValue(value)
                 .type(validateMandatory.type)
                 .project(validateMandatory.project)
                 .timestamp(validateMandatory.timestamp)
-                .value(value).build();
+                .value(value.toString()).build();
 
     }
 
-    public List<ValidateData> treat(String value, JsonNode jsonValue, ProcessConsumer processConsumer) {
+    public List<ValidateData> treat(JsonNode jsonValue, ProcessConsumer processConsumer) {
         List<ValidateData> result = new ArrayList<>();
         if (processConsumer.getProcessValidation() != null && !processConsumer.getProcessValidation().isEmpty()) {
             for (ProcessValidation pv : processConsumer.getProcessValidation()) {
                 listValidator.stream()
                         .filter(e -> e.type(pv.getTypeValidation()))
-                        .forEach(e -> result.add(e.process(pv, jsonValue, value)));
+                        .forEach(e -> result.add(e.process(pv, jsonValue)));
             }
         }
         return result;

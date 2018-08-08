@@ -39,7 +39,7 @@ public class AddCsvLookupTransformatorTest {
                                 .map(mapTest)
                                 .build())
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("type").asText()).isEqualTo("typeToDefine");
         assertThat(jsonValue.get("ren").get("mouarf").asText()).isEqualTo("toto");
         assertThat(jsonValue.get("multipla").asText()).isEqualTo("fiat");
@@ -64,7 +64,7 @@ public class AddCsvLookupTransformatorTest {
                                 .map(mapTest)
                                 .build())
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("type").asText()).isEqualTo("typeToDefine");
         assertThat(jsonValue.has("multipla")).isFalse();
     }

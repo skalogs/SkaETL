@@ -23,7 +23,7 @@ public class LookupHTTPServiceTransformator extends TransformatorProcess {
         this.externalHTTPService = externalHTTPService;
     }
 
-    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
+    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
         WorkerHTTPService workerHTTPService = externalHTTPService.getMapExternalService().get(idProcess);
         if (workerHTTPService != null) {
             String key = parameterTransformation.getKeyField();

@@ -31,7 +31,7 @@ public class FormatDateTransformatorTest {
                                 .targetFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
                                 .build())
                         .build(),
-                jsonValue, value);
+                jsonValue);
         //FIXME: TIMEZONE ISSUE
         assertThat(jsonValue.path("messageSend").asText()).startsWith("2018-01-15T00:00:00.000");
     }
@@ -53,7 +53,7 @@ public class FormatDateTransformatorTest {
                                 .targetFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
                                 .build())
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("toto").asText()).isEqualTo("");
     }
 }

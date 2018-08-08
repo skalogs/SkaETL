@@ -32,7 +32,7 @@ public class LookupListTransformatorTest {
                         .keyField("project")
                         .mapLookup(mapTest)
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("messageSend").asText()).isEqualTo("gni");
         assertThat(jsonValue.get("project").asText()).isEqualTo("new value of project");
         assertThat(jsonValue.get("type").asText()).isEqualTo("type");
@@ -54,7 +54,7 @@ public class LookupListTransformatorTest {
                         .keyField("messageSend")
                         .mapLookup(mapTest)
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("messageSend").asText()).isEqualTo("new value of message");
         assertThat(jsonValue.get("project").asText()).isEqualTo("project value");
         assertThat(jsonValue.get("type").asText()).isEqualTo("type");
@@ -76,7 +76,7 @@ public class LookupListTransformatorTest {
                         .keyField("gni")
                         .mapLookup(mapTest)
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("messageSend").asText()).isEqualTo("gni");
         assertThat(jsonValue.get("project").asText()).isEqualTo("project value");
         assertThat(jsonValue.get("type").asText()).isEqualTo("type");

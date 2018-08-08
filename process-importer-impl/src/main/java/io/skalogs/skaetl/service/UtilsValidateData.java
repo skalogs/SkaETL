@@ -12,34 +12,34 @@ import java.util.List;
 
 public final class UtilsValidateData {
 
-    public static ValidateData createValidateData(Boolean status, StatusCode statusCode, TypeValidation typeValidation, String value) {
+    public static ValidateData createValidateData(Boolean status, StatusCode statusCode, TypeValidation typeValidation, JsonNode value) {
         return ValidateData.builder()
                 .success(status)
                 .errorList(Arrays.asList(statusCode))
                 .typeValidation(typeValidation)
                 .statusCode(statusCode)
-                .value(value)
+                .value(value.toString())
                 .build();
     }
 
-    public static ValidateData createValidateData(Boolean status, StatusCode statusCode, TypeValidation typeValidation, String value, String message) {
+    public static ValidateData createValidateData(Boolean status, StatusCode statusCode, TypeValidation typeValidation, JsonNode value, String message) {
         return ValidateData.builder()
                 .success(status)
                 .errorList(Arrays.asList(statusCode))
                 .typeValidation(typeValidation)
                 .statusCode(statusCode)
-                .value(value)
+                .value(value.toString())
                 .message(message)
                 .build();
     }
 
-    public static ValidateData createValidateData(Boolean status, StatusCode statusCode, List<StatusCode> listErrors, TypeValidation typeValidation, String value) {
+    public static ValidateData createValidateData(Boolean status, StatusCode statusCode, List<StatusCode> listErrors, TypeValidation typeValidation, JsonNode value) {
         return ValidateData.builder()
                 .success(status)
                 .errorList(listErrors)
                 .typeValidation(typeValidation)
                 .statusCode(statusCode)
-                .value(value)
+                .value(value.toString())
                 .build();
     }
 
@@ -67,36 +67,36 @@ public final class UtilsValidateData {
                 .build();
     }
 
-    public static ValidateData createValidateData(String project, String type, Boolean status, StatusCode statusCode, TypeValidation typeValidation, String value) {
+    public static ValidateData createValidateData(String project, String type, Boolean status, StatusCode statusCode, TypeValidation typeValidation, JsonNode value) {
         return ValidateData.builder()
                 .success(status)
                 .errorList(Arrays.asList(statusCode))
                 .typeValidation(typeValidation)
                 .statusCode(statusCode)
-                .value(value)
+                .value(value.toString())
                 .project(project)
                 .type(type)
                 .build();
     }
 
-    public static ValidateData createValidateData(JsonNode jsonObject, String project, String type, Boolean status, StatusCode statusCode, TypeValidation typeValidation, String value) {
+    public static ValidateData createValidateData(JsonNode jsonObject, String project, String type, Boolean status, StatusCode statusCode, TypeValidation typeValidation) {
         return ValidateData.builder()
                 .success(status)
                 .errorList(Arrays.asList(statusCode))
                 .typeValidation(typeValidation)
                 .statusCode(statusCode)
-                .value(value)
+                .value(jsonObject.toString())
                 .project(project)
                 .type(type)
                 .jsonValue(jsonObject)
                 .build();
     }
 
-    public static ValidateData createValidateData(JsonNode jsonObject, Date timestamp, String project, String type, Boolean status, String value) {
+    public static ValidateData createValidateData(JsonNode jsonObject, Date timestamp, String project, String type, Boolean status) {
         return ValidateData.builder()
                 .success(status)
                 .timestamp(timestamp)
-                .value(value)
+                .value(jsonObject.toString())
                 .project(project)
                 .type(type)
                 .jsonValue(jsonObject)

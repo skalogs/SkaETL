@@ -25,7 +25,7 @@ public class DoubleFieldTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("messageSend_double").asDouble()).isEqualTo(new Double(1548));
         assertThat(jsonValue.path("messageSend").asText()).isEqualTo("");
     }
@@ -42,7 +42,7 @@ public class DoubleFieldTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("messageSend2_double").asText()).isEqualTo("");
     }
 

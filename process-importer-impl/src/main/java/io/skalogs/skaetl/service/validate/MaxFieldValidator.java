@@ -24,12 +24,12 @@ public class MaxFieldValidator extends ValidatorProcess {
         super(type);
     }
 
-    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue, String value) {
+    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {
         // fields count
         int nbFields = Iterators.size(jsonValue.fieldNames());
         eventSizeHistogram.observe(nbFields);
         if (nbFields > processValidation.getParameterValidation().getMaxFields()) {
-            return UtilsValidateData.createValidateData(false, StatusCode.max_fields, TypeValidation.MAX_FIELD, value, String.valueOf(nbFields));
+            return UtilsValidateData.createValidateData(false, StatusCode.max_fields, TypeValidation.MAX_FIELD, jsonValue, String.valueOf(nbFields));
         }
         return ValidateData.builder()
                 .success(true)

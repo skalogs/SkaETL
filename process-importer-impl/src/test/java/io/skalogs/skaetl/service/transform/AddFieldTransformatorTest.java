@@ -27,7 +27,7 @@ public class AddFieldTransformatorTest {
                         .key("addField")
                         .value("value")
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(jsonValue.path("addField").asText()).isEqualTo("value");
     }
 

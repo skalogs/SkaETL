@@ -15,7 +15,7 @@ public class AddCsvLookupTransformator extends TransformatorProcess {
         super(type);
     }
 
-    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
+    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
         String field = parameterTransformation.getCsvLookupData().getField();
         if (StringUtils.isNotBlank(field)) {
             if (has(field, jsonValue)) {

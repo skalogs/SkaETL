@@ -26,7 +26,7 @@ public class MaxMessageSizeValidatorTest {
         ValidateData v = maxMessageSizeValidator.process(ProcessValidation.builder()
                 .parameterValidation(ParameterValidation.builder()
                         .maxMessageSize(100L).build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(v.success).isFalse();
     }
 
@@ -41,7 +41,7 @@ public class MaxMessageSizeValidatorTest {
         ValidateData v = maxMessageSizeValidator.process(ProcessValidation.builder()
                 .parameterValidation(ParameterValidation.builder()
                         .maxMessageSize(124L).build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(v.success).isTrue();
     }
 }

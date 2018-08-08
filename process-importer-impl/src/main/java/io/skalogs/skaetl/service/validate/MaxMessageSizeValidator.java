@@ -25,11 +25,11 @@ public class MaxMessageSizeValidator extends ValidatorProcess {
     }
 
 
-    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue, String value) {
-        int eventSize = value.length();
+    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {
+        int eventSize = jsonValue.toString().length();
         nbFieldsHistogram.observe(eventSize);
         if (eventSize > processValidation.getParameterValidation().getMaxMessageSize()) {
-            return createValidateData(false, StatusCode.event_size, TypeValidation.MAX_MESSAGE_SIZE, value, String.valueOf(eventSize));
+            return createValidateData(false, StatusCode.event_size, TypeValidation.MAX_MESSAGE_SIZE, jsonValue, String.valueOf(eventSize));
         }
         return ValidateData.builder()
                 .success(true)

@@ -31,29 +31,29 @@ public class MandatoryFieldValidator extends ValidatorProcess {
         super(type);
     }
 
-    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue, String value) {
+    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {
         if (processValidation.getParameterValidation().getMandatory() != null) {
             String[] tabMandatory = processValidation.getParameterValidation().getMandatory().split(";");
             if (tabMandatory != null && tabMandatory.length > 0) {
-                return validateMandatoryField(Arrays.asList(tabMandatory), processValidation, jsonValue, value);
+                return validateMandatoryField(Arrays.asList(tabMandatory), processValidation, jsonValue);
             } else {
                 missingMandatoryFieldsCount.labels("empty").inc();
-                return createValidateData(false, StatusCode.missing_mandatory_field, TypeValidation.MANDATORY_FIELD, value, "Mandatory array is empty");
+                return createValidateData(false, StatusCode.missing_mandatory_field, TypeValidation.MANDATORY_FIELD, jsonValue, "Mandatory array is empty");
 
             }
         } else {
             missingMandatoryFieldsCount.labels("empty").inc();
-            return createValidateData(false, StatusCode.missing_mandatory_field, TypeValidation.MANDATORY_FIELD, value, "Mandatory array is null");
+            return createValidateData(false, StatusCode.missing_mandatory_field, TypeValidation.MANDATORY_FIELD, jsonValue, "Mandatory array is null");
         }
     }
 
-    private ValidateData validateMandatoryField(List<String> tabMandatory, ProcessValidation processValidation, JsonNode jsonValue, String value) {
+    private ValidateData validateMandatoryField(List<String> tabMandatory, ProcessValidation processValidation, JsonNode jsonValue) {
         List<String> listItemNull = tabMandatory.stream()
                 .filter(e -> at(e,jsonValue) == null)
                 .collect(toList());
         if (!listItemNull.isEmpty()) {
             listItemNull.forEach(item -> missingMandatoryFieldsCount.labels(item).inc());
-            return createValidateData(false, StatusCode.missing_mandatory_field, TypeValidation.MANDATORY_FIELD, value, listItemNull.stream().collect(Collectors.joining(";")));
+            return createValidateData(false, StatusCode.missing_mandatory_field, TypeValidation.MANDATORY_FIELD, jsonValue, listItemNull.stream().collect(Collectors.joining(";")));
         } else {
             return ValidateData.builder()
                     .success(true)

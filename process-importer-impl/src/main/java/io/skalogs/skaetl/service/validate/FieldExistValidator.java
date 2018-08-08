@@ -15,7 +15,7 @@ public class FieldExistValidator extends ValidatorProcess {
         super(type);
     }
 
-    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue, String value) {
+    public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {
         // fields count
         if (has(processValidation.getParameterValidation().getFieldExist(),jsonValue)) {
             return ValidateData.builder()

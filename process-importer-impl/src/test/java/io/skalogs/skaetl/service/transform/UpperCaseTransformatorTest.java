@@ -23,7 +23,7 @@ public class UpperCaseTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("messageSend").asText()).isEqualTo("SKALOGS");
     }
 

@@ -24,7 +24,7 @@ public class LongFieldTransformatorTest {
         longFieldTransformator.apply(null, ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("messageSend_long").asLong()).isEqualTo(new Long(1548));
         assertThat(jsonValue.path("messageSend").asText()).isEqualTo("");
     }
@@ -40,7 +40,7 @@ public class LongFieldTransformatorTest {
         longFieldTransformator.apply(null, ParameterTransformation.builder()
                         .keyField("messageSend2")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("messageSend2_long").asText()).isEqualTo("");
     }
 

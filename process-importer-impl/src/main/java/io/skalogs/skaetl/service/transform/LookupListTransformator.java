@@ -14,7 +14,7 @@ public class LookupListTransformator extends TransformatorProcess {
         super(type);
     }
 
-    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
+    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
         String key = parameterTransformation.getKeyField();
         if (StringUtils.isNotBlank(key)) {
             if (has(key,jsonValue)) {

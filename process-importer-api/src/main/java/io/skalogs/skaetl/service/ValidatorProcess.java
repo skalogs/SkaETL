@@ -19,7 +19,7 @@ public abstract class ValidatorProcess {
 
     private final JSONUtils jsonUtils = JSONUtils.getInstance();
 
-    public abstract ValidateData process(ProcessValidation processValidation, JsonNode jsonValue, String value);
+    public abstract ValidateData process(ProcessValidation processValidation, JsonNode jsonValue);
 
     public Boolean type(TypeValidation typeValidation) {
         return type.equals(typeValidation);

@@ -26,7 +26,7 @@ public class AddGeoLocalisationTransformatorTest {
                 ParameterTransformation.builder().
                         keyField("project").
                         build(),
-                jsonValue, value);
+                jsonValue);
 
         assertThat(jsonValue.path("project_country_name").asText()).isEqualTo("France");
     }

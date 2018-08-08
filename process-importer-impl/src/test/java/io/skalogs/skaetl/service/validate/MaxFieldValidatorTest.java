@@ -26,7 +26,7 @@ public class MaxFieldValidatorTest {
         ValidateData v = maxFieldValidator.process(ProcessValidation.builder()
                 .parameterValidation(ParameterValidation.builder()
                         .maxFields(2L).build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(v.success).isFalse();
     }
 
@@ -41,7 +41,7 @@ public class MaxFieldValidatorTest {
         ValidateData v = maxFieldValidator.process(ProcessValidation.builder()
                 .parameterValidation(ParameterValidation.builder()
                         .maxFields(7L).build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(v.success).isTrue();
     }
 

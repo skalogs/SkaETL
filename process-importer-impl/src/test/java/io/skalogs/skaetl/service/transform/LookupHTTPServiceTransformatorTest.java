@@ -37,7 +37,7 @@ public class LookupHTTPServiceTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("messageSend").asText()).isEqualTo("test of gni");
         assertThat(jsonValue.get("project").asText()).isEqualTo("value of project");
         assertThat(jsonValue.get("type").asText()).isEqualTo("type");
@@ -61,7 +61,7 @@ public class LookupHTTPServiceTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("gni")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("messageSend").asText()).isEqualTo("gni");
         assertThat(jsonValue.get("project").asText()).isEqualTo("value of project");
         assertThat(jsonValue.get("type").asText()).isEqualTo("type");
@@ -84,7 +84,7 @@ public class LookupHTTPServiceTransformatorTest {
         lookupHTTPServiceTransformator.apply("10",
                 ParameterTransformation.builder()
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("messageSend").asText()).isEqualTo("test of gni");
         assertThat(jsonValue.get("project").asText()).isEqualTo("value of project");
         assertThat(jsonValue.get("type").asText()).isEqualTo("test of type");
@@ -107,7 +107,7 @@ public class LookupHTTPServiceTransformatorTest {
         lookupHTTPServiceTransformator.apply("10",
                 ParameterTransformation.builder()
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.get("messageSend").asText()).isEqualTo("gni");
         assertThat(jsonValue.get("project").asText()).isEqualTo("value of project");
         assertThat(jsonValue.get("type").asText()).isEqualTo("type");

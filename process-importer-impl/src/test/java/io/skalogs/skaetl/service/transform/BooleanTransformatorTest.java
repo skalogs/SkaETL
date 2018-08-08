@@ -26,7 +26,7 @@ public class BooleanTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
 
         assertThat(jsonValue.path("messageSend").asBoolean()).isEqualTo(true);
     }
@@ -44,7 +44,7 @@ public class BooleanTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("toto")
                         .build(),
-                jsonValue, value);
+                jsonValue);
 
         assertThat(jsonValue.path("toto").asText()).isEqualTo("");
     }
@@ -61,7 +61,7 @@ public class BooleanTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
 
         assertThat(jsonValue.path("messageSend").asBoolean()).isEqualTo(true);
     }

@@ -24,7 +24,7 @@ public class CapitalizeTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("messageSend").asText()).isEqualTo("Gni gnu");
     }
 

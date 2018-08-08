@@ -17,7 +17,7 @@ public class HashFieldTransformator extends TransformatorProcess {
         super(type);
     }
 
-    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
+    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
         JsonNode valueField = at(parameterTransformation.getProcessHashData().getField(), jsonValue);
         if(valueField != null &&
                 StringUtils.isNotBlank(valueField.asText())){

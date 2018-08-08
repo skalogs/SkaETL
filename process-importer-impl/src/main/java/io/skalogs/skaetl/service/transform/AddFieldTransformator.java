@@ -13,7 +13,7 @@ public class AddFieldTransformator extends TransformatorProcess {
         super(type);
     }
 
-    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
+    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
         put(jsonValue, parameterTransformation.getComposeField().getKey(), parameterTransformation.getComposeField().getValue());
     }
 }

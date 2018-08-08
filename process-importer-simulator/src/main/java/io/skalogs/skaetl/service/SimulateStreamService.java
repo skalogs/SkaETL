@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.domain.ProcessConsumer;
 import io.skalogs.skaetl.domain.SimulateData;
 import io.skalogs.skaetl.domain.StatusCode;
@@ -8,6 +9,7 @@ import io.skalogs.skaetl.rules.filters.GenericFilter;
 import io.skalogs.skaetl.serdes.SimulateDataDeserializer;
 import io.skalogs.skaetl.serdes.SimulateDataSerializer;
 import io.skalogs.skaetl.service.processor.LoggingProcessor;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
@@ -45,7 +47,7 @@ public class SimulateStreamService extends AbstractStreamProcess {
 
         KStream<String, SimulateData> streamParsed = streamInput.map((key, value) -> {
             String resultParsing = getGenericParser().apply(value, getProcessConsumer());
-            String resultTransformation = getGenericTransformator().apply(resultParsing, getProcessConsumer());
+            ObjectNode resultTransformation = getGenericTransformator().apply(JSONUtils.getInstance().parseObj(resultParsing), getProcessConsumer());
             ValidateData item = getGenericValidator().process(resultTransformation, getProcessConsumer());
             if (item.success) {
                 return callFilter(value, item);

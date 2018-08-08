@@ -1,8 +1,10 @@
 package io.skalogs.skaetl.service;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.rules.filters.GenericFilter;
 import io.skalogs.skaetl.rules.filters.RuleFilterExecutor;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +30,7 @@ public class SimulateTextService {
 
     public SimulateData readOutputFromText(String textInput, ProcessConsumer processConsumer) {
         String resultParsing = genericParser.apply(textInput, processConsumer);
-        String resultTransformation = genericTransformator.apply(resultParsing, processConsumer);
+        ObjectNode resultTransformation = genericTransformator.apply(JSONUtils.getInstance().parse(resultParsing), processConsumer);
         ValidateData item = genericValidator.process(resultTransformation, processConsumer);
         if (item.success) {
             return callFilter(textInput, item, processConsumer);

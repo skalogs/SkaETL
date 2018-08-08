@@ -27,7 +27,7 @@ public class RenameFieldTransformatorTest {
                         .key("project")
                         .value("@project")
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(jsonValue.path("@project").asText()).isEqualTo("projectvalue");
     }
 
@@ -44,7 +44,7 @@ public class RenameFieldTransformatorTest {
                         .key("project")
                         .value("my.project.name")
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(JSONUtils.getInstance().at(jsonValue, "my.project.name").asText()).isEqualTo("projectvalue");
     }
 
@@ -61,7 +61,7 @@ public class RenameFieldTransformatorTest {
                         .key("project2")
                         .value("@project")
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(jsonValue.get("@project")).isNull();
     }
 
@@ -78,7 +78,7 @@ public class RenameFieldTransformatorTest {
                         .key("project")
                         .value("@project")
                         .build()
-                ).build(), jsonValue, value);
+                ).build(), jsonValue);
         assertThat(jsonValue.get("@project").asText()).isEqualTo("");
     }
 

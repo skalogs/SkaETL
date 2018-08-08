@@ -13,7 +13,7 @@ public class TrimTransformator extends TransformatorProcess {
     }
 
     @Override
-    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
+    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
         if (has(parameterTransformation.getKeyField(),jsonValue)) {
             JsonNode valueField = at(parameterTransformation.getKeyField(), jsonValue);
             String capitalized = StringUtils.trimToEmpty(valueField.textValue());

@@ -25,7 +25,7 @@ public class DeleteFieldTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("project")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("project").asText()).isEqualTo("");
     }
 }

@@ -14,7 +14,7 @@ public class DoubleFieldTransformator extends TransformatorProcess {
         super(type);
     }
 
-    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue, String value) {
+    public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
         String valueToFormat = at(parameterTransformation.getKeyField(), jsonValue).asText();
         if (StringUtils.isNotBlank(valueToFormat)) {
             put(jsonValue, parameterTransformation.getKeyField() + "_double", Double.valueOf(valueToFormat));

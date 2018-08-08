@@ -25,7 +25,7 @@ public class IpFieldTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("messageSend_ip").asText()).isEqualTo("gni");
         assertThat(jsonValue.path("messageSend").asText()).isEqualTo("");
     }
@@ -42,7 +42,7 @@ public class IpFieldTransformatorTest {
                 ParameterTransformation.builder()
                         .keyField("messageSend2")
                         .build(),
-                jsonValue, value);
+                jsonValue);
         assertThat(jsonValue.path("messageSend2_gp").asText()).isEqualTo("");
     }
 
