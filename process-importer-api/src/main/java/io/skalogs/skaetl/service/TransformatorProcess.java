@@ -20,7 +20,7 @@ public abstract class TransformatorProcess {
 
     private final JSONUtils jsonUtils = JSONUtils.getInstance();
 
-    public Boolean type(TypeValidation typeValidation) {
+    public boolean type(TypeValidation typeValidation) {
         return type.equals(typeValidation);
     }
 
