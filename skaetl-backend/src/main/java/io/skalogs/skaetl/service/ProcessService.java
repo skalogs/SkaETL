@@ -38,6 +38,15 @@ public class ProcessService {
         registryService.deactivate(processConsumer);
     }
 
+    public void scaleup(String processId){
+        registryService.scaleup(findProcess(processId));
+    }
+
+    public void scaledown(String processId) {
+        registryService.scaledown(findProcess(processId));
+    }
+
+
     public ProcessConsumer initProcessConsumer() {
         String idProcess = UUID.randomUUID().toString();
         String bootstrapServers = kafkaConfiguration.getBootstrapServers();

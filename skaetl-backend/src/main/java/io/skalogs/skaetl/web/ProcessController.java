@@ -74,4 +74,16 @@ public class ProcessController {
     public void deactivate(@PathParam("idProcess") String idProcess) throws Exception {
         processService.deactivateProcess(processService.findProcess(idProcess));
     }
+
+    @ResponseStatus(OK)
+    @GetMapping("scaleup")
+    public void scaleup(@PathParam("idProcess") String idProcess) throws Exception {
+        processService.scaleup(idProcess);
+    }
+
+    @ResponseStatus(OK)
+    @GetMapping("scaledown")
+    public void scaledown(@PathParam("idProcess") String idProcess) throws Exception {
+        processService.scaledown(idProcess);
+    }
 }

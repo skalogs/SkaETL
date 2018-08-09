@@ -151,6 +151,32 @@ public class RegistryService {
         }
     }
 
+    public void scaleup(ProcessDefinition processDefinition) {
+        ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
+        ConsumerState newState = consumerState.withNbInstance(consumerState.getNbInstance() + 1);
+
+        if (consumerState.getStatusProcess() == StatusProcess.ENABLE) {
+            deactivate(processDefinition);
+            consumerState = assignConsumerToWorkers(newState);
+            triggerAction(consumerState, "activate", StatusProcess.ENABLE, StatusProcess.ERROR);
+        } else {
+            assignConsumerToWorkers(newState);
+        }
+    }
+
+    public void scaledown(ProcessDefinition processDefinition) {
+        ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
+        ConsumerState newState = consumerState.withNbInstance(consumerState.getNbInstance() - 1);
+
+        if (consumerState.getStatusProcess() == StatusProcess.ENABLE) {
+            deactivate(processDefinition);
+            consumerState = assignConsumerToWorkers(newState);
+            triggerAction(consumerState, "activate", StatusProcess.ENABLE, StatusProcess.ERROR);
+        } else {
+            assignConsumerToWorkers(newState);
+        }
+    }
+
     // Internal apis
     private RegistryWorker getWorkerAvailable(WorkerType workerType, Set<String> alreadyAssignedWorkers) throws Exception{
         Random random = new Random();
