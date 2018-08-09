@@ -2,8 +2,6 @@ package io.skalogs.skaetl.utils;
 
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.GrokData;
-import io.skalogs.skaetl.serdes.GenericDeserializer;
-import io.skalogs.skaetl.serdes.GenericSerializer;
 import io.skalogs.skaetl.serdes.GrokDataSerializer;
 import lombok.AllArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -107,7 +105,7 @@ public class KafkaUtils {
         props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10);
+        props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 100);
         props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
         return props;
     }
