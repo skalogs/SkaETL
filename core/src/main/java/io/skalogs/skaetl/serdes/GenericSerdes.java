@@ -7,7 +7,6 @@ import org.apache.kafka.common.serialization.Serdes;
 public class GenericSerdes {
 
     public static Serde<JsonNode> jsonNodeSerde() {
-        return Serdes.serdeFrom(new GenericSerializer<JsonNode>(), new GenericDeserializer(JsonNode.class));
+        return Serdes.serdeFrom(new JsonNodeSerialializer(), new JsonNodeDeserializer());
     }
-
 }

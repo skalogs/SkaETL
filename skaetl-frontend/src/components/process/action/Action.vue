@@ -15,7 +15,8 @@
          </v-flex>
          </p></p></p>
          <v-layout row class="pa-3">
-              <v-btn color="primary" v-on:click.native="create()">Add Worker</v-btn>
+              <v-btn color="primary" v-on:click.native="scaleUp()">Scale up</v-btn>
+              <v-btn color="primary" v-on:click.native="scaleDown()">Scale down</v-btn>
               <v-btn color="warning" v-on:click.native="simulate()">Simulation</v-btn>
          </v-layout>
          <p/>
@@ -123,6 +124,24 @@
           }, response => {
              this.viewError=true;
              this.msgError = "Error during call service";
+          });
+        },
+        scaleUp(){
+          this.$http.get('/process/scaleup', {params: {idProcess: this.idProcess}}).then(response => {
+            this.viewStatus = true;
+            this.msgStatus = 'Scaled up !';
+          }, response => {
+            this.viewError=true;
+            this.msgError = "Error during call service";
+          });
+        },
+        scaleDown(){
+          this.$http.get('/process/scaledown', {params: {idProcess: this.idProcess}}).then(response => {
+            this.viewStatus = true;
+            this.msgStatus = 'Scaled down !';
+          }, response => {
+            this.viewError=true;
+            this.msgError = "Error during call service";
           });
         },
         find(){
