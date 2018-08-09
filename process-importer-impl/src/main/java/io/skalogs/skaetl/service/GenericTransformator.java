@@ -11,8 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -20,7 +20,7 @@ public class GenericTransformator {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ExternalHTTPService externalHTTPService;
-    private List<TransformatorProcess> listTransformator = new ArrayList<>();
+    private final Map<TypeValidation,TransformatorProcess> transformators = new HashMap<>();
 
     public GenericTransformator(ExternalHTTPService externalHTTPService) {
         this.externalHTTPService = externalHTTPService;
@@ -28,35 +28,36 @@ public class GenericTransformator {
 
     @PostConstruct
     public void init() {
-        listTransformator.add(new AddFieldTransformator(TypeValidation.ADD_FIELD));
-        listTransformator.add(new BooleanTransformator(TypeValidation.FORMAT_BOOLEAN));
-        listTransformator.add(new DeleteFieldTransformator(TypeValidation.DELETE_FIELD));
-        listTransformator.add(new DoubleFieldTransformator(TypeValidation.FORMAT_DOUBLE));
-        listTransformator.add(new FormatDateTransformator(TypeValidation.FORMAT_DATE));
-        listTransformator.add(new GeoPointTransformator(TypeValidation.FORMAT_GEOPOINT));
-        listTransformator.add(new IpFieldTransformator(TypeValidation.FORMAT_IP));
-        listTransformator.add(new LongFieldTransformator(TypeValidation.FORMAT_LONG));
-        listTransformator.add(new RenameFieldTransformator(TypeValidation.RENAME_FIELD));
-        listTransformator.add(new LookupListTransformator(TypeValidation.LOOKUP_LIST));
-        listTransformator.add(new HashFieldTransformator(TypeValidation.HASH));
-        listTransformator.add(new CapitalizeTransformator(TypeValidation.CAPITALIZE));
-        listTransformator.add(new UncapitalizeTransformator(TypeValidation.UNCAPITALIZE));
-        listTransformator.add(new LowerCaseTransformator(TypeValidation.LOWER_CASE));
-        listTransformator.add(new UpperCaseTransformator(TypeValidation.UPPER_CASE));
-        listTransformator.add(new SwapCaseTransformator(TypeValidation.SWAP_CASE));
-        listTransformator.add(new LookupHTTPServiceTransformator(TypeValidation.LOOKUP_EXTERNAL, externalHTTPService));
-        listTransformator.add(new AddGeoLocalisationTransformator(TypeValidation.ADD_GEO_LOCALISATION));
-        listTransformator.add(new EmailFormatTransformator(TypeValidation.FORMAT_EMAIL));
-        listTransformator.add(new AddCsvLookupTransformator(TypeValidation.ADD_CSV_LOOKUP));
+        transformators.put(TypeValidation.ADD_FIELD, new AddFieldTransformator(TypeValidation.ADD_FIELD));
+        transformators.put(TypeValidation.FORMAT_BOOLEAN, new BooleanTransformator(TypeValidation.FORMAT_BOOLEAN));
+        transformators.put(TypeValidation.DELETE_FIELD, new DeleteFieldTransformator(TypeValidation.DELETE_FIELD));
+        transformators.put(TypeValidation.FORMAT_DOUBLE, new DoubleFieldTransformator(TypeValidation.FORMAT_DOUBLE));
+        transformators.put(TypeValidation.FORMAT_DATE, new FormatDateTransformator(TypeValidation.FORMAT_DATE));
+        transformators.put(TypeValidation.FORMAT_GEOPOINT, new GeoPointTransformator(TypeValidation.FORMAT_GEOPOINT));
+        transformators.put(TypeValidation.FORMAT_IP, new IpFieldTransformator(TypeValidation.FORMAT_IP));
+        transformators.put(TypeValidation.FORMAT_LONG, new LongFieldTransformator(TypeValidation.FORMAT_LONG));
+        transformators.put(TypeValidation.RENAME_FIELD, new RenameFieldTransformator(TypeValidation.RENAME_FIELD));
+        transformators.put(TypeValidation.LOOKUP_LIST, new LookupListTransformator(TypeValidation.LOOKUP_LIST));
+        transformators.put(TypeValidation.HASH, new HashFieldTransformator(TypeValidation.HASH));
+        transformators.put(TypeValidation.CAPITALIZE, new CapitalizeTransformator(TypeValidation.CAPITALIZE));
+        transformators.put(TypeValidation.UNCAPITALIZE, new UncapitalizeTransformator(TypeValidation.UNCAPITALIZE));
+        transformators.put(TypeValidation.LOWER_CASE, new LowerCaseTransformator(TypeValidation.LOWER_CASE));
+        transformators.put(TypeValidation.UPPER_CASE, new UpperCaseTransformator(TypeValidation.UPPER_CASE));
+        transformators.put(TypeValidation.SWAP_CASE, new SwapCaseTransformator(TypeValidation.SWAP_CASE));
+        transformators.put(TypeValidation.LOOKUP_EXTERNAL, new LookupHTTPServiceTransformator(TypeValidation.LOOKUP_EXTERNAL, externalHTTPService));
+        transformators.put(TypeValidation.ADD_GEO_LOCALISATION, new AddGeoLocalisationTransformator(TypeValidation.ADD_GEO_LOCALISATION));
+        transformators.put(TypeValidation.FORMAT_EMAIL, new EmailFormatTransformator(TypeValidation.FORMAT_EMAIL));
+        transformators.put(TypeValidation.ADD_CSV_LOOKUP, new AddCsvLookupTransformator(TypeValidation.ADD_CSV_LOOKUP));
     }
 
     public ObjectNode apply(JsonNode value, ProcessConsumer processConsumer) {
         ObjectNode jsonValue = (ObjectNode) value;
+
         if (jsonValue != null && processConsumer.getProcessTransformation() != null && !processConsumer.getProcessTransformation().isEmpty()) {
             for (ProcessTransformation pt : processConsumer.getProcessTransformation()) {
-                listTransformator.stream()
-                        .filter(e -> e.type(pt.getTypeTransformation()))
-                        .forEach(e -> e.apply(processConsumer.getIdProcess(), pt.getParameterTransformation(), jsonValue));
+                if (transformators.containsKey(pt.getTypeTransformation())) {
+                    transformators.get(pt.getTypeTransformation()).apply(processConsumer.getIdProcess(),pt.getParameterTransformation(),jsonValue);
+                }
             }
 
         }
