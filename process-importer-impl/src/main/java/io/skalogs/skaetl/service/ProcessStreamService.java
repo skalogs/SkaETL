@@ -17,7 +17,6 @@ import org.apache.kafka.common.serialization.Serde;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.Consumed;
 import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
@@ -82,10 +81,9 @@ public class ProcessStreamService extends AbstractStreamProcess {
         StreamsBuilder builder = new StreamsBuilder();
         KStream<String, String> streamInput = builder.stream(inputTopic, Consumed.with(Serdes.String(), Serdes.String()));
 
-        KStream<String, String> streamParsed = streamInput.map((key, value) -> {
+        KStream<String, String> streamParsed = streamInput.mapValues((value) -> {
             Metrics.counter("skaetl_nb_read_kafka_count", Lists.newArrayList(Tag.of("processConsumerName",getProcessConsumer().getName()))).increment();
-            String resultParsing = getGenericParser().apply(value, getProcessConsumer());
-            return new KeyValue<>("input", resultParsing);
+            return getGenericParser().apply(value, getProcessConsumer());
         }).filter((key, value) -> StringUtils.isNotBlank(value));
 
         final Serde<String> stringSerdes = Serdes.String();
@@ -103,11 +101,11 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KStream<String, JsonNode> streamInput = builder.stream(inputTopic, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
         String applicationId = getProcessConsumer().getIdProcess() + ProcessConstants.VALIDATE_PROCESS;
         Counter counter = Metrics.counter("skaetl_nb_transformation_validation_count", Lists.newArrayList(Tag.of("processConsumerName", getProcessConsumer().getName())));
-        KStream<String, ValidateData> streamValidation = streamInput.map((key, value) -> {
+        KStream<String, ValidateData> streamValidation = streamInput.mapValues((value) -> {
             ObjectNode resultTransformer = getGenericTransformator().apply(value, getProcessConsumer());
             ValidateData item = getGenericValidator().process(resultTransformer, getProcessConsumer());
             counter.increment();
-            return new KeyValue<>(item.type, item);
+            return item;
         }).filter((key, value) -> {
             //Validation
             if (!value.success) {
