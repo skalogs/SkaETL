@@ -67,7 +67,9 @@
                             v-model="editedItem.parameterTransformation.formatDateValue.targetField"
                             required></v-text-field>
             </v-layout>
-
+            <v-alert :value="isDateExtractor()" color="info" icon="info" outline>
+              Date format should follow <a href="https://docs.oracle.com/javase/8/docs/api/java/time/format/DateTimeFormatter.html#patterns" target="_blank">Java Date Pattern Syntax</a>.
+            </v-alert>
 
             <v-layout row wrap v-show="isLookupList()">
               <v-text-field label="Limit on field (Optional) "
