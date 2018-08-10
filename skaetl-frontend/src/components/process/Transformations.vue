@@ -57,6 +57,9 @@
               <v-text-field label="Source Format"
                             v-model="editedItem.parameterTransformation.formatDateValue.srcFormat"
                             required></v-text-field>
+            </v-layout>
+
+            <v-layout row wrap v-show="isDateExtractor()">
               <v-text-field label="Target Format"
                             v-model="editedItem.parameterTransformation.formatDateValue.targetFormat"
                             required></v-text-field>
