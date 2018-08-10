@@ -17,7 +17,7 @@
           </v-card-title>
           <v-card-text>
             <v-layout row wrap>
-              <v-select label="Type Transformation" v-model="editedItem.typeTransformation" v-bind:items="type"
+              <v-select label="Type Transformation" v-model="editedItem.typeTransformation" v-bind:items="sortedTypeTransformation"
                         max-height="600"/>
             </v-layout>
 
@@ -206,6 +206,9 @@
     computed: {
       formTitle() {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
+      },
+      sortedTypeTransformation() {
+        return this.type.sort();
       }
     },
     methods: {
