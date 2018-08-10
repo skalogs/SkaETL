@@ -174,8 +174,8 @@
         },
         editedIndex: -1,
         headers: [
-          {text: 'Type', value: 'typeTransformation'},
-          {text: 'Field', value: 'parameterTransformation.keyField'},
+          {text: 'Type', value: 'typeTransformation', sortable: false},
+          {text: 'Field', value: 'parameterTransformation.keyField' , sortable: false},
           {text: 'Actions', value: 'typeParser', sortable: false}
         ],
         defaultItem: {
