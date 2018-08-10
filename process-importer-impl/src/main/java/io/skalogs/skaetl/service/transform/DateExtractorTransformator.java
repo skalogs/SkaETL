@@ -31,7 +31,7 @@ public class DateExtractorTransformator extends TransformatorProcess {
                 String result = asDate.toInstant().atZone(ZoneId.systemDefault()).format(dateTimeFormatter);
                 put(jsonValue, parameterTransformation.getFormatDateValue().getTargetField(), result);
             } catch (ParseException e) {
-                e.printStackTrace();
+                log.error("ParseException on field {} for value {}", parameterTransformation.getFormatDateValue(), jsonValue.toString());
             }
 
         }
