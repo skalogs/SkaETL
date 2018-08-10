@@ -12,4 +12,5 @@ public class FormatDateValue {
     public String keyField;
     public String srcFormat;
     public String targetFormat;
+    public String targetField;
 }

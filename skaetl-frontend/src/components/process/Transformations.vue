@@ -50,6 +50,20 @@
                             required></v-text-field>
             </v-layout>
 
+            <v-layout row wrap v-show="isDateExtractor()">
+              <v-text-field label="Key Field"
+                            v-model="editedItem.parameterTransformation.formatDateValue.keyField"
+                            required></v-text-field>
+              <v-text-field label="Source Format"
+                            v-model="editedItem.parameterTransformation.formatDateValue.srcFormat"
+                            required></v-text-field>
+              <v-text-field label="Target Format"
+                            v-model="editedItem.parameterTransformation.formatDateValue.targetFormat"
+                            required></v-text-field>
+              <v-text-field label="Target Format"
+                            v-model="editedItem.parameterTransformation.formatDateValue.targetField"
+                            required></v-text-field>
+            </v-layout>
 
 
             <v-layout row wrap v-show="isLookupList()">
@@ -150,7 +164,7 @@
         editedItem: {
           "parameterTransformation": {
             "composeField": {"key": "", "value": ""},
-            "formatDateValue": {"keyField": "", "srcFormat": "", "targetFormat": ""},
+            "formatDateValue": {"keyField": "", "srcFormat": "", "targetFormat": "", "targetField": ""},
             "keyField": "",
             "mapLookup": {},
             "externalHTTPData": {"url": "http://url:port", "refresh": "10", "httpMethod": "GET", "body": ""},
@@ -167,7 +181,7 @@
         defaultItem: {
           "parameterTransformation": {
             "composeField": {"key": "", "value": ""},
-            "formatDateValue": {"keyField": "", "srcFormat": "", "targetFormat": ""},
+            "formatDateValue": {"keyField": "", "srcFormat": "", "targetFormat": "", "targetField": ""},
             "keyField": "",
             "mapLookup": {},
             "externalHTTPData": {"url": "http://url:port", "refresh": "10", "httpMethod": "GET", "body": ""},
@@ -179,7 +193,8 @@
         typeHash: ["MURMUR3", "SHA256"],
         type: ["ADD_FIELD", "DELETE_FIELD", "RENAME_FIELD", "FORMAT_DATE", "FORMAT_BOOLEAN", "FORMAT_GEOPOINT",
           "FORMAT_DOUBLE", "FORMAT_LONG", "FORMAT_IP", "LOOKUP_LIST", "LOOKUP_EXTERNAL", "HASH", "ADD_GEO_LOCALISATION",
-          "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL", "ADD_CSV_LOOKUP"],
+          "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL", "ADD_CSV_LOOKUP",
+          "DATE_EXTRACTOR"],
         replaceValue: '',
         replaceNewValue: '',
         listLookup: []
@@ -199,6 +214,9 @@
       },
       isDateField() {
         return this.editedItem.typeTransformation == "FORMAT_DATE";
+      },
+      isDateExtractor() {
+        return this.editedItem.typeTransformation == "DATE_EXTRACTOR";
       },
       isLookupList() {
         return this.editedItem.typeTransformation == "LOOKUP_LIST";

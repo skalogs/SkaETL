@@ -27,5 +27,6 @@ public enum TypeValidation {
     SWAP_CASE,
     TRIM,
     FORMAT_EMAIL,
-    ADD_CSV_LOOKUP;
+    ADD_CSV_LOOKUP,
+    DATE_EXTRACTOR
 }
