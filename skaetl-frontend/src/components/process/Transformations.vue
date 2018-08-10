@@ -60,11 +60,12 @@
             </v-layout>
 
             <v-layout row wrap v-show="isDateExtractor()">
+              <v-text-field label="Target Field"
+                            v-model="editedItem.parameterTransformation.formatDateValue.targetField"
+                            required></v-text-field>
+
               <v-text-field label="Target Format"
                             v-model="editedItem.parameterTransformation.formatDateValue.targetFormat"
-                            required></v-text-field>
-              <v-text-field label="Target Format"
-                            v-model="editedItem.parameterTransformation.formatDateValue.targetField"
                             required></v-text-field>
             </v-layout>
             <v-alert :value="isDateExtractor()" color="info" icon="info" outline>
