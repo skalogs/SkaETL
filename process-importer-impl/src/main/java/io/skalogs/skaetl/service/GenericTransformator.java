@@ -48,6 +48,7 @@ public class GenericTransformator {
         transformators.put(TypeValidation.ADD_GEO_LOCALISATION, new AddGeoLocalisationTransformator(TypeValidation.ADD_GEO_LOCALISATION));
         transformators.put(TypeValidation.FORMAT_EMAIL, new EmailFormatTransformator(TypeValidation.FORMAT_EMAIL));
         transformators.put(TypeValidation.ADD_CSV_LOOKUP, new AddCsvLookupTransformator(TypeValidation.ADD_CSV_LOOKUP));
+        transformators.put(TypeValidation.DATE_EXTRACTOR, new AddCsvLookupTransformator(TypeValidation.DATE_EXTRACTOR));
     }
 
     public ObjectNode apply(JsonNode value, ProcessConsumer processConsumer) {
