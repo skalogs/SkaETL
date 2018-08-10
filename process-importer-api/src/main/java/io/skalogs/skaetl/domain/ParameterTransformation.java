@@ -27,5 +27,7 @@ public class ParameterTransformation {
     @Builder.Default
     private CsvLookupData csvLookupData = new CsvLookupData();
 
+    private boolean formatGeoJson;
+
 }
 

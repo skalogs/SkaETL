@@ -118,6 +118,13 @@
               <v-text-field label="body with POST"
                             v-model="editedItem.parameterTransformation.externalHTTPData.body"></v-text-field>
             </v-layout>
+            <v-layout row wrap v-show="isFormatGeoPoint()">
+              <v-checkbox label="Convert in GeoJSON format" hint="Not needed if your sending as text, tick this if your sending geopoint as an array with [latitude, longitude]."
+                          persistent-hint
+                          v-model="editedItem.parameterTransformation.formatGeoJson"></v-checkbox>
+            </v-layout>
+
+
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -239,6 +246,9 @@
       isKeyField() {
         var value = this.editedItem.typeTransformation;
         return value == "DELETE_FIELD" || value == "FORMAT_BOOLEAN" || value == "FORMAT_GEOPOINT" || value == "FORMAT_DOUBLE" || value == "FORMAT_LONG" || value == "FORMAT_IP" || value == "ADD_GEO_LOCALISATION" || value == "CAPITALIZE" || value == "UNCAPITALIZE" || value == "LOWER_CASE" || value == "UPPER_CASE" || value == "SWAP_CASE" || value == "TRIM" || value == "FORMAT_EMAIL";
+      },
+      isFormatGeoPoint(){
+        return this.editedItem.typeTransformation == "FORMAT_GEOPOINT";
       },
       formatField(item) {
         if (item.typeTransformation == "ADD_FIELD" || item.typeTransformation == "RENAME_FIELD") {
