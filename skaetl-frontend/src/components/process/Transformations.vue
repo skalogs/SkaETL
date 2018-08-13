@@ -256,7 +256,9 @@
         } else if (item.typeTransformation == "HASH") {
           return item.parameterTransformation.processHashData.field;
         } else if (item.typeTransformation == "ADD_CSV_LOOKUP") {
-                  return item.parameterTransformation.csvLookupData.field;
+          return item.parameterTransformation.csvLookupData.field;
+        } else if (item.typeTransformation == "DATE_EXTRACTOR") {
+          return item.parameterTransformation.formatDateValue.targetField;
         } else {
           return item.parameterTransformation.keyField;
         }
