@@ -7,7 +7,7 @@ import VueResource from 'vue-resource';
 import {store} from './service/Store';
 import TreeView from 'vue-json-tree-view';
 import router from './service/router/Router';
-import favicon from './favicons';
+import 'vuetify/dist/vuetify.min.css';
 
 Vue.use(TreeView);
 Vue.use(Vuex);
