@@ -16,6 +16,7 @@ public enum TypeValidation {
     FORMAT_LONG,
     FORMAT_IP,
     FIELD_EXIST,
+    TIMESTAMP_VALIDATION,
     LOOKUP_LIST,
     LOOKUP_EXTERNAL,
     HASH,

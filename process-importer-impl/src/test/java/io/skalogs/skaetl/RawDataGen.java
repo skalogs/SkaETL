@@ -1,6 +1,5 @@
 package io.skalogs.skaetl;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.ToString;
 
@@ -8,7 +7,6 @@ import lombok.ToString;
 @ToString
 public class RawDataGen {
     public String type;
-    @JsonProperty("@timestamp")
     public String timestamp;
     public String messageSend;
     public String project;

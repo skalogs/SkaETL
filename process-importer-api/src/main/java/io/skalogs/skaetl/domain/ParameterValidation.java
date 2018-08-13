@@ -2,6 +2,7 @@ package io.skalogs.skaetl.domain;
 
 import lombok.*;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,4 +20,10 @@ public class ParameterValidation {
     private Long maxFields;
     private Long maxMessageSize;
     private String fieldExist;
+    private boolean validateInThePast;
+    private int unitInThePast;
+    private ChronoUnit chronoUnitInThePast;
+    private boolean validateInFuture;
+    private int unitInFuture;
+    private ChronoUnit chronoUnitInFuture;
 }

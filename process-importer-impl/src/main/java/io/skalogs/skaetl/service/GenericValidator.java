@@ -37,6 +37,7 @@ public class GenericValidator {
         listValidator.add(new MaxFieldValidator(TypeValidation.MAX_FIELD));
         listValidator.add(new MaxMessageSizeValidator(TypeValidation.MAX_MESSAGE_SIZE));
         listValidator.add(new FieldExistValidator(TypeValidation.FIELD_EXIST));
+        listValidator.add(new TimestampValidator(TypeValidation.TIMESTAMP_VALIDATION));
     }
 
        public ValidateData mandatoryImporter(ObjectNode jsonValue) {

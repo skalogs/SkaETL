@@ -32,7 +32,9 @@
               </v-layout>
               <v-layout>
                 <v-flex v-for="itemBlack in editedItem.parameterValidation.blackList">
-                  <v-btn color="purple lighten-2" smallclose @input="removeBlackList(item)">{{itemBlack.key}}-{{itemBlack.value}}</v-btn>
+                  <v-btn color="purple lighten-2" smallclose @input="removeBlackList(item)">
+                    {{itemBlack.key}}-{{itemBlack.value}}
+                  </v-btn>
                 </v-flex>
               </v-layout>
             </v-flex>
@@ -51,6 +53,41 @@
               <v-text-field label="Field exist" v-model="editedItem.parameterValidation.fieldExist"
                             required></v-text-field>
             </v-layout>
+
+            <v-layout row wrap v-show="isTimestampValidation()">
+              <v-layout row wrap>
+                <v-checkbox label="Validate in past"
+                            persistent-hint
+                            v-model="editedItem.parameterValidation.validateInThePast"></v-checkbox>
+              </v-layout>
+              <v-layout row wrap>
+                <v-text-field label="Unit in the past" v-model="editedItem.parameterValidation.unitInThePast"
+                              required
+                              :disabled="!editedItem.parameterValidation.validateInThePast"
+                ></v-text-field>
+                <v-select label="Chrono unit in the past"
+                          v-model="editedItem.parameterValidation.chronoUnitInThePast"
+                          v-bind:items="chronoUnits"
+                          :disabled="!editedItem.parameterValidation.validateInThePast"/>
+              </v-layout>
+            </v-layout>
+            <v-layout row wrap v-show="isTimestampValidation()">
+              <v-layout row wrap>
+                <v-checkbox label="Validate in future"
+                            persistent-hint
+                            v-model="editedItem.parameterValidation.validateInFuture"></v-checkbox>
+              </v-layout>
+              <v-layout row wrap>
+                <v-text-field label="Unit in future" v-model="editedItem.parameterValidation.unitInFuture"
+                              required
+                              :disabled="!editedItem.parameterValidation.validateInFuture"></v-text-field>
+                <v-select label="Chrono unit in future"
+                          v-model="editedItem.parameterValidation.chronoUnitInFuture"
+                          v-bind:items="chronoUnits"
+                          :disabled="!editedItem.parameterValidation.validateInFuture"/>
+              </v-layout>
+            </v-layout>
+
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -106,7 +143,13 @@
             "blackList": [],
             "maxFields": "",
             "maxMessageSize": "",
-            "fieldExist": ""
+            "fieldExist": "",
+            "validateInThePast": false,
+            "unitInThePast": 1,
+            "chronoUnitInThePast": "DAYS",
+            "validateInFuture": false,
+            "unitInFuture": 1,
+            "chronoUnitInFuture": "DAYS"
           }
         },
         defaultItem: {
@@ -115,7 +158,13 @@
             "blackList": [],
             "maxFields": "",
             "maxMessageSize": "",
-            "fieldExist": ""
+            "fieldExist": "",
+            "validateInThePast": false,
+            "unitInThePast": 1,
+            "chronoUnitInThePast": "DAYS",
+            "validateInFuture": false,
+            "unitInFuture": 1,
+            "chronoUnitInFuture": "DAYS"
           }
         },
         editedIndex: -1,
@@ -125,7 +174,8 @@
         ],
         keyBlackList: '',
         valueBlackList: '',
-        type: ["MANDATORY_FIELD", "BLACK_LIST_FIELD", "MAX_FIELD", "MAX_MESSAGE_SIZE", "FIELD_EXIST"]
+        type: ["MANDATORY_FIELD", "BLACK_LIST_FIELD", "MAX_FIELD", "MAX_MESSAGE_SIZE", "FIELD_EXIST", "TIMESTAMP_VALIDATION"],
+        chronoUnits: ["MILLIS", "SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", "MONTHS", "YEARS"]
       }
     },
     computed: {
@@ -149,17 +199,20 @@
       isFieldExist() {
         return this.editedItem.typeValidation == "FIELD_EXIST";
       },
-      close () {
+      isTimestampValidation() {
+        return this.editedItem.typeValidation == "TIMESTAMP_VALIDATION";
+      },
+      close() {
         this.dialog = false;
         this.editedItem = _.cloneDeep(this.defaultItem);
         this.editedIndex = -1;
       },
-      editItem (item) {
+      editItem(item) {
         this.editedIndex = this.processValidations.indexOf(item);
         this.editedItem = _.cloneDeep(item);
         this.dialog = true;
       },
-      deleteItem (item) {
+      deleteItem(item) {
         var index = this.processValidations.indexOf(item);
         confirm('Are you sure you want to delete this item?') && this.processValidations.splice(index, 1);
       },
@@ -178,7 +231,7 @@
         this.valueBlackList = '';
       },
       removeBlackList(item) {
-        this.editedItem.parameterValidation.blackList=this.editedItem.parameterValidation.blackList.filter(e => e !== item);
+        this.editedItem.parameterValidation.blackList = this.editedItem.parameterValidation.blackList.filter(e => e !== item);
         this.keyBlackList = '';
         this.valueBlackList = '';
       }
