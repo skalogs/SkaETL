@@ -8,7 +8,6 @@ import io.skalogs.skaetl.domain.ProcessConsumer;
 import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.filters.GenericFilter;
 import io.skalogs.skaetl.rules.filters.RuleFilterExecutor;
-import io.skalogs.skaetl.service.processor.JsonNodeToElasticSearchProcessor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
@@ -76,7 +75,7 @@ public class ImporterGeneric extends AbstractGenericImporter {
                 processConsumer,
                 genericFilters,
                 esErrorRetryWriter,
-                applicationContext.getBean(JsonNodeToElasticSearchProcessor.class),
+                applicationContext,
                 emailService,
                 snmpService
         );

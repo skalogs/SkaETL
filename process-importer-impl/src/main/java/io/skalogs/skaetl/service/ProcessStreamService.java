@@ -20,21 +20,22 @@ import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
+import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 
 @Slf4j
 public class ProcessStreamService extends AbstractStreamProcess {
     private final ESErrorRetryWriter esErrorRetryWriter;
-    private final JsonNodeToElasticSearchProcessor elasticSearchProcessor;
+    private final ApplicationContext applicationContext;
     private final List<GenericFilter> genericFilters;
     private final EmailService emailService;
     private final SnmpService snmpService;
 
-    public ProcessStreamService(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, ProcessConsumer processConsumer, List<GenericFilter> genericFilters, ESErrorRetryWriter esErrorRetryWriter, JsonNodeToElasticSearchProcessor elasticSearchProcessor, EmailService emailService, SnmpService snmpService) {
+    public ProcessStreamService(GenericValidator genericValidator, GenericTransformator transformValidator, GenericParser genericParser, GenericFilterService genericFilterService, ProcessConsumer processConsumer, List<GenericFilter> genericFilters, ESErrorRetryWriter esErrorRetryWriter, ApplicationContext applicationContext, EmailService emailService, SnmpService snmpService) {
         super(genericValidator, transformValidator, genericParser, genericFilterService, processConsumer);
         this.esErrorRetryWriter = esErrorRetryWriter;
-        this.elasticSearchProcessor = elasticSearchProcessor;
+        this.applicationContext = applicationContext;
         this.genericFilters = genericFilters;
         this.emailService = emailService;
         this.snmpService = snmpService;
@@ -49,12 +50,12 @@ public class ProcessStreamService extends AbstractStreamProcess {
                 .forEach(processOutput -> treatOutput(processOutput));
     }
 
-    private void treatOutput(ProcessOutput processOutput){
-        log.info("create Stream Process for output {} / {}",processOutput.getTypeOutput(),processOutput);
+    private void treatOutput(ProcessOutput processOutput) {
+        log.info("create Stream Process for output {} / {}", processOutput.getTypeOutput(), processOutput);
         switch (processOutput.getTypeOutput()) {
             case ELASTICSEARCH:
                 log.info("create Stream Process for treat ES");
-                createStreamEs(getProcessConsumer().getIdProcess() + ProcessConstants.TOPIC_TREAT_PROCESS);
+                createStreamEs(getProcessConsumer().getIdProcess() + ProcessConstants.TOPIC_TREAT_PROCESS, processOutput.getParameterOutput());
                 break;
             case KAFKA:
                 createStreamKafka(getProcessConsumer().getIdProcess() + ProcessConstants.TOPIC_TREAT_PROCESS, processOutput.getParameterOutput());
@@ -82,7 +83,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KStream<String, String> streamInput = builder.stream(inputTopic, Consumed.with(Serdes.String(), Serdes.String()));
 
         KStream<String, String> streamParsed = streamInput.mapValues((value) -> {
-            Metrics.counter("skaetl_nb_read_kafka_count", Lists.newArrayList(Tag.of("processConsumerName",getProcessConsumer().getName()))).increment();
+            Metrics.counter("skaetl_nb_read_kafka_count", Lists.newArrayList(Tag.of("processConsumerName", getProcessConsumer().getName()))).increment();
             return getGenericParser().apply(value, getProcessConsumer());
         }).filter((key, value) -> StringUtils.isNotBlank(value));
 
@@ -128,23 +129,23 @@ public class ProcessStreamService extends AbstractStreamProcess {
 
     private Boolean processFilter(ValidateData item) {
         for (GenericFilter genericFilter : genericFilters) {
-           FilterResult filterResult = genericFilter.filter(item.jsonValue);
-           if(filterResult != null && !filterResult.getFilter()){
-                if(filterResult.getProcessFilter().getActiveFailForward()){
-                    getGenericFilterService().treatParseResult(filterResult.getProcessFilter(),item.jsonValue);
+            FilterResult filterResult = genericFilter.filter(item.jsonValue);
+            if (filterResult != null && !filterResult.getFilter()) {
+                if (filterResult.getProcessFilter().getActiveFailForward()) {
+                    getGenericFilterService().treatParseResult(filterResult.getProcessFilter(), item.jsonValue);
                 }
-               return false;
-           }
+                return false;
+            }
         }
         return true;
     }
 
-    public void createStreamEs(String inputTopic) {
+    public void createStreamEs(String inputTopic, ParameterOutput parameterOutput) {
 
         StreamsBuilder builder = new StreamsBuilder();
 
         KStream<String, JsonNode> streamToES = builder.stream(inputTopic, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
-        streamToES.process(() -> elasticSearchProcessor);
+        streamToES.process(() -> applicationContext.getBean(JsonNodeToElasticSearchProcessor.class, parameterOutput.getElasticsearchRetentionLevel()));
 
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.ES_PROCESS, getBootstrapServer()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));

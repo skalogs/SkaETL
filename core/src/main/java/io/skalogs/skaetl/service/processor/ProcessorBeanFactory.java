@@ -3,6 +3,7 @@ package io.skalogs.skaetl.service.processor;
 import io.skalogs.skaetl.config.ESBufferConfiguration;
 import io.skalogs.skaetl.config.ESConfiguration;
 import io.skalogs.skaetl.domain.ESBuffer;
+import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
 import lombok.AllArgsConstructor;
 import org.elasticsearch.client.RestHighLevelClient;
@@ -28,9 +29,9 @@ public class ProcessorBeanFactory {
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public JsonNodeToElasticSearchProcessor jsonNodeToElasticSearchProcessor() {
+    public JsonNodeToElasticSearchProcessor jsonNodeToElasticSearchProcessor(RetentionLevel retentionLevel) {
         ESBuffer esBuffer = new ESBuffer(client, esBufferConfiguration, esConfiguration);
-        return new JsonNodeToElasticSearchProcessor(esBuffer, esErrorRetryWriter);
+        return new JsonNodeToElasticSearchProcessor(esBuffer, esErrorRetryWriter, retentionLevel);
     }
 
     @Bean

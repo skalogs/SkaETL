@@ -12,18 +12,20 @@ import java.text.ParseException;
 @Slf4j
 public class JsonNodeToElasticSearchProcessor extends AbstractElasticsearchProcessor<String, JsonNode> {
     private final ISO8601DateFormat df = new ISO8601DateFormat();
+    private final RetentionLevel retentionLevel;
 
-    public JsonNodeToElasticSearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter) {
+    public JsonNodeToElasticSearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter, RetentionLevel retentionLevel) {
         super(esBuffer, esErrorRetryWriter);
+        this.retentionLevel = retentionLevel;
     }
 
     @Override
     public void process(String key, JsonNode jsonNode) {
-        RetentionLevel retentionLevel = jsonNode.has("retention") ? RetentionLevel.valueOf(jsonNode.path("retention").asText()) : RetentionLevel.week;
+        RetentionLevel retentionLvl = jsonNode.has("retention") ? RetentionLevel.valueOf(jsonNode.path("retention").asText()) : retentionLevel;
         String valueAsString = jsonNode.toString();
         String timestamp = jsonNode.path("timestamp").asText();
         try {
-            processToElasticsearch(df.parse(timestamp), jsonNode.path("project").asText(), jsonNode.path("type").asText(), retentionLevel, valueAsString);
+            processToElasticsearch(df.parse(timestamp), jsonNode.path("project").asText(), jsonNode.path("type").asText(), retentionLvl, valueAsString);
         } catch (ParseException e) {
             log.error("Couldn't extract timestamp " + jsonNode.toString(), e);
         }
