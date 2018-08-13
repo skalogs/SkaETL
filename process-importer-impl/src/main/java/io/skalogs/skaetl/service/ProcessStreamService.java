@@ -94,7 +94,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.INPUT_PROCESS, getBootstrapServer()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         streams.start();
-        addStreams(getProcessConsumer().getIdProcess() + ProcessConstants.INPUT_PROCESS, streams);
+        addStreams(streams);
     }
 
     private void createStreamValidAndTransformAndFilter(String inputTopic, String outputTopic) {
@@ -124,7 +124,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(applicationId, getBootstrapServer()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         streams.start();
-        addStreams(applicationId, streams);
+        addStreams(streams);
     }
 
     private Boolean processFilter(ValidateData item) {
@@ -150,7 +150,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.ES_PROCESS, getBootstrapServer()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         streams.start();
-        addStreams(getProcessConsumer().getIdProcess() + ProcessConstants.ES_PROCESS, streams);
+        addStreams(streams);
     }
 
     public void createStreamSystemOut(String inputTopic) {
@@ -162,7 +162,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.SYSOUT_PROCESS, getBootstrapServer()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         streams.start();
-        addStreams(getProcessConsumer().getIdProcess() + ProcessConstants.SYSOUT_PROCESS, streams);
+        addStreams(streams);
     }
 
     public void createStreamKafka(String inputTopic, ParameterOutput parameterOutput) {
@@ -177,7 +177,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.KAFKA_PROCESS, getBootstrapServer()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         streams.start();
-        addStreams(getProcessConsumer().getIdProcess() + ProcessConstants.KAFKA_PROCESS, streams);
+        addStreams(streams);
     }
 
     public void createStreamEmail(String inputTopic, ParameterOutput parameterOutput) {
@@ -195,7 +195,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
             KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.EMAIL_PROCESS, getBootstrapServer()));
             Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
             streams.start();
-            addStreams(getProcessConsumer().getIdProcess() + ProcessConstants.SLACK_PROCESS, streams);
+            addStreams(streams);
         } else {
             log.error("destinationEmail is null and it's not normal");
         }
@@ -216,7 +216,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
             KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.SLACK_PROCESS, getBootstrapServer()));
             Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
             streams.start();
-            addStreams(getProcessConsumer().getIdProcess() + ProcessConstants.SLACK_PROCESS, streams);
+            addStreams(streams);
         } else {
             log.error("webHookURL is null and it's not normal");
         }
@@ -230,6 +230,6 @@ public class ProcessStreamService extends AbstractStreamProcess {
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.SNMP_PROCESS, getBootstrapServer()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
         streams.start();
-        addStreams(getProcessConsumer().getIdProcess() + ProcessConstants.SNMP_PROCESS, streams);
+        addStreams(streams);
     }
 }

@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.streams.KafkaStreams;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -21,16 +22,16 @@ public abstract class AbstractStreamProcess implements Runnable {
     private final GenericFilterService genericFilterService;
     private final ProcessConsumer processConsumer;
     private final AtomicBoolean closed = new AtomicBoolean(false);
-    private final HashMap<String, KafkaStreams> mapStreams = new HashMap<>();
+    private final List<KafkaStreams> streams = new ArrayList<>();
 
     public abstract void createStreamProcess();
 
-    public void addStreams(String key, KafkaStreams streams) {
-        mapStreams.put(key, streams);
+    public void addStreams(KafkaStreams streams) {
+        this.streams.add(streams);
     }
 
     public void shutdownAllStreams() {
-        mapStreams.values().stream()
+        streams.stream()
                 .forEach(e -> e.close());
     }
 

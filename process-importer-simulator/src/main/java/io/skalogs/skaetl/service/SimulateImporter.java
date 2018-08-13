@@ -46,7 +46,7 @@ public class SimulateImporter extends AbstractGenericImporter {
                 getGenericFilterService(),
                 processConsumer,
                 genericFilters);
-        getListConsumer().add(simulateStreamService);
+        getRunningConsumers().put(processConsumer, simulateStreamService);
         getExecutor().submit(simulateStreamService);
     }
 

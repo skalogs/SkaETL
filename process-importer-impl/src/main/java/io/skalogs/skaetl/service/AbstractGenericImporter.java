@@ -10,8 +10,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,7 +26,7 @@ public abstract class AbstractGenericImporter {
 
     private static final int NUM_CONSUMERS = 10;
     private final ExecutorService executor = Executors.newFixedThreadPool(NUM_CONSUMERS);
-    private final List<AbstractStreamProcess> listConsumer = new ArrayList<>();
+    private final Map<ProcessConsumer,AbstractStreamProcess> runningConsumers = new HashMap<>();
     private final GenericValidator genericValidator;
     private final GenericTransformator genericTransformator;
     private final GenericParser genericParser;
@@ -59,15 +60,16 @@ public abstract class AbstractGenericImporter {
 
     public void disableAll() {
         //Revoke Cache
-        getListConsumer().stream()
-                .forEach(processStream -> externalHTTPService.revokeCache(processStream.getProcessConsumer()));
+        getRunningConsumers().keySet()
+                .stream()
+                .forEach(processConsumer -> externalHTTPService.revokeCache(processConsumer));
 
         // Shutdown all kafkastreams
-        getListConsumer().stream()
+        getRunningConsumers().values()
                 .forEach(processStream -> processStream.shutdownAllStreams());
 
         // Remove the process Consumer
-        getListConsumer().clear();
+        getRunningConsumers().clear();
 
         // Update the registry
         sendToRegistry("refresh");
@@ -77,23 +79,24 @@ public abstract class AbstractGenericImporter {
         externalHTTPService.revokeCache(processConsumer);
 
         // Shutdown all kafkastreams
-        getListConsumer().stream()
-                .filter(processStream -> processStream.getProcessConsumer().getIdProcess().equals(processConsumer.getIdProcess()))
-                .forEach(processStream -> processStream.shutdownAllStreams());
+        getRunningConsumers().get(processConsumer)
+                .shutdownAllStreams();
 
         // Remove the process Consumer
-        getListConsumer().removeIf(processStream -> processStream.getProcessConsumer().getIdProcess().equals(processConsumer.getIdProcess()));
+        getRunningConsumers().remove(processConsumer);
 
         // Update the registry
         sendToRegistry("refresh");
     }
 
     public List<StatusConsumer> statusExecutor() {
-        return listConsumer.stream()
-                .map(e -> StatusConsumer.builder()
+        return runningConsumers
+                .keySet()
+                .stream()
+                .map(processConsumer -> StatusConsumer.builder()
                         .statusProcess(StatusProcess.ENABLE)
-                        .creation(e.getProcessConsumer().getTimestamp())
-                        .idProcessConsumer(e.getProcessConsumer().getIdProcess())
+                        .creation(processConsumer.getTimestamp())
+                        .idProcessConsumer(processConsumer.getIdProcess())
                         .build())
                 .collect(toList());
     }

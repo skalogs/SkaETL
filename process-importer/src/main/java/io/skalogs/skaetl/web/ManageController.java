@@ -19,8 +19,8 @@ public class ManageController {
 
     @ResponseStatus(CREATED)
     @PostMapping("/activate")
-    public void createProcessGeneric(@RequestBody ProcessConsumer processConsumer) {
-        importer.createProcessGeneric(processConsumer);
+    public void activate(@RequestBody ProcessConsumer processConsumer) {
+        importer.activate(processConsumer);
     }
 
     @ResponseStatus(CREATED)

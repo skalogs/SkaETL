@@ -46,8 +46,11 @@ public class ImporterGeneric extends AbstractGenericImporter {
         this.snmpService = snmpService;
     }
 
-    public void createProcessGeneric(ProcessConsumer processConsumer) {
-
+    public void activate(ProcessConsumer processConsumer) {
+        if (getRunningConsumers().containsKey(processConsumer)) {
+            log.info("Stopping old version of {} ProcessConsumer ", processConsumer.getName());
+            disable(processConsumer);
+        }
         processConsumer.setTimestamp(new Date());
         log.info("Create topic for importer");
         kafkaAdminService.buildTopic(processConsumer.getProcessInput().getTopicInput(),
@@ -62,7 +65,7 @@ public class ImporterGeneric extends AbstractGenericImporter {
         processConsumer.getProcessFilter().stream()
                 .forEach(processFilter -> kafkaAdminService.buildTopic(processFilter.getFailForwardTopic()));
         getExternalHTTPService().buildCache(processConsumer);
-        log.info("Create process importer {}", processConsumer.getName());
+        log.info("Creating process importer {}", processConsumer.getName());
         List<GenericFilter> genericFilters = new ArrayList<>();
         for (ProcessFilter processFilter : processConsumer.getProcessFilter()) {
             genericFilters.add(ruleFilterExecutor.instanciate(processFilter.getName(), processFilter.getCriteria(), processFilter));
@@ -79,7 +82,7 @@ public class ImporterGeneric extends AbstractGenericImporter {
                 emailService,
                 snmpService
         );
-        getListConsumer().add(processStreamService);
+        getRunningConsumers().put(processConsumer, processStreamService);
         getExecutor().submit(processStreamService);
         sendToRegistry("refresh");
     }

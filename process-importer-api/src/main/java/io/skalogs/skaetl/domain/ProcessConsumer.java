@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @ToString
 @Wither
+@EqualsAndHashCode(of = "idProcess")
 public class ProcessConsumer extends ProcessDefinition {
     private String idProcess;
     private String name;
