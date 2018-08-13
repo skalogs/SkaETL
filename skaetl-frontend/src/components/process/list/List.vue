@@ -239,6 +239,8 @@
         formatTransformation(transformationItem) {
             if(transformationItem.typeTransformation == "ADD_FIELD" || transformationItem.typeTransformation == "RENAME_FIELD" ){
               return transformationItem.typeTransformation + " on " + transformationItem.parameterTransformation.composeField.key;
+            } else if (transformationItem.typeTransformation == "DATE_EXTRACTOR") {
+              return transformationItem.typeTransformation + " into " + transformationItem.parameterTransformation.formatDateValue.targetField;
             }else{
                return transformationItem.typeTransformation + " on " + transformationItem.parameterTransformation.keyField;
             }
