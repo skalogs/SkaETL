@@ -1,7 +1,6 @@
 package io.skalogs.skaetl.rules.metrics.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import io.skalogs.skaetl.domain.ESBuffer;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.rules.metrics.domain.Keys;
@@ -14,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MetricsElasticsearchProcessor extends AbstractElasticsearchProcessor<Keys, MetricResult> {
 
-    private final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
     private final RetentionLevel retentionLevel;
 
     public MetricsElasticsearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter, RetentionLevel retention) {
