@@ -15,9 +15,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static io.skalogs.skaetl.service.UtilsValidateData.createValidateData;
 import static java.util.stream.Collectors.toList;
@@ -28,34 +26,34 @@ public class GenericValidator {
 
     private final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private List<ValidatorProcess> listValidator = new ArrayList<>();
+    private Map<TypeValidation, ValidatorProcess> validators = new HashMap<>();
 
     @PostConstruct
     public void init() {
-        listValidator.add(new BlackListValidator(TypeValidation.BLACK_LIST_FIELD));
-        listValidator.add(new MandatoryFieldValidator(TypeValidation.MANDATORY_FIELD));
-        listValidator.add(new MaxFieldValidator(TypeValidation.MAX_FIELD));
-        listValidator.add(new MaxMessageSizeValidator(TypeValidation.MAX_MESSAGE_SIZE));
-        listValidator.add(new FieldExistValidator(TypeValidation.FIELD_EXIST));
-        listValidator.add(new TimestampValidator(TypeValidation.TIMESTAMP_VALIDATION));
+        validators.put(TypeValidation.BLACK_LIST_FIELD, new BlackListValidator(TypeValidation.BLACK_LIST_FIELD));
+        validators.put(TypeValidation.MANDATORY_FIELD, new MandatoryFieldValidator(TypeValidation.MANDATORY_FIELD));
+        validators.put(TypeValidation.MAX_FIELD, new MaxFieldValidator(TypeValidation.MAX_FIELD));
+        validators.put(TypeValidation.MAX_MESSAGE_SIZE, new MaxMessageSizeValidator(TypeValidation.MAX_MESSAGE_SIZE));
+        validators.put(TypeValidation.FIELD_EXIST, new FieldExistValidator(TypeValidation.FIELD_EXIST));
+        validators.put(TypeValidation.TIMESTAMP_VALIDATION, new TimestampValidator(TypeValidation.TIMESTAMP_VALIDATION));
     }
 
-       public ValidateData mandatoryImporter(ObjectNode jsonValue) {
+    public ValidateData mandatoryImporter(ObjectNode jsonValue) {
         //JSON
         if (jsonValue == null) {
-            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","jsonFormat"))).increment();
+            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type", "jsonFormat"))).increment();
             return createValidateData(false, StatusCode.invalid_json, TypeValidation.FORMAT_JSON, jsonValue);
         }
         //PROJECT
         String project = jsonValue.path("project").asText();
         if (StringUtils.isBlank(project)) {
-            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","project"))).increment();
+            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type", "project"))).increment();
             return createValidateData(false, StatusCode.missing_mandatory_field_project, TypeValidation.MANDATORY_FIELD, jsonValue, "missing project");
         }
         //TYPE
         String type = jsonValue.path("type").asText();
         if (StringUtils.isBlank(type)) {
-            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type","type"))).increment();
+            Metrics.counter("skaetl_nb_mandatory_importer", Lists.newArrayList(Tag.of("type", "type"))).increment();
             return createValidateData(false, StatusCode.missing_mandatory_field_type, TypeValidation.MANDATORY_FIELD, jsonValue, "missing type");
         }
         //TIMESTAMP
@@ -105,9 +103,9 @@ public class GenericValidator {
         List<ValidateData> result = new ArrayList<>();
         if (processConsumer.getProcessValidation() != null && !processConsumer.getProcessValidation().isEmpty()) {
             for (ProcessValidation pv : processConsumer.getProcessValidation()) {
-                listValidator.stream()
-                        .filter(e -> e.type(pv.getTypeValidation()))
-                        .forEach(e -> result.add(e.process(pv, jsonValue)));
+                if (validators.containsKey(pv.getTypeValidation())) {
+                    result.add(validators.get(pv.getTypeValidation()).process(pv, jsonValue));
+                }
             }
         }
         return result;
