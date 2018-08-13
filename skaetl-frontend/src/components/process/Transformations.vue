@@ -33,8 +33,8 @@
                             v-model="editedItem.parameterTransformation.csvLookupData.field" required></v-text-field>
             </v-layout>
             <v-layout row wrap v-show="isCsvLookup()">
-              <v-text-field label="Value Field" textarea
-                            v-model="editedItem.parameterTransformation.csvLookupData.data" required></v-text-field>
+              <v-textarea label="Value Field" outline
+                            v-model="editedItem.parameterTransformation.csvLookupData.data" required></v-textarea>
             </v-layout>
 
 
