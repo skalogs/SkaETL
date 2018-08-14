@@ -91,7 +91,7 @@ public class RuleMetricToJava {
             javaCode += "    \n" +
                     "    @Override\n" +
                     "    protected JsonNode mapValues(JsonNode value) {\n" +
-                    "        return value.path(\"" + ruleMetricVisitor.getAggFunctionField() + "\");\n" +
+                    "        return jsonUtils.at(value, \"" + ruleMetricVisitor.getAggFunctionField() + "\");\n" +
                     "    }\n";
         }
         if (StringUtils.isNotBlank(ruleMetricVisitor.getWhere())) {

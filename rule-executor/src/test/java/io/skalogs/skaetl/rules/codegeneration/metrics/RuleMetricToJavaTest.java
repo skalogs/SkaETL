@@ -118,7 +118,7 @@ public class RuleMetricToJavaTest {
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected JsonNode mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\");\n" +
+                                "        return jsonUtils.at(value, \"duration\");\n" +
                                 "    }\n" +
                                 "}"));
     }
@@ -175,7 +175,7 @@ public class RuleMetricToJavaTest {
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected JsonNode mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\");\n" +
+                                "        return jsonUtils.at(value, \"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -236,7 +236,7 @@ public class RuleMetricToJavaTest {
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected JsonNode mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\");\n" +
+                                "        return jsonUtils.at(value, \"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -303,7 +303,7 @@ public class RuleMetricToJavaTest {
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected JsonNode mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\");\n" +
+                                "        return jsonUtils.at(value, \"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -369,7 +369,7 @@ public class RuleMetricToJavaTest {
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected JsonNode mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\");\n" +
+                                "        return jsonUtils.at(value, \"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -448,7 +448,7 @@ public class RuleMetricToJavaTest {
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected JsonNode mapValues(JsonNode value) {\n" +
-                                "        return value.path(\"duration\");\n" +
+                                "        return jsonUtils.at(value, \"duration\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
