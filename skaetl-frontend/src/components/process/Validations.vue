@@ -197,7 +197,7 @@
         keyBlackList: '',
         valueBlackList: '',
         type: ["MANDATORY_FIELD", "BLACK_LIST_FIELD", "MAX_FIELD", "MAX_MESSAGE_SIZE", "FIELD_EXIST", "TIMESTAMP_VALIDATION"],
-        chronoUnits: ["MILLIS", "SECONDS", "MINUTES", "HOURS", "DAYS", "WEEKS", "MONTHS", "YEARS"]
+        chronoUnits: ["MILLIS", "SECONDS", "MINUTES", "HOURS", "DAYS"]
       }
     },
     computed: {

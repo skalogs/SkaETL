@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 @Slf4j
@@ -40,7 +42,8 @@ public class TimestampValidator extends ValidatorProcess {
                 }
 
                 if (parameterValidation.isValidateAfterFixedDate()) {
-                    Instant lowestDate = parameterValidation.getLowerFixedDate().toInstant();
+
+                    Instant lowestDate = LocalDate.parse(parameterValidation.getLowerFixedDate()).atStartOfDay().toInstant(ZoneOffset.UTC);
                     if (timestamp.toInstant().isBefore(lowestDate)) {
                         return ValidateData.builder()
                                 .success(false)

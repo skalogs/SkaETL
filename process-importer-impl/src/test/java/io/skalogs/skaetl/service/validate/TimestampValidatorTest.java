@@ -53,4 +53,22 @@ public class TimestampValidatorTest {
                 ).build(), jsonValue);
         assertThat(v.success).isTrue();
     }
+
+    @Test
+    public void should_Process_Ok_fixed_date() throws Exception {
+        TimestampValidator timestampValidator = new TimestampValidator(TypeValidation.TIMESTAMP_VALIDATION);
+        String timestamp = Instant.now().minus(5, ChronoUnit.HOURS).toString();
+        RawDataGen rd = RawDataGen.builder().timestamp(timestamp).build();
+        ObjectMapper obj = new ObjectMapper();
+        String value = obj.writeValueAsString(rd);
+        JsonNode jsonValue = JSONUtils.getInstance().parse(value);
+
+        ValidateData v = timestampValidator.process(ProcessValidation.builder()
+                .parameterValidation(ParameterValidation.builder()
+                        .validateAfterFixedDate(true)
+                        .lowerFixedDate("2018-01-01")
+                        .build()
+                ).build(), jsonValue);
+        assertThat(v.success).isTrue();
+    }
 }

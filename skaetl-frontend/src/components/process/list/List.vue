@@ -232,8 +232,9 @@
               return validationitem.typeValidation + " " + validationitem.parameterValidation.maxMessageSize;
             case "FIELD_EXIST":
               return validationitem.typeValidation + " " + validationitem.parameterValidation.fieldExist;
-            case "FORMAT_DATE":
+            default:
               return validationitem.typeValidation;
+
           }
         },
         formatTransformation(transformationItem) {
