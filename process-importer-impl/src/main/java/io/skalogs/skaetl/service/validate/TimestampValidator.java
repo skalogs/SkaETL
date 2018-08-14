@@ -39,6 +39,19 @@ public class TimestampValidator extends ValidatorProcess {
                     }
                 }
 
+                if (parameterValidation.isValidateAfterFixedDate()) {
+                    Instant lowestDate = parameterValidation.getLowerFixedDate().toInstant();
+                    if (timestamp.toInstant().isBefore(lowestDate)) {
+                        return ValidateData.builder()
+                                .success(false)
+                                .statusCode(StatusCode.timestamp_too_much_in_past)
+                                .typeValidation(TypeValidation.TIMESTAMP_VALIDATION)
+                                .jsonValue(jsonValue)
+                                .build();
+                    }
+
+                }
+
 
                 if (parameterValidation.isValidateInFuture()) {
                     Instant highestDate = Instant.now().plus(parameterValidation.getUnitInFuture(), parameterValidation.getChronoUnitInFuture());

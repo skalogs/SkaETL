@@ -54,39 +54,59 @@
                             required></v-text-field>
             </v-layout>
 
-            <v-layout row wrap v-show="isTimestampValidation()">
-              <v-layout row wrap>
+            <v-container fluid pa-0 v-show="isTimestampValidation()">
                 <v-checkbox label="Validate in past"
                             persistent-hint
                             v-model="editedItem.parameterValidation.validateInThePast"></v-checkbox>
-              </v-layout>
-              <v-layout row wrap>
-                <v-text-field label="Unit in the past" v-model="editedItem.parameterValidation.unitInThePast"
-                              required
-                              :disabled="!editedItem.parameterValidation.validateInThePast"
-                ></v-text-field>
-                <v-select label="Chrono unit in the past"
-                          v-model="editedItem.parameterValidation.chronoUnitInThePast"
-                          v-bind:items="chronoUnits"
-                          :disabled="!editedItem.parameterValidation.validateInThePast"/>
-              </v-layout>
-            </v-layout>
-            <v-layout row wrap v-show="isTimestampValidation()">
-              <v-layout row wrap>
+                <v-flex v-show="editedItem.parameterValidation.validateInThePast">
+                  <v-text-field label="Unit in the past" v-model="editedItem.parameterValidation.unitInThePast"
+                                required></v-text-field>
+
+                  <v-select label="Chrono unit in the past"
+                            v-model="editedItem.parameterValidation.chronoUnitInThePast"
+                            v-bind:items="chronoUnits"/>
+                </v-flex>
+
+                <v-checkbox label="Validate events after fixed date in past"
+                            persistent-hint
+                            v-model="editedItem.parameterValidation.validateAfterFixedDate"></v-checkbox>
+
+                <v-flex v-show="editedItem.parameterValidation.validateAfterFixedDate">
+                  <v-menu
+                    ref="datemenu"
+                    :close-on-content-click="false"
+                    v-model="datemenu"
+                    :nudge-right="40"
+                    lazy
+                    transition="scale-transition"
+                    offset-y
+                    full-width
+                    max-width="290px"
+                    min-width="290px"
+                  >
+
+                    <v-text-field
+                      slot="activator"
+                      v-model="editedItem.parameterValidation.lowerFixedDate"
+                      label="Fixed date"
+                      prepend-icon="event"
+                    ></v-text-field>
+                    <v-date-picker v-model="editedItem.parameterValidation.lowerFixedDate" scrollable no-title
+                                   @input="datemenu = false"></v-date-picker>
+                  </v-menu>
+                </v-flex>
                 <v-checkbox label="Validate in future"
                             persistent-hint
                             v-model="editedItem.parameterValidation.validateInFuture"></v-checkbox>
-              </v-layout>
-              <v-layout row wrap>
-                <v-text-field label="Unit in future" v-model="editedItem.parameterValidation.unitInFuture"
-                              required
-                              :disabled="!editedItem.parameterValidation.validateInFuture"></v-text-field>
-                <v-select label="Chrono unit in future"
-                          v-model="editedItem.parameterValidation.chronoUnitInFuture"
-                          v-bind:items="chronoUnits"
-                          :disabled="!editedItem.parameterValidation.validateInFuture"/>
-              </v-layout>
-            </v-layout>
+                <v-flex v-show="editedItem.parameterValidation.validateInFuture">
+                  <v-text-field label="Unit in future" v-model="editedItem.parameterValidation.unitInFuture"
+                                required></v-text-field>
+                  <v-select label="Chrono unit in future"
+                            v-model="editedItem.parameterValidation.chronoUnitInFuture"
+                            v-bind:items="chronoUnits"/>
+                </v-flex>
+              </v-container>
+
 
           </v-card-text>
           <v-card-actions>
@@ -136,7 +156,7 @@
     data: function () {
       return {
         dialog: false,
-
+        datemenu: false,
         editedItem: {
           "parameterValidation": {
             "mandatory": '',
@@ -149,7 +169,8 @@
             "chronoUnitInThePast": "DAYS",
             "validateInFuture": false,
             "unitInFuture": 1,
-            "chronoUnitInFuture": "DAYS"
+            "chronoUnitInFuture": "DAYS",
+            "validateAfterFixedDate": false
           }
         },
         defaultItem: {
@@ -164,7 +185,8 @@
             "chronoUnitInThePast": "DAYS",
             "validateInFuture": false,
             "unitInFuture": 1,
-            "chronoUnitInFuture": "DAYS"
+            "chronoUnitInFuture": "DAYS",
+            "validateAfterFixedDate": false
           }
         },
         editedIndex: -1,
