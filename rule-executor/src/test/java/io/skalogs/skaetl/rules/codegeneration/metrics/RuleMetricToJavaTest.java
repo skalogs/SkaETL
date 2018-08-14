@@ -375,14 +375,14 @@ public class RuleMetricToJavaTest {
                                 "    @Override\n" +
                                 "    protected Keys selectKey(String key, JsonNode value) {\n" +
                                 "        Keys keys = super.selectKey(key,value);\n" +
-                                "        keys.addKey(\"userFromA = userFromB\", value.get(\"userFromA\").asText());\n" +
+                                "        keys.addKey(\"userFromA = userFromB\", jsonUtils.at(value, \"userFromA\").asText());\n" +
                                 "        return keys;\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected Keys selectKeyJoin(String key, JsonNode value) {\n" +
                                 "        Keys keys = super.selectKey(key,value);\n" +
-                                "        keys.addKey(\"userFromA = userFromB\", value.get(\"userFromB\").asText());\n" +
+                                "        keys.addKey(\"userFromA = userFromB\", jsonUtils.at(value, \"userFromB\").asText());\n" +
                                 "        return keys;\n" +
                                 "    }\n" +
                                 "    \n" +
@@ -454,14 +454,14 @@ public class RuleMetricToJavaTest {
                                 "    @Override\n" +
                                 "    protected Keys selectKey(String key, JsonNode value) {\n" +
                                 "        Keys keys = super.selectKey(key,value);\n" +
-                                "        keys.addKey(\"userFromA = userFromB\", value.get(\"userFromA\").asText());\n" +
+                                "        keys.addKey(\"userFromA = userFromB\", jsonUtils.at(value, \"userFromA\").asText());\n" +
                                 "        return keys;\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected Keys selectKeyJoin(String key, JsonNode value) {\n" +
                                 "        Keys keys = super.selectKey(key,value);\n" +
-                                "        keys.addKey(\"userFromA = userFromB\", value.get(\"userFromB\").asText());\n" +
+                                "        keys.addKey(\"userFromA = userFromB\", jsonUtils.at(value, \"userFromB\").asText());\n" +
                                 "        return keys;\n" +
                                 "    }\n" +
                                 "    \n" +

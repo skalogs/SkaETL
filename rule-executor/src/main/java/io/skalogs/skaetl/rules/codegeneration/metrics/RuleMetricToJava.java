@@ -137,14 +137,14 @@ public class RuleMetricToJava {
                     "    @Override\n" +
                     "    protected Keys selectKey(String key, JsonNode value) {\n" +
                     "        Keys keys = super.selectKey(key,value);\n" +
-                    "        keys.addKey(\"" + ruleMetricVisitor.getJoinKeyFromA() + " = " + ruleMetricVisitor.getJoinKeyFromB() + "\", value.get(\"" + ruleMetricVisitor.getJoinKeyFromA() + "\").asText());\n" +
+                    "        keys.addKey(\"" + ruleMetricVisitor.getJoinKeyFromA() + " = " + ruleMetricVisitor.getJoinKeyFromB() + "\", jsonUtils.at(value, \"" + ruleMetricVisitor.getJoinKeyFromA() + "\").asText());\n" +
                     "        return keys;\n" +
                     "    }\n" +
                     "    \n" +
                     "    @Override\n" +
                     "    protected Keys selectKeyJoin(String key, JsonNode value) {\n" +
                     "        Keys keys = super.selectKey(key,value);\n" +
-                    "        keys.addKey(\"" + ruleMetricVisitor.getJoinKeyFromA() + " = " + ruleMetricVisitor.getJoinKeyFromB() + "\", value.get(\"" + ruleMetricVisitor.getJoinKeyFromB() + "\").asText());\n" +
+                    "        keys.addKey(\"" + ruleMetricVisitor.getJoinKeyFromA() + " = " + ruleMetricVisitor.getJoinKeyFromB() + "\", jsonUtils.at(value, \"" + ruleMetricVisitor.getJoinKeyFromB() + "\").asText());\n" +
                     "        return keys;\n" +
                     "    }\n" +
                     "    \n" +
