@@ -47,6 +47,7 @@ public class RuleMetricToJava {
                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                 "import static java.util.concurrent.TimeUnit.*;\n" +
+                "import io.skalogs.skaetl.utils.JSONUtils;\n" +
                 "\n" +
                 "import javax.annotation.Generated;\n" +
                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
@@ -60,6 +61,7 @@ public class RuleMetricToJava {
                 "*/\n" +
                 "@Generated(\"etlMetric\")\n" +
                 "public class " + ruleClassName + " extends GenericMetricProcessor {\n" +
+                "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
                 "    public " + ruleClassName + "(ProcessMetric processMetric) {\n";
         if (StringUtils.isBlank(ruleMetricVisitor.getJoinFrom())) {
             javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\");\n";
@@ -116,7 +118,7 @@ public class RuleMetricToJava {
                     "    protected Keys selectKey(String key, JsonNode value) {\n" +
                     "        Keys keys = super.selectKey(key,value);\n";
             for (String groupByField : keys) {
-                javaCode += "        keys.addKey(\"" + groupByField + "\", value.get(\"" + groupByField + "\").asText());\n";
+                javaCode += "        keys.addKey(\"" + groupByField + "\", jsonUtils.at(value, \"" + groupByField + "\").asText());\n";
             }
             javaCode += "        return keys;\n" +
                     "    }\n";

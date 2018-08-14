@@ -37,6 +37,7 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
+                                "import io.skalogs.skaetl.utils.JSONUtils;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
@@ -46,10 +47,11 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                dsl + "\n" +
+                                "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyCountRule extends GenericMetricProcessor {\n" +
+                                "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
                                 "    public MyCountRule(ProcessMetric processMetric) {\n" +
                                 "        super(processMetric, \"mytopic\");\n" +
                                 "    }\n" +
@@ -85,6 +87,7 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
+                                "import io.skalogs.skaetl.utils.JSONUtils;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
@@ -94,10 +97,11 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                dsl + "\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
+                                "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
                                 "    public MyMinRule(ProcessMetric processMetric) {\n" +
                                 "        super(processMetric, \"mytopic\");\n" +
                                 "    }\n" +
@@ -140,6 +144,7 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
+                                "import io.skalogs.skaetl.utils.JSONUtils;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
@@ -149,10 +154,11 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                dsl + "\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) WHERE type = \"something\"\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
+                                "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
                                 "    public MyMinRule(ProcessMetric processMetric) {\n" +
                                 "        super(processMetric, \"mytopic\");\n" +
                                 "    }\n" +
@@ -199,6 +205,7 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
+                                "import io.skalogs.skaetl.utils.JSONUtils;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
@@ -208,10 +215,11 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                dsl + "\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY type TO KAFKA targettopic\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
+                                "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
                                 "    public MyMinRule(ProcessMetric processMetric) {\n" +
                                 "        super(processMetric, \"mytopic\");\n" +
                                 "    }\n" +
@@ -239,7 +247,7 @@ public class RuleMetricToJavaTest {
                                 "    @Override\n" +
                                 "    protected Keys selectKey(String key, JsonNode value) {\n" +
                                 "        Keys keys = super.selectKey(key,value);\n" +
-                                "        keys.addKey(\"type\", value.get(\"type\").asText());\n" +
+                                "        keys.addKey(\"type\", jsonUtils.at(value, \"type\").asText());\n" +
                                 "        return keys;\n" +
                                 "    }\n" +
                                 "}"));
@@ -264,6 +272,7 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
+                                "import io.skalogs.skaetl.utils.JSONUtils;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
@@ -273,10 +282,11 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                dsl + "\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) HAVING result > 10 TO KAFKA targettopic\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
+                                "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
                                 "    public MyMinRule(ProcessMetric processMetric) {\n" +
                                 "        super(processMetric, \"mytopic\");\n" +
                                 "    }\n" +
@@ -323,6 +333,7 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
+                                "import io.skalogs.skaetl.utils.JSONUtils;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
@@ -332,10 +343,11 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                dsl + "\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 10 MINUTES TO KAFKA targettopic\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
+                                "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
                                 "    public MyMinRule(ProcessMetric processMetric) {\n" +
                                 "        super(processMetric, \"mytopic\", \"mytopic2\");\n" +
                                 "    }\n" +
@@ -344,7 +356,7 @@ public class RuleMetricToJavaTest {
                                 "    protected JoinType joinType() {\n" +
                                 "        return INNER;\n" +
                                 "    }\n" +
-                                "    \n"+
+                                "    \n" +
                                 "    @Override\n" +
                                 "    protected AggregateFunction aggInitializer() {\n" +
                                 "        return aggFunction(\"MIN\");\n" +
@@ -400,6 +412,7 @@ public class RuleMetricToJavaTest {
                                 "import io.skalogs.skaetl.rules.metrics.domain.Keys;\n" +
                                 "import io.skalogs.skaetl.rules.metrics.domain.MetricResult;\n" +
                                 "import static java.util.concurrent.TimeUnit.*;\n" +
+                                "import io.skalogs.skaetl.utils.JSONUtils;\n" +
                                 "\n" +
                                 "import javax.annotation.Generated;\n" +
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
@@ -409,10 +422,11 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                dsl + "\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB) WHERE ageDuCapitaine >= 42 WINDOWED BY 10 MINUTES TO KAFKA targettopic\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
+                                "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
                                 "    public MyMinRule(ProcessMetric processMetric) {\n" +
                                 "        super(processMetric, \"mytopic\", \"mytopic2\");\n" +
                                 "    }\n" +
@@ -421,7 +435,7 @@ public class RuleMetricToJavaTest {
                                 "    protected JoinType joinType() {\n" +
                                 "        return INNER;\n" +
                                 "    }\n" +
-                                "    \n"+
+                                "    \n" +
                                 "    @Override\n" +
                                 "    protected AggregateFunction aggInitializer() {\n" +
                                 "        return aggFunction(\"MIN\");\n" +
