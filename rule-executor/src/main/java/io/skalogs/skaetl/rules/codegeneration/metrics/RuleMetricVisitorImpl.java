@@ -7,8 +7,11 @@ import io.skalogs.skaetl.rules.codegeneration.exceptions.RuleVisitorException;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.skalogs.skaetl.rules.codegeneration.RuleToJava.*;
 
@@ -18,7 +21,7 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
     private String from;
     private String window;
     private String where;
-    private String groupBy;
+    private List<String> groupBy =  new ArrayList<>();
     private String having;
     private String aggFunction;
     private String aggFunctionField;
@@ -40,7 +43,7 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
                 where = visit(ctx.where());
             }
             if (ctx.group_by() != null) {
-                groupBy = visit(ctx.group_by());
+                groupBy = visitGroupBy(ctx.group_by());
             }
             if (ctx.having() != null) {
                 having = visitHaving(ctx.having());
@@ -52,6 +55,14 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
         } catch (Exception e) {
             throw new RuleVisitorException(e);
         }
+    }
+
+    public List<String> visitGroupBy(RuleMetricParser.Group_byContext ctx) {
+        return ctx.group_by_expr().fieldname()
+                .stream()
+                .map(e -> StringUtils.trimToNull(visit(e)))
+                .filter(e -> StringUtils.isNoneBlank(e))
+                .collect(Collectors.toList());
     }
 
     @Override

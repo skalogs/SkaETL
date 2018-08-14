@@ -12,7 +12,6 @@ import org.antlr.v4.runtime.atn.PredictionMode;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -103,12 +102,13 @@ public class RuleMetricToJava {
                     "    }\n";
         }
 
-        if (StringUtils.isNotBlank(ruleMetricVisitor.getGroupBy())) {
+        if (!ruleMetricVisitor.getGroupBy().isEmpty()) {
             javaCode += "    \n" +
                     "    @Override\n" +
                     "    protected boolean filterKey(String key, JsonNode value) {\n";
-            String[] keys = ruleMetricVisitor.getGroupBy().split(",");
-            String filterKeyCode = Arrays.stream(keys)
+
+            String filterKeyCode = ruleMetricVisitor.getGroupBy()
+                    .stream()
                     .map(key -> "jsonUtils.has(value, \"" + key + "\")")
                     .collect(Collectors.joining(" && "));
             javaCode += "        return " + filterKeyCode + ";\n";
@@ -117,7 +117,7 @@ public class RuleMetricToJava {
                     "    @Override\n" +
                     "    protected Keys selectKey(String key, JsonNode value) {\n" +
                     "        Keys keys = super.selectKey(key,value);\n";
-            for (String groupByField : keys) {
+            for (String groupByField : ruleMetricVisitor.getGroupBy()) {
                 javaCode += "        keys.addKey(\"" + groupByField + "\", jsonUtils.at(value, \"" + groupByField + "\").asText());\n";
             }
             javaCode += "        return keys;\n" +

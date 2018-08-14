@@ -196,7 +196,10 @@ public class RuleMetricVisitorImplTest {
     @Test
     public void groupBy() {
         RuleMetricVisitorImpl convert = convert("SELECT MIN(duration)  FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY test");
-        assertThat(convert.getGroupBy()).isEqualTo("test");
+        assertThat(convert.getGroupBy()).containsExactly("test");
+
+        RuleMetricVisitorImpl convertMultiple = convert("SELECT MIN(duration)  FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY test,foobar");
+        assertThat(convertMultiple.getGroupBy()).containsExactly("test","foobar");
     }
 
     @Test

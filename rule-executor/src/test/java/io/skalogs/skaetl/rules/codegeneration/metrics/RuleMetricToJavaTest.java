@@ -11,7 +11,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void checkJavaClassName() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic";
+        String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES)";
         RuleCode rule = ruleToJava.convert("my simple rule", dsl);
         assertThat(rule.getName()).isEqualTo("MySimpleRule");
         assertThat(rule.getRuleClassName()).isEqualTo("io.skalogs.skaetl.metrics.generated.MySimpleRule");
@@ -21,7 +21,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void functionNoArg() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic";
+        String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES)";
         RuleCode rule = ruleToJava.convert("My_Count_Rule", dsl);
         assertThat(rule)
                 .isEqualTo(new RuleCode("MyCountRule",
@@ -47,7 +47,7 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic\n" +
+                                "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES)\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyCountRule extends GenericMetricProcessor {\n" +
@@ -71,7 +71,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void min() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic";
+        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES)";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
                 .isEqualTo(new RuleCode("MyMinRule",
@@ -97,7 +97,7 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) TO KAFKA targettopic\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES)\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
@@ -189,7 +189,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void groupBy() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY type TO KAFKA targettopic";
+        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY type";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
                 .isEqualTo(new RuleCode("MyMinRule",
@@ -215,7 +215,7 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY type TO KAFKA targettopic\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY type\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
@@ -256,7 +256,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void having() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) HAVING result > 10 TO KAFKA targettopic";
+        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) HAVING result > 10";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
                 .isEqualTo(new RuleCode("MyMinRule",
@@ -282,7 +282,7 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) HAVING result > 10 TO KAFKA targettopic\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) HAVING result > 10\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
@@ -317,7 +317,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void join() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 10 MINUTES TO KAFKA targettopic";
+        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 10 MINUTES";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
                 .isEqualTo(new RuleCode("MyMinRule",
@@ -343,7 +343,7 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 10 MINUTES TO KAFKA targettopic\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 10 MINUTES\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
@@ -396,7 +396,7 @@ public class RuleMetricToJavaTest {
     @Test
     public void joinWithWhereClause() {
         RuleMetricToJava ruleToJava = new RuleMetricToJava();
-        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB) WHERE ageDuCapitaine >= 42 WINDOWED BY 10 MINUTES TO KAFKA targettopic";
+        String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB) WHERE ageDuCapitaine >= 42 WINDOWED BY 10 MINUTES";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
                 .isEqualTo(new RuleCode("MyMinRule",
@@ -422,7 +422,7 @@ public class RuleMetricToJavaTest {
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
                                 "/*\n" +
-                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB) WHERE ageDuCapitaine >= 42 WINDOWED BY 10 MINUTES TO KAFKA targettopic\n" +
+                                "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB) WHERE ageDuCapitaine >= 42 WINDOWED BY 10 MINUTES\n" +
                                 "*/\n" +
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +

@@ -39,7 +39,11 @@ where
  ;
 
 group_by
- : 'GROUP BY' fieldname
+ : 'GROUP BY' group_by_expr
+ ;
+
+group_by_expr
+ : fieldname (',' fieldname)*
  ;
 
 having
@@ -161,7 +165,6 @@ alias
 email
  : EMAIL
  ;
-
 
 BOOLEAN
  : 'true'
