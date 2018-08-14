@@ -109,7 +109,7 @@ public class RuleMetricToJava {
                     "    protected boolean filterKey(String key, JsonNode value) {\n";
             String[] keys = ruleMetricVisitor.getGroupBy().split(",");
             String filterKeyCode = Arrays.stream(keys)
-                    .map(key -> "value.hasNonNull(\"" + key + "\")")
+                    .map(key -> "jsonUtils.has(value, \"" + key + "\")")
                     .collect(Collectors.joining(" && "));
             javaCode += "        return " + filterKeyCode + ";\n";
             javaCode += "    }\n" +

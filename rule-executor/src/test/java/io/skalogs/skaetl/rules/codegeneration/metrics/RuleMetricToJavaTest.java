@@ -241,7 +241,7 @@ public class RuleMetricToJavaTest {
                                 "    \n" +
                                 "    @Override\n" +
                                 "    protected boolean filterKey(String key, JsonNode value) {\n" +
-                                "        return value.hasNonNull(\"type\");\n" +
+                                "        return jsonUtils.has(value, \"type\");\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
