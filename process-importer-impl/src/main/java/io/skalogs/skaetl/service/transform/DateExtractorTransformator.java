@@ -13,10 +13,14 @@ import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class DateExtractorTransformator extends TransformatorProcess {
 
+    private final Map<String,DateFormat> srcFormats= new HashMap<>();
+    private final Map<String,DateTimeFormatter> destFormats= new HashMap<>();
     public DateExtractorTransformator(TypeValidation type) {
         super(type);
     }
@@ -24,10 +28,10 @@ public class DateExtractorTransformator extends TransformatorProcess {
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
         String valueToFormat = at(parameterTransformation.getFormatDateValue().getKeyField(), jsonValue).asText();
         if (StringUtils.isNotBlank(valueToFormat)) {
-            DateFormat df1 = new SimpleDateFormat(parameterTransformation.getFormatDateValue().getSrcFormat());
+            DateFormat srcFormatter = srcFormats.computeIfAbsent(parameterTransformation.getFormatDateValue().getSrcFormat(), key -> new SimpleDateFormat(key));
             try {
-                Date asDate = df1.parse(valueToFormat);
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(parameterTransformation.getFormatDateValue().getTargetFormat());
+                Date asDate = srcFormatter.parse(valueToFormat);
+                DateTimeFormatter dateTimeFormatter = destFormats.computeIfAbsent(parameterTransformation.getFormatDateValue().getTargetFormat(), key -> DateTimeFormatter.ofPattern(key));
                 String result = asDate.toInstant().atZone(ZoneId.systemDefault()).format(dateTimeFormatter);
                 put(jsonValue, parameterTransformation.getFormatDateValue().getTargetField(), result);
             } catch (ParseException e) {
