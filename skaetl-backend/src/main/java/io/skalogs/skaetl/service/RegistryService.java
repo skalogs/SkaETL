@@ -110,6 +110,11 @@ public class RegistryService {
                 .collect(Collectors.toList());
     }
 
+    public List<ConsumerState> findAll() {
+        return consumerStateRepository.findAll().stream()
+                .collect(Collectors.toList());
+    }
+
     public void activate(ProcessDefinition processDefinition) {
         ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess()).withProcessDefinition(processDefinition);
         consumerState = assignConsumerToWorkers(consumerState);

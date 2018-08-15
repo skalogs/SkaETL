@@ -30,11 +30,11 @@ public class ProcessService {
                 .collect(toList());
     }
 
-    public void activateProcess(ProcessConsumer processConsumer) throws Exception {
+    public void activateProcess(ProcessConsumer processConsumer) {
         registryService.activate(processConsumer);
     }
 
-    public void deactivateProcess(ProcessConsumer processConsumer) throws Exception {
+    public void deactivateProcess(ProcessConsumer processConsumer) {
         registryService.deactivate(processConsumer);
     }
 
