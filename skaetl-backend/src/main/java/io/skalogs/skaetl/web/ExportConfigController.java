@@ -8,7 +8,9 @@ import io.skalogs.skaetl.service.MetricProcessService;
 import io.skalogs.skaetl.service.ProcessService;
 import io.skalogs.skaetl.service.ReferentialService;
 import io.skalogs.skaetl.service.RegistryService;
+import io.skalogs.skaetl.web.domain.SkalogsExport;
 import lombok.AllArgsConstructor;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,29 +26,37 @@ public class ExportConfigController {
     private final MetricProcessService metricProcessService;
     private final ReferentialService referentialService;
 
+
+    private final BuildProperties buildProperties;
+
     @GetMapping("/export/all")
-    public List<ProcessDefinition> export() {
-        return registryService.findAll()
+    public SkalogsExport export() {
+
+        List<ProcessDefinition> processDefinitions = registryService.findAll()
                 .stream()
-                .map(e-> e.getProcessDefinition())
+                .map(e -> e.getProcessDefinition())
                 .collect(Collectors.toList());
+        return SkalogsExport.builder()
+                .version(buildProperties.getVersion())
+                .processDefinitions(processDefinitions)
+                .build();
     }
 
 
     @ResponseStatus(CREATED)
     @PostMapping("/import/all")
-    public void importAll(@RequestBody List<ProcessDefinition> processDefinitions) {
-        processDefinitions
+    public void importAll(@RequestBody SkalogsExport skalogsExport) {
+        skalogsExport.getProcessDefinitions()
                 .stream()
                 .filter(definition -> definition instanceof ProcessConsumer)
                 .map(processDefinition -> (ProcessConsumer)processDefinition)
                 .forEach(processConsumer  -> processService.saveOrUpdate(processConsumer));
-        processDefinitions
+        skalogsExport.getProcessDefinitions()
                 .stream()
                 .filter(definition -> definition instanceof ProcessMetric)
                 .map(processDefinition -> (ProcessMetric)processDefinition)
                 .forEach(processMetric -> metricProcessService.updateProcess(processMetric));
-        processDefinitions
+        skalogsExport.getProcessDefinitions()
                 .stream()
                 .filter(definition -> definition instanceof ProcessReferential)
                 .map(processDefinition -> (ProcessReferential)processDefinition)
