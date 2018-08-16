@@ -145,17 +145,6 @@ public class RegistryService {
         }
     }
 
-    public void rescale(ProcessDefinition processDefinition, int scale) {
-        ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
-        if (consumerState.getStatusProcess() == StatusProcess.ENABLE) {
-            deactivate(processDefinition);
-            consumerState = assignConsumerToWorkers(consumerState.withNbInstance(scale));
-            triggerAction(consumerState, "activate", StatusProcess.ENABLE, StatusProcess.ERROR);
-        } else {
-            assignConsumerToWorkers(consumerState.withNbInstance(scale));
-        }
-    }
-
     public void scaleup(ProcessDefinition processDefinition) {
         ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
         ConsumerState newState = consumerState.withNbInstance(consumerState.getNbInstance() + 1);
