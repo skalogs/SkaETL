@@ -29,5 +29,6 @@ public enum TypeValidation {
     TRIM,
     FORMAT_EMAIL,
     ADD_CSV_LOOKUP,
-    DATE_EXTRACTOR
+    DATE_EXTRACTOR,
+    TRANSLATE_ARRAY
 }

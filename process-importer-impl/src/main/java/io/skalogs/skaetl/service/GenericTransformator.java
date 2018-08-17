@@ -49,6 +49,7 @@ public class GenericTransformator {
         transformators.put(TypeValidation.FORMAT_EMAIL, new EmailFormatTransformator(TypeValidation.FORMAT_EMAIL));
         transformators.put(TypeValidation.ADD_CSV_LOOKUP, new AddCsvLookupTransformator(TypeValidation.ADD_CSV_LOOKUP));
         transformators.put(TypeValidation.DATE_EXTRACTOR, new DateExtractorTransformator(TypeValidation.DATE_EXTRACTOR));
+        transformators.put(TypeValidation.TRANSLATE_ARRAY, new TranslateArrayTransformator(TypeValidation.TRANSLATE_ARRAY));
     }
 
     public ObjectNode apply(JsonNode value, ProcessConsumer processConsumer) {

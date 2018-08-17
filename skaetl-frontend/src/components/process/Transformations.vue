@@ -207,7 +207,7 @@
         type: ["ADD_FIELD", "DELETE_FIELD", "RENAME_FIELD", "FORMAT_DATE", "FORMAT_BOOLEAN", "FORMAT_GEOPOINT",
           "FORMAT_DOUBLE", "FORMAT_LONG", "FORMAT_IP", "LOOKUP_LIST", "LOOKUP_EXTERNAL", "HASH", "ADD_GEO_LOCALISATION",
           "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL", "ADD_CSV_LOOKUP",
-          "DATE_EXTRACTOR"],
+          "DATE_EXTRACTOR", "TRANSLATE_ARRAY"],
         replaceValue: '',
         replaceNewValue: '',
         listLookup: []
@@ -245,7 +245,14 @@
       },
       isKeyField() {
         var value = this.editedItem.typeTransformation;
-        return value == "DELETE_FIELD" || value == "FORMAT_BOOLEAN" || value == "FORMAT_GEOPOINT" || value == "FORMAT_DOUBLE" || value == "FORMAT_LONG" || value == "FORMAT_IP" || value == "ADD_GEO_LOCALISATION" || value == "CAPITALIZE" || value == "UNCAPITALIZE" || value == "LOWER_CASE" || value == "UPPER_CASE" || value == "SWAP_CASE" || value == "TRIM" || value == "FORMAT_EMAIL";
+        return value == "DELETE_FIELD" || value == "FORMAT_BOOLEAN" ||
+          value == "FORMAT_GEOPOINT" || value == "FORMAT_DOUBLE" ||
+          value == "FORMAT_LONG" || value == "FORMAT_IP" ||
+          value == "ADD_GEO_LOCALISATION" || value == "CAPITALIZE" ||
+          value == "UNCAPITALIZE" || value == "LOWER_CASE" ||
+          value == "UPPER_CASE" || value == "SWAP_CASE" ||
+          value == "TRIM" || value == "FORMAT_EMAIL" ||
+          value == "TRANSLATE_ARRAY";
       },
       isFormatGeoPoint(){
         return this.editedItem.typeTransformation == "FORMAT_GEOPOINT";
