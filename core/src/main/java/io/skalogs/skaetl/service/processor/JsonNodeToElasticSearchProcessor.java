@@ -27,7 +27,7 @@ public class JsonNodeToElasticSearchProcessor extends AbstractElasticsearchProce
         RetentionLevel retentionLvl = jsonNode.has("retention") ? RetentionLevel.valueOf(jsonNode.path("retention").asText()) : retentionLevel;
         String valueAsString = jsonNode.toString();
         String timestamp = jsonNode.path("timestamp").asText();
-        String elasticSearchId = jsonNode.has("_id") ? jsonNode.get("_id").asText(): null;
+        String elasticSearchId = jsonNode.has("id") ? jsonNode.get("id").asText(): null;
         try {
             processToElasticsearch(df.parse(timestamp), jsonNode.path("project").asText(), jsonNode.path("type").asText(), retentionLvl, indexShape, valueAsString, elasticSearchId);
         } catch (ParseException e) {
