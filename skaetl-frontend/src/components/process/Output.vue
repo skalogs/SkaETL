@@ -124,7 +124,7 @@
                   {name: 'SLACK', type: 'notification dedicated'},
                   {name: 'SNMP', type: 'notification dedicated'},
                   {name: 'SYSTEM_OUT', type: 'testing dedicated'}],
-        typeRetention: ["week","month","quarter","year"],
+        typeRetention: ["week","month","quarter","year","two_years", "five_years"],
         dialog: false,
         editedItem: {
           "typeOutput": "ELASTICSEARCH",
