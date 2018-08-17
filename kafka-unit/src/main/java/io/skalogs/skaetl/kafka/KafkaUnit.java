@@ -1,9 +1,10 @@
 package io.skalogs.skaetl.kafka;
 
-import kafka.admin.TopicCommand;
+import kafka.admin.RackAwareMode;
 import kafka.server.KafkaConfig;
 import kafka.server.KafkaServerStartable;
-import kafka.utils.ZkUtils;
+import kafka.zk.AdminZkClient;
+import kafka.zk.KafkaZkClient;
 import org.apache.commons.io.FileUtils;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -11,20 +12,20 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.security.JaasUtils;
 import org.apache.kafka.common.serialization.ByteArrayDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.common.utils.Time;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.Console;
+import scala.collection.JavaConversions;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 public class KafkaUnit {
 
@@ -162,26 +163,23 @@ public class KafkaUnit {
     public void createTopic(String topicName, int numPartitions) {
         // setup
 
-        String[] arguments = new String[9];
-        arguments[0] = "--create";
-        arguments[1] = "--zookeeper";
-        arguments[2] = zookeeperString;
-        arguments[3] = "--replication-factor";
-        arguments[4] = "1";
-        arguments[5] = "--partitions";
-        arguments[6] = String.valueOf(numPartitions);
-        arguments[7] = "--topic";
-        arguments[8] = topicName;
-        TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(arguments);
-
-        ZkUtils zkUtils = ZkUtils.apply(opts.options().valueOf(opts.zkConnectOpt()),
-                30000, 30000, JaasUtils.isZkSecurityEnabled());
+        String zookeeperHost = zookeeperString;
+        Boolean isSucre = false;
+        int sessionTimeoutMs = 200000;
+        int connectionTimeoutMs = 15000;
+        int maxInFlightRequests = 10;
+        Time time = Time.SYSTEM;
+        String metricGroup = "myGroup";
+        String metricType = "myType";
+        KafkaZkClient zkClient = KafkaZkClient.apply(zookeeperHost,isSucre,sessionTimeoutMs,
+                connectionTimeoutMs,maxInFlightRequests,time,metricGroup,metricType);
+        AdminZkClient adminZkClient = new AdminZkClient(zkClient);
         try {
             // run
-            LOGGER.info("Executing: CreateTopic " + Arrays.toString(arguments));
-            TopicCommand.createTopic(zkUtils, opts);
+            LOGGER.info("Executing: CreateTopic " + topicName);
+            adminZkClient.createTopic(topicName,numPartitions, 1,new Properties(), RackAwareMode.Disabled$.MODULE$);
         } finally {
-            zkUtils.close();
+            zkClient.close();
         }
 
     }
@@ -190,39 +188,28 @@ public class KafkaUnit {
      * @return All topic names
      */
     public List<String> listTopics() {
-        String[] arguments = new String[3];
-        arguments[0] = "--zookeeper";
-        arguments[1] = zookeeperString;
-        arguments[2] = "--list";
-        TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(arguments);
-
-        ZkUtils zkUtils = ZkUtils.apply(opts.options().valueOf(opts.zkConnectOpt()),
-                30000, 30000, JaasUtils.isZkSecurityEnabled());
-        final List<String> topics = new ArrayList<>();
+        String zookeeperHost = zookeeperString;
+        Boolean isSucre = false;
+        int sessionTimeoutMs = 200000;
+        int connectionTimeoutMs = 15000;
+        int maxInFlightRequests = 10;
+        Time time = Time.SYSTEM;
+        String metricGroup = "myGroup";
+        String metricType = "myType";
+        KafkaZkClient zkClient = KafkaZkClient.apply(zookeeperHost,isSucre,sessionTimeoutMs,
+                connectionTimeoutMs,maxInFlightRequests,time,metricGroup,metricType);
+        AdminZkClient adminZkClient = new AdminZkClient(zkClient);
         try {
             // run
-            LOGGER.info("Executing: ListTopics " + Arrays.toString(arguments));
+            LOGGER.info("Executing: ListTopics ");
 
-            PrintStream oldOut = Console.out();
-            try {
-                Console.setOut(new PrintStream(oldOut) {
-                    @Override
-                    public void print(String s) {
-                        super.print(s);
-                        if (!s.endsWith("marked for deletion")) {
-                            topics.add(s);
-                        }
-                    }
-                });
-                TopicCommand.listTopics(zkUtils, opts);
-            } finally {
-                Console.setOut(oldOut);
-            }
+                return JavaConversions.asJavaCollection(adminZkClient.getAllTopicConfigs().keys())
+                        .stream()
+                        .collect(Collectors.toList());
+
         } finally {
-            zkUtils.close();
+            zkClient.close();
         }
-
-        return topics;
     }
 
     /**
@@ -243,22 +230,23 @@ public class KafkaUnit {
      * @param topicName The name of the topic to delete
      */
     public void deleteTopic(String topicName) {
-        String[] arguments = new String[5];
-        arguments[0] = "--zookeeper";
-        arguments[1] = zookeeperString;
-        arguments[2] = "--delete";
-        arguments[3] = "--topic";
-        arguments[4] = topicName;
-        TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(arguments);
-
-        ZkUtils zkUtils = ZkUtils.apply(opts.options().valueOf(opts.zkConnectOpt()),
-                30000, 30000, JaasUtils.isZkSecurityEnabled());
+        String zookeeperHost = zookeeperString;
+        Boolean isSucre = false;
+        int sessionTimeoutMs = 200000;
+        int connectionTimeoutMs = 15000;
+        int maxInFlightRequests = 10;
+        Time time = Time.SYSTEM;
+        String metricGroup = "myGroup";
+        String metricType = "myType";
+        KafkaZkClient zkClient = KafkaZkClient.apply(zookeeperHost,isSucre,sessionTimeoutMs,
+                connectionTimeoutMs,maxInFlightRequests,time,metricGroup,metricType);
+        AdminZkClient adminZkClient = new AdminZkClient(zkClient);
         try {
             // run
-            LOGGER.info("Executing: DeleteTopic " + Arrays.toString(arguments));
-            TopicCommand.deleteTopic(zkUtils, opts);
+            LOGGER.info("Executing: DeleteTopic " + topicName);
+            adminZkClient.deleteTopic(topicName);
         } finally {
-            zkUtils.close();
+            zkClient.close();
         }
     }
 
