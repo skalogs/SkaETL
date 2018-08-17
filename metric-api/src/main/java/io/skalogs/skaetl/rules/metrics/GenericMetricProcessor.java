@@ -197,7 +197,7 @@ public abstract class GenericMetricProcessor {
     }
 
     protected void toElasticsearch(KStream<Keys, MetricResult> result, ParameterOutput parameterOutput) {
-        AbstractProcessor abstractProcessor = applicationContext.getBean(MetricsElasticsearchProcessor.class, parameterOutput.getElasticsearchRetentionLevel());
+        AbstractProcessor abstractProcessor = applicationContext.getBean(MetricsElasticsearchProcessor.class, parameterOutput.getElasticsearchRetentionLevel(),parameterOutput.getIndexShape());
         result.process(() -> abstractProcessor);
     }
 

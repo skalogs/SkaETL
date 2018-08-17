@@ -14,6 +14,8 @@ public class ParameterOutput {
     @Builder.Default
     private RetentionLevel elasticsearchRetentionLevel = RetentionLevel.week;
     @Builder.Default
+    private IndexShape indexShape = IndexShape.daily;
+    @Builder.Default
     private String email = "";
     @Builder.Default
     private String webHookURL = "";

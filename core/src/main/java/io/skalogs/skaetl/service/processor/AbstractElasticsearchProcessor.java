@@ -25,12 +25,12 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     private final ESBuffer esBuffer;
     private final ESErrorRetryWriter esErrorRetryWriter;
 
-    protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, String valueAsString) {
-        processToElasticsearch(date, project, type, retentionLevel, valueAsString, null);
+    protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, IndexShape indexShape, String valueAsString) {
+        processToElasticsearch(date, project, type, retentionLevel, indexShape, valueAsString, null);
 
     }
 
-    protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, String valueAsString, String id) {
+    protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, IndexShape indexShape, String valueAsString, String id) {
         Metrics.counter("skaetl_nb_write_es_common",
                 Lists.newArrayList(
                         Tag.of("processConsumerName",getApplicationId() != null ? getApplicationId() : "forRetryApplication"),
@@ -38,7 +38,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
                         Tag.of("type",type)
                 )
         ).increment();
-        esBuffer.add(date, project, type, retentionLevel, valueAsString, id);
+        esBuffer.add(date, project, type, retentionLevel, indexShape, valueAsString, id);
         if (esBuffer.needFlush()) {
             log.info("{} Flushing {}", getApplicationId() != null ? getApplicationId() : "forRetryApplication", esBuffer.values().size());
             try {

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import io.skalogs.skaetl.domain.ESBuffer;
 import io.skalogs.skaetl.domain.ErrorData;
+import io.skalogs.skaetl.domain.IndexShape;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.service.processor.AbstractElasticsearchProcessor;
 import io.skalogs.skaetl.utils.JSONUtils;
@@ -29,7 +30,7 @@ public class ErrorToElasticsearchProcessor extends AbstractElasticsearchProcesso
     public void process(String key, ErrorData errorData) {
         try {
             String valueAsString = JSONUtils.getInstance().asJsonString(errorData);
-            processToElasticsearch(df.parse(errorData.timestamp), NO_PROJECT, ERRORS, RetentionLevel.week, valueAsString);
+            processToElasticsearch(df.parse(errorData.timestamp), NO_PROJECT, ERRORS, RetentionLevel.week, IndexShape.daily, valueAsString, valueAsString);
         } catch (JsonProcessingException e) {
             log.error("Couldn't transform value " + errorData, e);
         } catch (ParseException e) {

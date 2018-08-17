@@ -145,7 +145,7 @@ public class ProcessStreamService extends AbstractStreamProcess {
         StreamsBuilder builder = new StreamsBuilder();
 
         KStream<String, JsonNode> streamToES = builder.stream(inputTopic, Consumed.with(Serdes.String(), GenericSerdes.jsonNodeSerde()));
-        streamToES.process(() -> applicationContext.getBean(JsonNodeToElasticSearchProcessor.class, parameterOutput.getElasticsearchRetentionLevel()));
+        streamToES.process(() -> applicationContext.getBean(JsonNodeToElasticSearchProcessor.class, parameterOutput.getElasticsearchRetentionLevel(), parameterOutput.getIndexShape()));
 
         KafkaStreams streams = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(getProcessConsumer().getIdProcess() + ProcessConstants.ES_PROCESS, getBootstrapServer()));
         Runtime.getRuntime().addShutdownHook(new Thread(streams::close));

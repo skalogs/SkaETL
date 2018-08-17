@@ -2,6 +2,7 @@ package io.skalogs.skaetl.rules.metrics.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.skalogs.skaetl.domain.ESBuffer;
+import io.skalogs.skaetl.domain.IndexShape;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.rules.metrics.domain.Keys;
 import io.skalogs.skaetl.rules.metrics.domain.MetricResult;
@@ -14,10 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 public class MetricsElasticsearchProcessor extends AbstractElasticsearchProcessor<Keys, MetricResult> {
 
     private final RetentionLevel retentionLevel;
+    private final IndexShape indexShape;
 
-    public MetricsElasticsearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter, RetentionLevel retention) {
+    public MetricsElasticsearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter, RetentionLevel retention, IndexShape indexShape) {
         super(esBuffer, esErrorRetryWriter);
         retentionLevel = retention;
+        this.indexShape = indexShape;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class MetricsElasticsearchProcessor extends AbstractElasticsearchProcesso
             if (value.getElement() != null) {
                 metricId += value.getElement().toString();
             }
-            processToElasticsearch(value.getTimestamp(), value.getProject(), "metrics", retentionLevel, valueAsString, metricId);
+            processToElasticsearch(value.getTimestamp(), value.getProject(), "metrics", retentionLevel, indexShape, valueAsString, metricId);
         } catch (JsonProcessingException e) {
             log.error("Couldn't transform value as metric " + key, e);
         }

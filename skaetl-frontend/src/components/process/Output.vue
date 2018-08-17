@@ -25,14 +25,19 @@
                 </v-list-tile-content>
               </template>
             </v-select>
-              <v-layout row v-show="isKafkaTopic()">
-                <v-text-field label="Topic Out" v-model="editedItem.parameterOutput.topicOut"></v-text-field>
-              </v-layout>
-              <v-layout row v-show="isElasticsearch()">
-                <v-select label="Retention" v-model="editedItem.parameterOutput.elasticsearchRetentionLevel"
-                          v-bind:items="typeRetention"/>
-              </v-layout>
-              <v-layout row v-show="isEmail()">
+            <v-layout row v-show="isKafkaTopic()">
+              <v-text-field label="Topic Out" v-model="editedItem.parameterOutput.topicOut"></v-text-field>
+            </v-layout>
+            <v-layout row v-show="isElasticsearch()">
+              <v-select label="Retention" v-model="editedItem.parameterOutput.elasticsearchRetentionLevel"
+                        v-bind:items="typeRetention" required
+                        hint="How many time the data will be preserved" persistent-hint/>
+              <v-select label="Index shape" v-model="editedItem.parameterOutput.indexShape"
+                        v-bind:items="indexShapes" required
+                        hint="Use monthly based index for low traffic indexes" persistent-hint />
+            </v-layout>
+
+            <v-layout row v-show="isEmail()">
                 <v-text-field label="Destination Email" v-model="editedItem.parameterOutput.email" required/>
               </v-layout>
 
@@ -125,12 +130,14 @@
                   {name: 'SNMP', type: 'notification dedicated'},
                   {name: 'SYSTEM_OUT', type: 'testing dedicated'}],
         typeRetention: ["week","month","quarter","year","two_years", "five_years"],
+        indexShapes: ["daily","monthly"],
         dialog: false,
         editedItem: {
           "typeOutput": "ELASTICSEARCH",
           "parameterOutput": {
             "topicOut": "output-topic",
             "elasticsearchRetentionLevel": "week",
+            "indexShape": "daily",
             "webHookURL": "",
             "template": "",
           }
@@ -140,6 +147,7 @@
           "parameterOutput": {
             "topicOut": "output-topic",
             "elasticsearchRetentionLevel": "week",
+            "indexShape": "daily",
             "webHookURL": "",
             "template": "",
           }

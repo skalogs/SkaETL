@@ -40,10 +40,10 @@ public class ESBuffer {
         reset();
     }
 
-    public void add(Date timestamp, String project, String type, RetentionLevel retentionLevel, String value, String id) {
+    public void add(Date timestamp, String project, String type, RetentionLevel retentionLevel, IndexShape indexShape, String value, String id) {
         sizeInBytes += value.length();
 
-        String pattern = "yyyy-MM-dd";
+        String pattern = indexShapePattern(indexShape, retentionLevel);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
         String index = esConfiguration.getCustomIndexPrefix() + "-" + project + "-" + type + "-" + String.format("%04d", retentionLevel.nbDays) + "-" + simpleDateFormat.format(timestamp);
         values.add(value);
@@ -54,6 +54,27 @@ public class ESBuffer {
                         .type(project + "-" + type)
                         .id(elasticSearchId)
                         .source(value, XContentType.JSON));
+    }
+
+    private String indexShapePattern(IndexShape indexShape, RetentionLevel retentionLevel) {
+        String dailyPattern = "yyyy-MM-dd";
+        //backward compatibility
+        if (indexShape == null) {
+            return dailyPattern;
+        }
+        //make no sense to build monthly indexes with those retention
+        if (retentionLevel == RetentionLevel.day || retentionLevel == RetentionLevel.week) {
+            return dailyPattern;
+        }
+        switch (indexShape) {
+            case monthly:
+                return "yyyy-MM";
+            case daily:
+
+                return dailyPattern;
+            default:
+                throw new IllegalArgumentException("Index shape not supported : " + indexShape);
+        }
     }
 
     private String generateId(String value) {
