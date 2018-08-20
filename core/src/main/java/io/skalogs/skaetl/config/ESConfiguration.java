@@ -30,7 +30,7 @@ public class ESConfiguration {
     private String serviceElasticsearchUsername;
     private String serviceElasticsearchPassword;
     private boolean sniff = true;
-    private Integer socketTimeout;
+    private Integer socketTimeout = 30;
     private String customIndexPrefix;
     private Integer connectionTimeout = 30;
 
