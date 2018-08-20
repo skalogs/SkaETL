@@ -17,9 +17,6 @@ import org.springframework.context.annotation.Configuration;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
-import java.util.concurrent.TimeUnit;
-
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 @Getter
 @Setter
@@ -34,10 +31,8 @@ public class ESConfiguration {
     private String serviceElasticsearchPassword;
     private boolean sniff = true;
     private Integer clientTransportPingTimeout;
-    private TimeUnit clientTransportPingTimeoutUnit = SECONDS;
-    private Integer clientNodesSamplerInterval;
-    private TimeUnit clientNodesSamplerIntervalUnit = SECONDS;
     private String customIndexPrefix;
+    private Integer connectionTimeout = 30;
 
     @Bean
     public RestHighLevelClient elasticsearchRestConnection(ESConfiguration esConfiguration) {
@@ -60,7 +55,9 @@ public class ESConfiguration {
         builder.setRequestConfigCallback(new RestClientBuilder.RequestConfigCallback() {
             @Override
             public RequestConfig.Builder customizeRequestConfig(RequestConfig.Builder requestConfigBuilder) {
-                return requestConfigBuilder.setSocketTimeout(esConfiguration.getClientTransportPingTimeout() * 1000);
+                return requestConfigBuilder
+                        .setConnectTimeout(esConfiguration.getConnectionTimeout() * 1000)
+                        .setSocketTimeout(esConfiguration.getClientTransportPingTimeout() * 1000);
             }
         });
         return new RestHighLevelClient(builder);
