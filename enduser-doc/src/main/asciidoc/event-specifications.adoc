@@ -34,8 +34,12 @@ example :
 
 __Field names must only use these characters__: `[a-zA-Z0-9_@-]` and have less than 256 characters
 
-The following suffixes must be used if you with to change the field link:https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html[data type].
+The following suffixes must be used if you want to force the type of a field link:https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping-types.html[data type].
 
+* Text that could be found using full text search must be suffixed by `_text`
+* Text that could be used as aggregate value must be suffixed by `_keyword`
+* For double values `_double`
+* For long values `_long`
 * String standardised (lowercase) with tokenizer link:https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-uaxurlemail-tokenizer.html[uax_url_email] of type  with `_ue`
 ** good for mail/username and url in search and graph using terms
 * String standardised (lowercase) with tokenizer link:https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-pathhierarchy-tokenizer.html[path_hierarchy] with `_path`
