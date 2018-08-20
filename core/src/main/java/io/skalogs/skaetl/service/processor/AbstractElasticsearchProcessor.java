@@ -64,7 +64,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
                     public void afterBulk(long executionId,
                                           BulkRequest request,
                                           Throwable failure) {
-                        log.error(getApplicationId() + " got technical error",  failure.getMessage());
+                        log.error(getApplicationId() + " got technical error",  failure);
                         parseErrorsTechnical(request);
                     }
                 })
