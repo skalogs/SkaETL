@@ -45,8 +45,6 @@ elasticsearch.port: 9200
 elasticsearch.clusterName: docker-cluster
 elasticsearch.serviceElasticsearchUsername: elastic
 elasticsearch.serviceElasticsearchPassword: changeme
-elasticsearch.clientTransportPingTimeout: 10
-elasticsearch.clientNodesSamplerInterval: 10
 elasticsearch.customIndexPrefix: "index-dev"
 
 buffer-elasticsearch.delayBackoff:  30

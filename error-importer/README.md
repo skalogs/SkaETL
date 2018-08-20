@@ -39,7 +39,7 @@ example
 * elasticsearch.clusterName: docker-cluster
 * elasticsearch.serviceElasticsearchUsername: elastic
 * elasticsearch.serviceElasticsearchPassword: changeme
-* elasticsearch.clientTransportPingTimeout: 10
+* elasticsearch.socketTimeout: 10
 * elasticsearch.clientNodesSamplerInterval: 10
 * elasticsearch.customIndexPrefix: All index create by Importer are prefixed via this parameter
 

@@ -30,7 +30,7 @@ public class ESConfiguration {
     private String serviceElasticsearchUsername;
     private String serviceElasticsearchPassword;
     private boolean sniff = true;
-    private Integer clientTransportPingTimeout;
+    private Integer socketTimeout;
     private String customIndexPrefix;
     private Integer connectionTimeout = 30;
 
@@ -51,13 +51,13 @@ public class ESConfiguration {
                 new BasicHeader(HttpHeaders.AUTHORIZATION, "Basic " + authB64)
         };
         builder.setDefaultHeaders(defaultHeaders);
-        builder.setMaxRetryTimeoutMillis(esConfiguration.getClientTransportPingTimeout() * 1000);
+        builder.setMaxRetryTimeoutMillis(esConfiguration.getSocketTimeout() * 1000);
         builder.setRequestConfigCallback(new RestClientBuilder.RequestConfigCallback() {
             @Override
             public RequestConfig.Builder customizeRequestConfig(RequestConfig.Builder requestConfigBuilder) {
                 return requestConfigBuilder
                         .setConnectTimeout(esConfiguration.getConnectionTimeout() * 1000)
-                        .setSocketTimeout(esConfiguration.getClientTransportPingTimeout() * 1000);
+                        .setSocketTimeout(esConfiguration.getSocketTimeout() * 1000);
             }
         });
         return new RestHighLevelClient(builder);
