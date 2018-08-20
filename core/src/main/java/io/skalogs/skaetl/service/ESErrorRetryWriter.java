@@ -49,17 +49,19 @@ public class ESErrorRetryWriter {
 
 
     public void sendToErrorTopic(String applicationId, ErrorData errorData) {
+        JsonNode value = JSONUtils.getInstance().parse(errorData.message);
+        String type = value.has("type") ?  value.get("type").asText() : "unknown";
         Metrics.counter("skaetl_nb_produce_message_kafka_count",
                 Lists.newArrayList(
                         Tag.of("processConsumerName", applicationId),
                         Tag.of("topic", kafkaConfiguration.getErrorTopic()),
-                        Tag.of("type", errorData.getTypeValidation())
+                        Tag.of("type", type)
                 )
         ).increment();
         Metrics.counter("skaetl_nb_produce_error_kafka_count",
                 Lists.newArrayList(
                         Tag.of("processConsumerName", applicationId),
-                        Tag.of("type", errorData.getTypeValidation()),
+                        Tag.of("type", type),
                         Tag.of("reason", errorData.getErrorReason())
                 )
         ).increment();
