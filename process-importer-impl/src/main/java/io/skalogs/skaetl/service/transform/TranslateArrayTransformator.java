@@ -19,7 +19,7 @@ public class TranslateArrayTransformator extends TransformatorProcess {
             //GeoJSON spec :)
             if (jsonNode.isArray()) {
                 for (final JsonNode arrayEntry : jsonNode) {
-                    put(jsonValue, StringUtils.lowerCase(arrayEntry.asText()), "true");
+                    put(jsonValue, StringUtils.lowerCase(parameterTransformation.getKeyField() + "-" + arrayEntry.asText()), "true");
                 }
             }
         }

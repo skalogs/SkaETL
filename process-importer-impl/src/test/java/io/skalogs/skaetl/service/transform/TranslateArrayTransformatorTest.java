@@ -23,9 +23,9 @@ public class TranslateArrayTransformatorTest {
                         .keyField("tags")
                         .build(),
                 jsonValue);
-        assertThat(jsonValue.path("one").asText()).isEqualTo("true");
-        assertThat(jsonValue.path("two").asText()).isEqualTo("true");
-        assertThat(jsonValue.path("three").asText()).isEqualTo("true");
+        assertThat(jsonValue.path("tags-one").asText()).isEqualTo("true");
+        assertThat(jsonValue.path("tags-two").asText()).isEqualTo("true");
+        assertThat(jsonValue.path("tags-three").asText()).isEqualTo("true");
     }
 
     @Test
@@ -42,8 +42,8 @@ public class TranslateArrayTransformatorTest {
                         .keyField("missing")
                         .build(),
                 jsonValue);
-        assertThat(jsonValue.path("one").isMissingNode()).isTrue();
-        assertThat(jsonValue.path("two").isMissingNode()).isTrue();
-        assertThat(jsonValue.path("three").isMissingNode()).isTrue();
+        assertThat(jsonValue.path("tags-one").isMissingNode()).isTrue();
+        assertThat(jsonValue.path("tags-two").isMissingNode()).isTrue();
+        assertThat(jsonValue.path("tags-three").isMissingNode()).isTrue();
     }
 }
