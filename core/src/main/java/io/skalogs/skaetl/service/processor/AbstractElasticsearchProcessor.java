@@ -65,13 +65,13 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
                                           BulkRequest request,
                                           Throwable failure) {
                         log.error(getApplicationId() + " got technical error",  failure);
-                        parseErrorsTechnical(request);
+                        parseErrorsTechnical(request,failure);
                     }
                 })
                 .setBulkActions(esBufferConfiguration.getMaxElements())
                 .setBulkSize(new ByteSizeValue(esBufferConfiguration.getMaxSize(), esBufferConfiguration.getByteSizeUnit()))
                 .setFlushInterval(TimeValue.timeValueMillis(esBufferConfiguration.getMaxTimeUnit().toMillis(esBufferConfiguration.getMaxTime())))
-                .setConcurrentRequests(1)
+                .setConcurrentRequests(esBufferConfiguration.getConcurrentRequests())
                 .setBackoffPolicy(esBufferConfiguration.toBackOffPolicy())
                 .build();
         this.esConfiguration = esConfiguration;
@@ -129,11 +129,20 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
                 .toString();
     }
 
-    private void parseErrorsTechnical(BulkRequest bulkRequest) {
+    private void parseErrorsTechnical(BulkRequest bulkRequest, Throwable failure) {
         bulkRequest.requests().stream()
                 .filter(request -> request.opType() == DocWriteRequest.OpType.INDEX)
                 .map(this::toRawMessage)
-                .forEach(itemRaw -> esErrorRetryWriter.sendToRetryTopic(getApplicationId(), itemRaw));
+                .forEach(rawMessage -> routeErrorTechnical(rawMessage,failure));
+
+    }
+
+    private void routeErrorTechnical(String rawMessage, Throwable failure) {
+        if (isRetryableException(failure.toString())) {
+            esErrorRetryWriter.sendToRetryTopic(getApplicationId(), rawMessage);
+        } else {
+            produceErrorToKafka(failure.getMessage(), rawMessage);
+        }
 
     }
 
@@ -191,7 +200,11 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
 
     public boolean isRetryable(BulkItemResponse bir) {
         return bir.getType().equals("elasticsearch_http_ko")
-                || contains(bir.getFailureMessage(), "java.net");
+                || isRetryableException(bir.getFailureMessage());
+    }
+
+    private boolean isRetryableException(String message) {
+        return contains(message, "java.net");
     }
 
     public String getApplicationId() {

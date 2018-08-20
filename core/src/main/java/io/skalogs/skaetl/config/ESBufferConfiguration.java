@@ -20,14 +20,15 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @ConfigurationProperties(prefix = "buffer-elasticsearch")
 public class ESBufferConfiguration {
     private Integer maxElements = 2000;
-    private  Integer maxSize = 1;
-    private  ByteSizeUnit byteSizeUnit = ByteSizeUnit.MB;
-    private  Integer maxTime = 1;
-    private  TimeUnit maxTimeUnit = SECONDS;
-    private  ElasticsearchBackoffPolicy backoffPolicy = ElasticsearchBackoffPolicy.NO_BACKOFF;
-    private  Integer delayBackoff = 1;
-    private  TimeUnit delayBackoffTimeUnit = SECONDS;
-    private  Integer backoffMaxRetry = 3;
+    private Integer maxSize = 1;
+    private ByteSizeUnit byteSizeUnit = ByteSizeUnit.MB;
+    private Integer maxTime = 1;
+    private TimeUnit maxTimeUnit = SECONDS;
+    private ElasticsearchBackoffPolicy backoffPolicy = ElasticsearchBackoffPolicy.NO_BACKOFF;
+    private Integer delayBackoff = 1;
+    private TimeUnit delayBackoffTimeUnit = SECONDS;
+    private Integer backoffMaxRetry = 3;
+    private Integer concurrentRequests = 5;
 
 
     public BackoffPolicy toBackOffPolicy() {
