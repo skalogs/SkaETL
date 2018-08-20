@@ -32,10 +32,14 @@ public class JSONUtils {
 
     public JsonNode parse(String raw) {
         try {
-            return objectMapper.readTree(raw);
+            return parseWithError(raw);
         } catch (IOException e) {
             return null;
         }
+    }
+
+    public JsonNode parseWithError(String raw) throws IOException {
+            return objectMapper.readTree(raw);
     }
 
     public ObjectNode parseObj(String raw) {
