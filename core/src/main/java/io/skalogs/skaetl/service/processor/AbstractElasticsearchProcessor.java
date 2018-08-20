@@ -39,6 +39,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
 
     protected AbstractElasticsearchProcessor(ESErrorRetryWriter esErrorRetryWriter, RestHighLevelClient elasticsearchClient, ESBufferConfiguration esBufferConfiguration, ESConfiguration esConfiguration) {
         this.esErrorRetryWriter = esErrorRetryWriter;
+        log.info("Using buffer config {}", esBufferConfiguration);
         this.bulkProcessor = BulkProcessor.builder((request, bulkListener) -> elasticsearchClient.bulkAsync(request, bulkListener),
                 new BulkProcessor.Listener() {
                     @Override

@@ -2,6 +2,7 @@ package io.skalogs.skaetl.config;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Header;
 import org.apache.http.HttpHeaders;
@@ -23,6 +24,7 @@ import java.util.Base64;
 @Configuration
 @ConfigurationProperties(prefix = "elasticsearch")
 @Slf4j
+@ToString(exclude = "serviceElasticsearchPassword")
 public class ESConfiguration {
     private String host;
     private String port;
@@ -33,6 +35,7 @@ public class ESConfiguration {
     private Integer socketTimeout = 30;
     private String customIndexPrefix;
     private Integer connectionTimeout = 30;
+    private Integer connectionRequestTimeout = 0;
 
     @Bean
     public RestHighLevelClient elasticsearchRestConnection(ESConfiguration esConfiguration) {
@@ -56,6 +59,7 @@ public class ESConfiguration {
             @Override
             public RequestConfig.Builder customizeRequestConfig(RequestConfig.Builder requestConfigBuilder) {
                 return requestConfigBuilder
+                        .setConnectionRequestTimeout(connectionRequestTimeout)
                         .setConnectTimeout(esConfiguration.getConnectionTimeout() * 1000)
                         .setSocketTimeout(esConfiguration.getSocketTimeout() * 1000);
             }
