@@ -2,7 +2,8 @@ package io.skalogs.skaetl.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import io.skalogs.skaetl.domain.ESBuffer;
+import io.skalogs.skaetl.config.ESBufferConfiguration;
+import io.skalogs.skaetl.config.ESConfiguration;
 import io.skalogs.skaetl.domain.ErrorData;
 import io.skalogs.skaetl.domain.IndexShape;
 import io.skalogs.skaetl.domain.RetentionLevel;
@@ -10,7 +11,9 @@ import io.skalogs.skaetl.service.processor.AbstractElasticsearchProcessor;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.slf4j.MDC;
 
 import java.text.ParseException;
@@ -22,8 +25,8 @@ public class ErrorToElasticsearchProcessor extends AbstractElasticsearchProcesso
     private static final String ERRORS = "errors";
     private final ISO8601DateFormat df = new ISO8601DateFormat();
 
-    public ErrorToElasticsearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter) {
-        super(esBuffer, esErrorRetryWriter);
+    public ErrorToElasticsearchProcessor(ESErrorRetryWriter esErrorRetryWriter, RestHighLevelClient elasticsearchClient, ESBufferConfiguration esBufferConfiguration, ESConfiguration esConfiguration) {
+        super(esErrorRetryWriter, elasticsearchClient, esBufferConfiguration, esConfiguration);
     }
 
     @Override
@@ -40,7 +43,7 @@ public class ErrorToElasticsearchProcessor extends AbstractElasticsearchProcesso
 
 
     @Override
-    protected void parseResultErrors(BulkResponse bulkItemResponses) {
+    protected void parseResultErrors(BulkRequest request, BulkResponse bulkItemResponses) {
         for (BulkItemResponse bir : bulkItemResponses) {
             MDC.put("item_error", bir.getFailureMessage());
             log.info("EsError" + bir.getFailureMessage());

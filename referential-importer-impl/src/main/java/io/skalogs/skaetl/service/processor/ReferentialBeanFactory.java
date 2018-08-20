@@ -2,7 +2,6 @@ package io.skalogs.skaetl.service.processor;
 
 import io.skalogs.skaetl.config.ESBufferConfiguration;
 import io.skalogs.skaetl.config.ESConfiguration;
-import io.skalogs.skaetl.domain.ESBuffer;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
 import lombok.AllArgsConstructor;
@@ -23,15 +22,13 @@ public class ReferentialBeanFactory {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ReferentialElasticsearchProcessor referentialElasticsearchProcessor(RetentionLevel retentionLevel) {
-        ESBuffer esBuffer = new ESBuffer(client, esBufferConfiguration, esConfiguration);
-        return new ReferentialElasticsearchProcessor(esBuffer, esErrorRetryWriter, retentionLevel);
+        return new ReferentialElasticsearchProcessor(esErrorRetryWriter, client, esBufferConfiguration, esConfiguration, retentionLevel);
     }
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ReferentialEventToElasticSearchProcessor referentialEventToElasticSearchProcessor(RetentionLevel retentionLevel) {
-        ESBuffer esBuffer = new ESBuffer(client, esBufferConfiguration, esConfiguration);
-        return new ReferentialEventToElasticSearchProcessor(esBuffer, esErrorRetryWriter, retentionLevel);
+        return new ReferentialEventToElasticSearchProcessor(esErrorRetryWriter, client, esBufferConfiguration, esConfiguration,retentionLevel);
     }
 
 

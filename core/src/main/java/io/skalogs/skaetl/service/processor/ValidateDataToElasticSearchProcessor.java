@@ -1,19 +1,21 @@
 package io.skalogs.skaetl.service.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.skalogs.skaetl.domain.ESBuffer;
+import io.skalogs.skaetl.config.ESBufferConfiguration;
+import io.skalogs.skaetl.config.ESConfiguration;
 import io.skalogs.skaetl.domain.IndexShape;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.domain.ValidateData;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.RestHighLevelClient;
 
 @Slf4j
 public class ValidateDataToElasticSearchProcessor extends AbstractElasticsearchProcessor<String, ValidateData> {
 
-    public ValidateDataToElasticSearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter) {
-        super(esBuffer, esErrorRetryWriter);
+    public ValidateDataToElasticSearchProcessor(ESErrorRetryWriter esErrorRetryWriter, RestHighLevelClient elasticsearchClient, ESBufferConfiguration esBufferConfiguration, ESConfiguration esConfiguration) {
+        super(esErrorRetryWriter, elasticsearchClient, esBufferConfiguration, esConfiguration);
     }
 
     @Override

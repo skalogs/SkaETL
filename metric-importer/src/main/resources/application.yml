@@ -39,10 +39,6 @@ elasticsearch.clientTransportPingTimeout: 10
 elasticsearch.clientNodesSamplerInterval: 10
 elasticsearch.customIndexPrefix: "index-dev"
 
-bufferElasticsearch.maxElements: 10
-bufferElasticsearch.maxSizeInBytes: 10000
-bufferElasticsearch.maxTime: 1
-
 kafka.topic: processtopic
 kafka.bootstrapServers: localhost:9092
 kafka.pollingTime: 1000

@@ -2,11 +2,13 @@ package io.skalogs.skaetl.service.processor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import io.skalogs.skaetl.domain.ESBuffer;
+import io.skalogs.skaetl.config.ESBufferConfiguration;
+import io.skalogs.skaetl.config.ESConfiguration;
 import io.skalogs.skaetl.domain.IndexShape;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.text.ParseException;
 
@@ -15,8 +17,8 @@ public class ReferentialEventToElasticSearchProcessor extends AbstractElasticsea
     private final ISO8601DateFormat df = new ISO8601DateFormat();
     private final RetentionLevel retentionLevel;
 
-    public ReferentialEventToElasticSearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter, RetentionLevel retentionLevel) {
-        super(esBuffer, esErrorRetryWriter);
+    public ReferentialEventToElasticSearchProcessor(ESErrorRetryWriter esErrorRetryWriter, RestHighLevelClient elasticsearchClient, ESBufferConfiguration esBufferConfiguration, ESConfiguration esConfiguration, RetentionLevel retentionLevel) {
+        super(esErrorRetryWriter, elasticsearchClient, esBufferConfiguration, esConfiguration);
         this.retentionLevel = retentionLevel;
     }
 
@@ -26,7 +28,7 @@ public class ReferentialEventToElasticSearchProcessor extends AbstractElasticsea
         String valueAsString = jsonNode.toString();
         String timestamp = jsonNode.path("timestamp").asText();
         try {
-            processToElasticsearch(df.parse(timestamp), jsonNode.path("project").asText(), jsonNode.path("type").asText(), retentionLevel, IndexShape.daily, valueAsString, valueAsString);
+            processToElasticsearch(df.parse(timestamp), jsonNode.path("project").asText(), jsonNode.path("type").asText(), retentionLevel, IndexShape.daily, valueAsString);
         } catch (ParseException e) {
             log.error("Couldn't extract timestamp " + jsonNode.toString(), e);
         }

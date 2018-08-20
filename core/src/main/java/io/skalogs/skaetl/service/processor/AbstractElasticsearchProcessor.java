@@ -4,26 +4,78 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.google.common.collect.Lists;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
+import io.skalogs.skaetl.config.ESBufferConfiguration;
+import io.skalogs.skaetl.config.ESConfiguration;
 import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.elasticsearch.action.DocWriteRequest;
 import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkProcessor;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.slf4j.MDC;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.xcontent.XContentType;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.google.common.hash.Hashing.murmur3_128;
+import static java.nio.charset.Charset.defaultCharset;
 import static org.apache.commons.lang3.StringUtils.contains;
 
-@AllArgsConstructor
 @Slf4j
 @Getter
 public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutputProcessor<K, V> {
 
-    private final ESBuffer esBuffer;
     private final ESErrorRetryWriter esErrorRetryWriter;
+    private final ESConfiguration esConfiguration;
+    private final BulkProcessor bulkProcessor;
+
+    protected AbstractElasticsearchProcessor(ESErrorRetryWriter esErrorRetryWriter, RestHighLevelClient elasticsearchClient, ESBufferConfiguration esBufferConfiguration, ESConfiguration esConfiguration) {
+        this.esErrorRetryWriter = esErrorRetryWriter;
+        this.bulkProcessor = BulkProcessor.builder((request, bulkListener) -> elasticsearchClient.bulkAsync(request, bulkListener),
+                new BulkProcessor.Listener() {
+                    @Override
+                    public void beforeBulk(long executionId,
+                                           BulkRequest request) {
+                        log.info("{} flushing {} ...", getApplicationId(), request.numberOfActions());
+                    }
+
+                    @Override
+                    public void afterBulk(long executionId,
+                                          BulkRequest request,
+                                          BulkResponse response) {
+                        log.info("{} injected {} in {}", getApplicationId(), response.getItems().length, response.getTook().toString());
+
+                        if (response.hasFailures()) {
+                            //parse result for check if error or not
+                            log.info("{} failures {}  {} ", getApplicationId(), response.hasFailures(), response.buildFailureMessage());
+                            parseResultErrors(request, response);
+                        }
+                    }
+
+                    @Override
+                    public void afterBulk(long executionId,
+                                          BulkRequest request,
+                                          Throwable failure) {
+                        log.error(getApplicationId() + " got technical error",  failure.getMessage());
+                        parseErrorsTechnical(request);
+                    }
+                })
+                .setBulkActions(esBufferConfiguration.getMaxElements())
+                .setBulkSize(new ByteSizeValue(esBufferConfiguration.getMaxSize(), esBufferConfiguration.getByteSizeUnit()))
+                .setFlushInterval(TimeValue.timeValueMillis(esBufferConfiguration.getMaxTimeUnit().toMillis(esBufferConfiguration.getMaxTime())))
+                .setConcurrentRequests(1)
+                .setBackoffPolicy(esBufferConfiguration.toBackOffPolicy())
+                .build();
+        this.esConfiguration = esConfiguration;
+    }
 
     protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, IndexShape indexShape, String valueAsString) {
         processToElasticsearch(date, project, type, retentionLevel, indexShape, valueAsString, null);
@@ -33,54 +85,78 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     protected void processToElasticsearch(Date date, String project, String type, RetentionLevel retentionLevel, IndexShape indexShape, String valueAsString, String id) {
         Metrics.counter("skaetl_nb_write_es_common",
                 Lists.newArrayList(
-                        Tag.of("processConsumerName",getApplicationId() != null ? getApplicationId() : "forRetryApplication"),
-                        Tag.of("project",project),
-                        Tag.of("type",type)
+                        Tag.of("processConsumerName", getApplicationId()),
+                        Tag.of("project", project),
+                        Tag.of("type", type)
                 )
         ).increment();
-        esBuffer.add(date, project, type, retentionLevel, indexShape, valueAsString, id);
-        if (esBuffer.needFlush()) {
-            log.info("{} Flushing {}", getApplicationId() != null ? getApplicationId() : "forRetryApplication", esBuffer.values().size());
-            try {
-                BulkResponse bulkItemResponses = esBuffer.flush();
-                if (bulkItemResponses != null && bulkItemResponses.hasFailures()) {
-                    //parse result for check if error or not
-                    parseResultErrors(bulkItemResponses);
-                }
-            } catch (Exception e) {
-                parseErrorsTechnical();
-            } finally {
-                esBuffer.reset();
-            }
+        String pattern = indexShapePattern(indexShape, retentionLevel);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+        String index = esConfiguration.getCustomIndexPrefix() + "-" + project + "-" + type + "-" + String.format("%04d", retentionLevel.nbDays) + "-" + simpleDateFormat.format(date);
+        String elasticSearchId = StringUtils.isNotBlank(id) ? generateId(id) : generateId(valueAsString);
+        bulkProcessor.add(
+                new IndexRequest(index.toLowerCase(), project + "-" + type, elasticSearchId)
+                        .source(valueAsString, XContentType.JSON));
+    }
+
+    private String indexShapePattern(IndexShape indexShape, RetentionLevel retentionLevel) {
+        String dailyPattern = "yyyy-MM-dd";
+        //backward compatibility
+        if (indexShape == null) {
+            return dailyPattern;
+        }
+        //make no sense to build monthly indexes with those retention
+        if (retentionLevel == RetentionLevel.day || retentionLevel == RetentionLevel.week) {
+            return dailyPattern;
+        }
+        switch (indexShape) {
+            case monthly:
+                return "yyyy-MM";
+            case daily:
+
+                return dailyPattern;
+            default:
+                throw new IllegalArgumentException("Index shape not supported : " + indexShape);
         }
     }
 
-    private void parseErrorsTechnical() {
-        //send all value into topic retry
-        if(!esBuffer.values().isEmpty()) {
-            esBuffer
-                    .values()
-                    .stream()
-                    .forEach(itemRaw -> esErrorRetryWriter.sendToRetryTopic(getApplicationId() != null ? getApplicationId() : "forRetryApplication", itemRaw));
-        }
+
+    private String generateId(String value) {
+        return murmur3_128()
+                .newHasher()
+                .putString(value, defaultCharset())
+                .hash()
+                .toString();
+    }
+
+    private void parseErrorsTechnical(BulkRequest bulkRequest) {
+        bulkRequest.requests().stream()
+                .filter(request -> request.opType() == DocWriteRequest.OpType.INDEX)
+                .map(this::toRawMessage)
+                .forEach(itemRaw -> esErrorRetryWriter.sendToRetryTopic(getApplicationId(), itemRaw));
 
     }
 
-    protected void parseResultErrors(BulkResponse bulkItemResponses) {
+    private String toRawMessage(DocWriteRequest docWriteRequest) {
+        if (docWriteRequest.opType() == DocWriteRequest.OpType.INDEX) {
+            IndexRequest indexRequest = (IndexRequest) docWriteRequest;
+            return new String(indexRequest.source().toBytesRef().utf8ToString());
+        }
+        return null;
+    }
+
+    protected void parseResultErrors(BulkRequest request, BulkResponse bulkItemResponses) {
         for (BulkItemResponse bir : bulkItemResponses) {
-            MDC.put("item_error", bir.getFailureMessage());
-            log.info("EsError {} ", bir.getFailureMessage());
-            MDC.remove("item_error");
+            DocWriteRequest docWriteRequest = request.requests().get(bir.getItemId());
             if (bir.isFailed() && isRetryable(bir)) {
-                routeToNextTopic(bir, false);
+                routeToNextTopic(bir, toRawMessage(docWriteRequest), false);
             } else {
-                routeToNextTopic(bir, true);
+                routeToNextTopic(bir, toRawMessage(docWriteRequest), true);
             }
         }
     }
 
-    private void routeToNextTopic(BulkItemResponse bulkItemResponse, boolean isErrorTopic) {
-        String itemRaw = esBuffer.getItem(bulkItemResponse.getItemId());
+    private void routeToNextTopic(BulkItemResponse bulkItemResponse, String itemRaw, boolean isErrorTopic) {
         log.debug("target bir is failed {} msg fail {} itemRaw {}", bulkItemResponse.isFailed(), bulkItemResponse.getFailureMessage(), itemRaw);
         if (itemRaw == null) {
             produceErrorToKafka(ValidateData.builder()

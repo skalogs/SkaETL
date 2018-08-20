@@ -49,9 +49,8 @@ elasticsearch.clientTransportPingTimeout: 10
 elasticsearch.clientNodesSamplerInterval: 10
 elasticsearch.customIndexPrefix: "index-dev"
 
-bufferElasticsearch.maxElements: 10
-bufferElasticsearch.maxSizeInBytes: 100
-bufferElasticsearch.maxTime: 1
+buffer-elasticsearch.delayBackoff:  30
+buffer-elasticsearch.backoffMaxRetry:  100
 
 kafka.topic: retrytopic
 kafka.errorTopic: errorTopic

@@ -2,11 +2,13 @@ package io.skalogs.skaetl.service.processor;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
-import io.skalogs.skaetl.domain.ESBuffer;
+import io.skalogs.skaetl.config.ESBufferConfiguration;
+import io.skalogs.skaetl.config.ESConfiguration;
 import io.skalogs.skaetl.domain.IndexShape;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.RestHighLevelClient;
 
 import java.text.ParseException;
 
@@ -16,8 +18,8 @@ public class JsonNodeToElasticSearchProcessor extends AbstractElasticsearchProce
     private final RetentionLevel retentionLevel;
     private final IndexShape indexShape;
 
-    public JsonNodeToElasticSearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter, RetentionLevel retentionLevel, IndexShape indexShape) {
-        super(esBuffer, esErrorRetryWriter);
+    public JsonNodeToElasticSearchProcessor(ESErrorRetryWriter esErrorRetryWriter, RestHighLevelClient elasticsearchClient, ESBufferConfiguration esBufferConfiguration, ESConfiguration esConfiguration, RetentionLevel retentionLevel, IndexShape indexShape) {
+        super(esErrorRetryWriter, elasticsearchClient, esBufferConfiguration, esConfiguration);
         this.retentionLevel = retentionLevel;
         this.indexShape = indexShape;
     }

@@ -2,7 +2,6 @@ package io.skalogs.skaetl.service.processor;
 
 import io.skalogs.skaetl.config.ESBufferConfiguration;
 import io.skalogs.skaetl.config.ESConfiguration;
-import io.skalogs.skaetl.domain.ESBuffer;
 import io.skalogs.skaetl.domain.IndexShape;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.service.ESErrorRetryWriter;
@@ -24,15 +23,13 @@ public class ProcessorBeanFactory {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public ValidateDataToElasticSearchProcessor validateDataToElasticSearchProcessor() {
-        ESBuffer esBuffer = new ESBuffer(client, esBufferConfiguration, esConfiguration);
-        return new ValidateDataToElasticSearchProcessor(esBuffer, esErrorRetryWriter);
+        return new ValidateDataToElasticSearchProcessor(esErrorRetryWriter,client, esBufferConfiguration, esConfiguration);
     }
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public JsonNodeToElasticSearchProcessor jsonNodeToElasticSearchProcessor(RetentionLevel retentionLevel, IndexShape indexShape) {
-        ESBuffer esBuffer = new ESBuffer(client, esBufferConfiguration, esConfiguration);
-        return new JsonNodeToElasticSearchProcessor(esBuffer, esErrorRetryWriter, retentionLevel, indexShape);
+        return new JsonNodeToElasticSearchProcessor(esErrorRetryWriter, client, esBufferConfiguration, esConfiguration, retentionLevel, indexShape);
     }
 
     @Bean

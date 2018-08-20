@@ -1,7 +1,8 @@
 package io.skalogs.skaetl.rules.metrics.processor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.skalogs.skaetl.domain.ESBuffer;
+import io.skalogs.skaetl.config.ESBufferConfiguration;
+import io.skalogs.skaetl.config.ESConfiguration;
 import io.skalogs.skaetl.domain.IndexShape;
 import io.skalogs.skaetl.domain.RetentionLevel;
 import io.skalogs.skaetl.rules.metrics.domain.Keys;
@@ -10,6 +11,7 @@ import io.skalogs.skaetl.service.ESErrorRetryWriter;
 import io.skalogs.skaetl.service.processor.AbstractElasticsearchProcessor;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.RestHighLevelClient;
 
 @Slf4j
 public class MetricsElasticsearchProcessor extends AbstractElasticsearchProcessor<Keys, MetricResult> {
@@ -17,8 +19,8 @@ public class MetricsElasticsearchProcessor extends AbstractElasticsearchProcesso
     private final RetentionLevel retentionLevel;
     private final IndexShape indexShape;
 
-    public MetricsElasticsearchProcessor(ESBuffer esBuffer, ESErrorRetryWriter esErrorRetryWriter, RetentionLevel retention, IndexShape indexShape) {
-        super(esBuffer, esErrorRetryWriter);
+    public MetricsElasticsearchProcessor(ESErrorRetryWriter esErrorRetryWriter, RestHighLevelClient elasticsearchClient, ESBufferConfiguration esBufferConfiguration, ESConfiguration esConfiguration, RetentionLevel retention, IndexShape indexShape) {
+        super(esErrorRetryWriter, elasticsearchClient, esBufferConfiguration, esConfiguration);
         retentionLevel = retention;
         this.indexShape = indexShape;
     }
