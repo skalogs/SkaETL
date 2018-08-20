@@ -51,6 +51,7 @@ elasticsearch.customIndexPrefix: "index-dev"
 
 buffer-elasticsearch.delayBackoff:  30
 buffer-elasticsearch.backoffMaxRetry:  100
+buffer-elasticsearch.backoffPolicy:  "EXPONENTIAL_BACKOFF"
 
 kafka.topic: retrytopic
 kafka.errorTopic: errorTopic
