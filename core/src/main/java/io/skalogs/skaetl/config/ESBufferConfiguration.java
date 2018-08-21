@@ -4,6 +4,7 @@ package io.skalogs.skaetl.config;
 import io.skalogs.skaetl.domain.ElasticsearchBackoffPolicy;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.TimeValue;
@@ -18,6 +19,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "buffer-elasticsearch")
+@ToString
 public class ESBufferConfiguration {
     private Integer maxElements = 2000;
     private Integer maxSize = 1;
