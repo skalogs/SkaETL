@@ -49,6 +49,21 @@ public class RenameFieldTransformatorTest {
     }
 
     @Test
+    public void should_Process_Nested_SameObject_Ok() throws Exception {
+        RenameFieldTransformator renameFieldValidator = new RenameFieldTransformator(TypeValidation.RENAME_FIELD);
+        String value = "{\"something\":\"test\",\"comment\": {\"value\":\"value1\"}}";
+        ObjectNode jsonValue = JSONUtils.getInstance().parseObj(value);
+
+        renameFieldValidator.apply(null, ParameterTransformation.builder()
+                .composeField(ProcessKeyValue.builder()
+                        .key("comment.value")
+                        .value("comment")
+                        .build()
+                ).build(), jsonValue);
+        assertThat(JSONUtils.getInstance().at(jsonValue, "comment").asText()).isEqualTo("value1");
+    }
+
+    @Test
     public void should_Process_Ko() throws Exception {
         RenameFieldTransformator renameFieldValidator = new RenameFieldTransformator(TypeValidation.RENAME_FIELD);
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("project").type("type").build();
