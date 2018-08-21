@@ -163,10 +163,12 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     protected void parseResultErrors(BulkRequest request, BulkResponse bulkItemResponses) {
         for (BulkItemResponse bir : bulkItemResponses) {
             DocWriteRequest docWriteRequest = request.requests().get(bir.getItemId());
-            if (bir.isFailed() && isRetryable(bir)) {
-                routeToNextTopic(bir, toRawMessage(docWriteRequest), false);
-            } else {
-                routeToNextTopic(bir, toRawMessage(docWriteRequest), true);
+            if (bir.isFailed()) {
+                if (isRetryable(bir)) {
+                    routeToNextTopic(bir, toRawMessage(docWriteRequest), false);
+                } else {
+                    routeToNextTopic(bir, toRawMessage(docWriteRequest), true);
+                }
             }
         }
     }
