@@ -40,6 +40,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
 
     protected AbstractElasticsearchProcessor(ESErrorRetryWriter esErrorRetryWriter, RestHighLevelClient elasticsearchClient, ESBufferConfiguration esBufferConfiguration, ESConfiguration esConfiguration) {
         this.esErrorRetryWriter = esErrorRetryWriter;
+        log.info("Using es config {}", esConfiguration);
         log.info("Using buffer config {}", esBufferConfiguration);
         this.bulkProcessor = BulkProcessor.builder((request, bulkListener) -> elasticsearchClient.bulkAsync(request, bulkListener),
                 new BulkProcessor.Listener() {
@@ -66,8 +67,8 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
                     public void afterBulk(long executionId,
                                           BulkRequest request,
                                           Throwable failure) {
-                        log.error(getApplicationId() + " got technical error",  failure);
-                        parseErrorsTechnical(request,failure);
+                        log.error(getApplicationId() + " got technical error", failure);
+                        parseErrorsTechnical(request, failure);
                     }
                 })
                 .setBulkActions(esBufferConfiguration.getMaxElements())
@@ -136,7 +137,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
                 .filter(request -> request.opType() == DocWriteRequest.OpType.INDEX)
                 .map(this::toRawMessage)
                 .filter(message -> message != null)
-                .forEach(rawMessage -> routeErrorTechnical(rawMessage,failure));
+                .forEach(rawMessage -> routeErrorTechnical(rawMessage, failure));
 
     }
 
