@@ -205,7 +205,8 @@
         methodCall: ["GET", "POST"],
         typeHash: ["MURMUR3", "SHA256"],
         type: ["ADD_FIELD", "DELETE_FIELD", "RENAME_FIELD", "FORMAT_DATE", "FORMAT_BOOLEAN", "FORMAT_GEOPOINT",
-          "FORMAT_DOUBLE", "FORMAT_LONG", "FORMAT_IP", "LOOKUP_LIST", "LOOKUP_EXTERNAL", "HASH", "ADD_GEO_LOCALISATION",
+          "FORMAT_DOUBLE", "FORMAT_LONG", "FORMAT_IP", "FORMAT_TEXT", "FORMAT_KEYWORD",
+          "LOOKUP_LIST", "LOOKUP_EXTERNAL", "HASH", "ADD_GEO_LOCALISATION",
           "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL", "ADD_CSV_LOOKUP",
           "DATE_EXTRACTOR", "TRANSLATE_ARRAY"],
         replaceValue: '',
@@ -248,6 +249,7 @@
         return value == "DELETE_FIELD" || value == "FORMAT_BOOLEAN" ||
           value == "FORMAT_GEOPOINT" || value == "FORMAT_DOUBLE" ||
           value == "FORMAT_LONG" || value == "FORMAT_IP" ||
+          value == "FORMAT_KEYWORD" || value == "FORMAT_TEXT" || 
           value == "ADD_GEO_LOCALISATION" || value == "CAPITALIZE" ||
           value == "UNCAPITALIZE" || value == "LOWER_CASE" ||
           value == "UPPER_CASE" || value == "SWAP_CASE" ||

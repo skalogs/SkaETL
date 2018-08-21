@@ -15,6 +15,8 @@ public enum TypeValidation {
     FORMAT_DOUBLE,
     FORMAT_LONG,
     FORMAT_IP,
+    FORMAT_KEYWORD,
+    FORMAT_TEXT,
     FIELD_EXIST,
     TIMESTAMP_VALIDATION,
     LOOKUP_LIST,

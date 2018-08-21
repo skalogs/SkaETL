@@ -36,6 +36,8 @@ public class GenericTransformator {
         transformators.put(TypeValidation.FORMAT_GEOPOINT, new GeoPointTransformator(TypeValidation.FORMAT_GEOPOINT));
         transformators.put(TypeValidation.FORMAT_IP, new IpFieldTransformator(TypeValidation.FORMAT_IP));
         transformators.put(TypeValidation.FORMAT_LONG, new LongFieldTransformator(TypeValidation.FORMAT_LONG));
+        transformators.put(TypeValidation.FORMAT_KEYWORD, new KeywordFieldTransformator(TypeValidation.FORMAT_KEYWORD));
+        transformators.put(TypeValidation.FORMAT_TEXT, new TextFieldTransformator(TypeValidation.FORMAT_TEXT));
         transformators.put(TypeValidation.RENAME_FIELD, new RenameFieldTransformator(TypeValidation.RENAME_FIELD));
         transformators.put(TypeValidation.LOOKUP_LIST, new LookupListTransformator(TypeValidation.LOOKUP_LIST));
         transformators.put(TypeValidation.HASH, new HashFieldTransformator(TypeValidation.HASH));
