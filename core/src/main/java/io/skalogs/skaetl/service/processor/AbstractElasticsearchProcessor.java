@@ -21,6 +21,7 @@ import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.rest.RestStatus;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -134,6 +135,7 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
         bulkRequest.requests().stream()
                 .filter(request -> request.opType() == DocWriteRequest.OpType.INDEX)
                 .map(this::toRawMessage)
+                .filter(message -> message != null)
                 .forEach(rawMessage -> routeErrorTechnical(rawMessage,failure));
 
     }
@@ -150,7 +152,9 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     private String toRawMessage(DocWriteRequest docWriteRequest) {
         if (docWriteRequest.opType() == DocWriteRequest.OpType.INDEX) {
             IndexRequest indexRequest = (IndexRequest) docWriteRequest;
-            return new String(indexRequest.source().toBytesRef().utf8ToString());
+            if (!indexRequest.isRetry()) {
+                return new String(indexRequest.source().toBytesRef().utf8ToString());
+            }
         }
         return null;
     }
@@ -200,7 +204,8 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     }
 
     public boolean isRetryable(BulkItemResponse bir) {
-        return bir.getType().equals("elasticsearch_http_ko")
+        return bir.status() == RestStatus.TOO_MANY_REQUESTS
+                || bir.getType().equals("elasticsearch_http_ko")
                 || isRetryableException(bir.getFailureMessage());
     }
 
