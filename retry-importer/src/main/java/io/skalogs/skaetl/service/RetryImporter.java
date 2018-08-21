@@ -2,6 +2,7 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.KafkaConfiguration;
+import io.skalogs.skaetl.config.ProcessConfiguration;
 import io.skalogs.skaetl.domain.ValidateData;
 import io.skalogs.skaetl.serdes.ValidateDataDeserializer;
 import io.skalogs.skaetl.serdes.ValidateDataSerializer;
@@ -23,11 +24,21 @@ import org.springframework.stereotype.Component;
 public class RetryImporter {
 
     private static final String INPUT_PROCESS_RETRY = "es-retry";
-    private final KafkaStreams retryStream;
+    private final  ValidateDataToElasticSearchProcessor elasticSearchProcessor;
+    private final KafkaConfiguration kafkaConfiguration;
+    private KafkaStreams retryStream;
 
-    public RetryImporter(ValidateDataToElasticSearchProcessor elasticSearchProcessor, KafkaConfiguration kafkaConfiguration, KafkaAdminService kafkaAdminService) {
+    public RetryImporter(ValidateDataToElasticSearchProcessor elasticSearchProcessor, KafkaConfiguration kafkaConfiguration, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration) {
+        this.elasticSearchProcessor = elasticSearchProcessor;
+        this.kafkaConfiguration = kafkaConfiguration;
         kafkaAdminService.buildTopic(kafkaConfiguration.getRetryTopic());
+        if (processConfiguration.isActive()) {
+            activate();
+        }
+    }
 
+    public void activate() {
+        log.info("Activating retry importer");
         StreamsBuilder builder = new StreamsBuilder();
         final Serde<ValidateData> validateDataSerdes = Serdes.serdeFrom(new ValidateDataSerializer(), new ValidateDataDeserializer());
 
@@ -36,10 +47,6 @@ public class RetryImporter {
 
         retryStream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(INPUT_PROCESS_RETRY, kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(retryStream::close));
-    }
-
-    public void activate() {
-        log.info("Activating retry importer");
         retryStream.start();
     }
 

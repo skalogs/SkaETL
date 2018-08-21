@@ -15,4 +15,5 @@ public class ProcessConfiguration {
     private Integer maxProcessConsumer;
     private String ipClient;
     private String portClient;
+    private boolean active = true;
 }

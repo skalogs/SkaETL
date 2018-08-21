@@ -2,6 +2,7 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.config.KafkaConfiguration;
+import io.skalogs.skaetl.config.ProcessConfiguration;
 import io.skalogs.skaetl.domain.ErrorData;
 import io.skalogs.skaetl.serdes.GenericDeserializer;
 import io.skalogs.skaetl.serdes.GenericSerializer;
@@ -23,11 +24,21 @@ public class ErrorImporter {
 
 
     private static final String INPUT_PROCESS_ERROR = "es-error";
-    private final KafkaStreams errorStream;
+    private final ErrorToElasticsearchProcessor elasticsearchProcessor;
+    private final KafkaConfiguration kafkaConfiguration;
+    private KafkaStreams errorStream;
 
-    public ErrorImporter(ErrorToElasticsearchProcessor elasticsearchProcessor, KafkaConfiguration kafkaConfiguration, KafkaAdminService kafkaAdminService) {
+    public ErrorImporter(ErrorToElasticsearchProcessor elasticsearchProcessor, KafkaConfiguration kafkaConfiguration, KafkaAdminService kafkaAdminService, ProcessConfiguration processConfiguration) {
         kafkaAdminService.buildTopic(kafkaConfiguration.getErrorTopic());
+        this.elasticsearchProcessor = elasticsearchProcessor;
+        this.kafkaConfiguration = kafkaConfiguration;
+        if (processConfiguration.isActive()) {
+            activate();
+        }
+    }
 
+    public void activate() {
+        log.info("Activating error importer");
         StreamsBuilder builder = new StreamsBuilder();
         final Serde<ErrorData> errorDataSerde = Serdes.serdeFrom(new GenericSerializer<>(), new GenericDeserializer<>(ErrorData.class));
 
@@ -37,10 +48,7 @@ public class ErrorImporter {
 
         errorStream = new KafkaStreams(builder.build(), KafkaUtils.createKStreamProperties(INPUT_PROCESS_ERROR, kafkaConfiguration.getBootstrapServers()));
         Runtime.getRuntime().addShutdownHook(new Thread(errorStream::close));
-    }
 
-    public void activate() {
-        log.info("Activating error importer");
         errorStream.start();
     }
 
