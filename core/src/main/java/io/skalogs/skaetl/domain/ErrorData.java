@@ -10,9 +10,9 @@ import lombok.*;
 @Builder
 @ToString
 public class ErrorData {
-    @JsonProperty("@timestamp")
     public String timestamp;
     public String errorReason;
+    @JsonProperty("errorMessage_text")
     public String errorMessage;
     public String typeValidation;
     public String message;
