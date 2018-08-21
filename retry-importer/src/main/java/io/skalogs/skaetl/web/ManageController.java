@@ -17,15 +17,15 @@ public class ManageController {
     private final RetryImporter retryImporter;
 
     @ResponseStatus(OK)
-    @GetMapping("/active")
-    public void errorImporter() {
-        retryImporter.enable();
+    @GetMapping("/activate")
+    public void activate() {
+        retryImporter.activate();
     }
 
     @ResponseStatus(OK)
-    @GetMapping("/disable")
-    public void disable() {
-        retryImporter.disable();
+    @GetMapping("/deactivate")
+    public void deactivate() {
+        retryImporter.deactivate();
     }
 
 }

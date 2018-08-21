@@ -39,13 +39,13 @@ public class ErrorImporter {
         Runtime.getRuntime().addShutdownHook(new Thread(errorStream::close));
     }
 
-    public void enable() {
-        log.info("Enabling error importer");
+    public void activate() {
+        log.info("Activating error importer");
         errorStream.start();
     }
 
-    public void disable() {
-        log.info("Disabling error importer");
+    public void deactivate() {
+        log.info("Deactivating error importer");
         errorStream.close();
     }
 }

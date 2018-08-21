@@ -38,13 +38,13 @@ public class RetryImporter {
         Runtime.getRuntime().addShutdownHook(new Thread(retryStream::close));
     }
 
-    public void enable() {
-        log.info("Enabling retry importer");
+    public void activate() {
+        log.info("Activating retry importer");
         retryStream.start();
     }
 
-    public void disable() {
-        log.info("Disabling retry importer");
+    public void deactivate() {
+        log.info("Deactivating retry importer");
         retryStream.close();
     }
 }

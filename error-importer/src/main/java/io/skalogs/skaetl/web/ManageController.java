@@ -18,14 +18,14 @@ public class ManageController {
     private final ErrorImporter errorImporter;
 
     @ResponseStatus(OK)
-    @GetMapping("/active")
-    public void errorImporter() {
-        errorImporter.enable();
+    @GetMapping("/activate")
+    public void activate() {
+        errorImporter.activate();
     }
 
     @ResponseStatus(OK)
-    @GetMapping("/disable")
-    public void disable() {
-        errorImporter.disable();
+    @GetMapping("/deactivate")
+    public void deactivate() {
+        errorImporter.deactivate();
     }
 }
