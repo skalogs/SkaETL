@@ -42,6 +42,9 @@
                     <v-list-tile v-on:click.native="editProcess(props.item.id)">
                       <v-list-tile-title class="justify-center layout px-0">Edit</v-list-tile-title>
                     </v-list-tile>
+                    <v-list-tile v-on:click.native="action(props.item.id)">
+                      <v-list-tile-title class="justify-center layout px-0">Action</v-list-tile-title>
+                    </v-list-tile>
                     <v-list-tile :disabled="props.item.statusProcess == 'DISABLE' || props.item.statusProcess == 'INIT'" v-on:click.native="deactivateProcess(props.item.id)">
                       <v-list-tile-title class="justify-center layout px-0">Deactivate</v-list-tile-title>
                     </v-list-tile>
@@ -154,6 +157,9 @@
       },
       editProcess(idProcess) {
         this.$router.push('/metric/add?idProcess=' + idProcess);
+      },
+      action(idProcessSelect){
+        this.$router.push('/metric/action?idProcess='+idProcessSelect);
       },
       activateProcess(idProcess) {
         this.$http.get('/metric/activate', {params: {idProcess: idProcess}}).then(response => {

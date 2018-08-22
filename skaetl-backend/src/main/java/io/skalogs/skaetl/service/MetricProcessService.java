@@ -60,4 +60,8 @@ public class MetricProcessService {
     public void scaledown(String idProcess) {
         registryService.scaledown(findById(idProcess));
     }
+
+    public ConsumerState findConsumerState(String idProcess) {
+        return registryService.findConsumerStateById(idProcess);
+    }
 }

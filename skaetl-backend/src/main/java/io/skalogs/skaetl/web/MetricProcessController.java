@@ -30,6 +30,12 @@ public class MetricProcessController {
     }
 
     @ResponseStatus(OK)
+    @GetMapping("findConsumerState")
+    public ConsumerState findConsumerState(@PathParam("idProcess") String idProcess) {
+        return metricProcessService.findConsumerState(idProcess);
+    }
+
+    @ResponseStatus(OK)
     @GetMapping("init")
     public ProcessMetric init() {
         return metricProcessService.init();

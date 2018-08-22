@@ -105,6 +105,14 @@ let router = new VueRouter({
         }
       },
       {
+        path: '/metric/action',
+        component: require('../../components/metric/Action.vue'),
+        name: 'metricaction',
+        meta: {
+          requiresAuth: true
+        }
+      },
+      {
         path: '/simulate/view',
         component: require('../../components/simulate/Simulate.vue'),
         name: 'simulateview',
