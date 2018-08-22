@@ -224,4 +224,10 @@ public abstract class AbstractElasticsearchProcessor<K, V> extends AbstractOutpu
     public boolean support(TypeOutput typeOutput) {
         return typeOutput == TypeOutput.ELASTICSEARCH;
     }
+
+    @Override
+    public void close() {
+        super.close();
+        bulkProcessor.close();
+    }
 }

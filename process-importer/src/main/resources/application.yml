@@ -16,6 +16,7 @@ logging:
     ROOT: INFO
     org.springframework.web: INFO
     io.skalogs: INFO
+    org.apache.http: DEBUG
 
 management.endpoint.metrics.enabled: true
 management.endpoints.web.exposure.include: health,metrics,info,prometheus
