@@ -78,12 +78,14 @@ public abstract class AbstractGenericImporter {
     public void disable(ProcessConsumer processConsumer) {
         externalHTTPService.revokeCache(processConsumer);
 
-        // Shutdown all kafkastreams
-        getRunningConsumers().get(processConsumer)
-                .shutdownAllStreams();
+        if (getRunningConsumers().containsKey(processConsumer)) {
+            // Shutdown all kafkastreams
+            getRunningConsumers().get(processConsumer)
+                    .shutdownAllStreams();
 
-        // Remove the process Consumer
-        getRunningConsumers().remove(processConsumer);
+            // Remove the process Consumer
+            getRunningConsumers().remove(processConsumer);
+        }
 
         // Update the registry
         sendToRegistry("refresh");
