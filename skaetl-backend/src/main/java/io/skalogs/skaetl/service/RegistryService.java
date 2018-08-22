@@ -1,5 +1,6 @@
 package io.skalogs.skaetl.service;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
@@ -67,10 +68,10 @@ public class RegistryService {
         consumerStateRepository.findAll()
                 .stream()
                 .filter(e -> e.getRegistryWorkers().contains(registryWorker.getFQDN()))
-                .forEach(consumerState -> flagAssignedTaskAsDegraded(consumerState,registryWorker));
+                .forEach(consumerState -> flagAssignedTaskAsDegraded(consumerState, registryWorker));
     }
 
-    private void flagAssignedTaskAsDegraded(ConsumerState consumerState,RegistryWorker registryWorker) {
+    private void flagAssignedTaskAsDegraded(ConsumerState consumerState, RegistryWorker registryWorker) {
         log.info("Marking {} as degraded", consumerState.getProcessDefinition());
         consumerState.getRegistryWorkers().remove(registryWorker.getFQDN());
         ConsumerState newState = consumerState.withStatusProcess(StatusProcess.DEGRADED);
@@ -153,26 +154,38 @@ public class RegistryService {
             deactivate(processDefinition);
             consumerState = assignConsumerToWorkers(newState);
             triggerAction(consumerState, "activate", StatusProcess.ENABLE, StatusProcess.ERROR);
-        } else {
-            assignConsumerToWorkers(newState);
+        }  else {
+            consumerStateRepository.save(newState);
         }
     }
 
     public void scaledown(ProcessDefinition processDefinition) {
         ConsumerState consumerState = consumerStateRepository.findByKey(processDefinition.getIdProcess());
-        ConsumerState newState = consumerState.withNbInstance(consumerState.getNbInstance() - 1);
+        int nbInstance = consumerState.getNbInstance() - 1;
+        //can't get less than 1 instance
+        if (nbInstance >= 1) {
+            ConsumerState newState = consumerState.withNbInstance(nbInstance);
 
-        if (consumerState.getStatusProcess() == StatusProcess.ENABLE) {
-            deactivate(processDefinition);
-            consumerState = assignConsumerToWorkers(newState);
-            triggerAction(consumerState, "activate", StatusProcess.ENABLE, StatusProcess.ERROR);
-        } else {
-            assignConsumerToWorkers(newState);
+            if (consumerState.getStatusProcess() == StatusProcess.ENABLE && consumerState.getRegistryWorkers().size() > nbInstance) {
+                String last = Iterables.getLast(consumerState.getRegistryWorkers());
+                RegistryWorker worker = workerRepository.findByKey(last);
+                log.info("triggering deactivate on worker {} from {}", last, processDefinition);
+                try {
+                    RestTemplate restTemplate = new RestTemplate();
+                    HttpEntity<ProcessDefinition> request = new HttpEntity<>(consumerState.getProcessDefinition());
+                    restTemplate.postForObject(worker.getBaseUrl() + "/manage/deactivate", request, String.class);
+                } catch (RestClientException e) {
+                    log.error("an error occured while triggering deactivate on worker " + last + " from " + consumerState.getProcessDefinition(), e.getMessage());
+                }
+                newState.getRegistryWorkers().remove(last);
+
+            }
+            consumerStateRepository.save(newState);
         }
     }
 
     // Internal apis
-    private RegistryWorker getWorkerAvailable(WorkerType workerType, Set<String> alreadyAssignedWorkers) throws Exception{
+    private RegistryWorker getWorkerAvailable(WorkerType workerType, Set<String> alreadyAssignedWorkers) throws Exception {
         Random random = new Random();
         List<RegistryWorker> availableWorkers = workerRepository.findAll().stream()
                 .filter(e -> e.getWorkerType() == workerType)
@@ -194,6 +207,9 @@ public class RegistryService {
                 RestTemplate restTemplate = new RestTemplate();
                 HttpEntity<ProcessDefinition> request = new HttpEntity<>(consumerState.getProcessDefinition());
                 restTemplate.postForObject(worker.getBaseUrl() + "/manage/" + action, request, String.class);
+                if ("deactivate".equals(action)) {
+                    consumerState.getRegistryWorkers().remove(workerFQDN);
+                }
             } catch (RestClientException e) {
                 log.error("an error occured while triggering" + action + " on " + consumerState.getProcessDefinition(), e.getMessage());
                 hasErrors = true;
@@ -239,8 +255,8 @@ public class RegistryService {
         rescheduleConsumersInError();
         workerOK.set(
                 workers.stream()
-                .filter(registryWorker -> registryWorker.getStatus() == StatusWorker.OK)
-                .count()
+                        .filter(registryWorker -> registryWorker.getStatus() == StatusWorker.OK)
+                        .count()
         );
 
         workerKO.set(
