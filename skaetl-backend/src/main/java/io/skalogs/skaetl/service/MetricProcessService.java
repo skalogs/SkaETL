@@ -2,7 +2,6 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.admin.KafkaAdminService;
 import io.skalogs.skaetl.domain.*;
-import kafka.common.UnknownTopicOrPartitionException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -52,5 +51,13 @@ public class MetricProcessService {
 
     public void updateProcess(ProcessMetric processMetric) {
         registryService.createOrUpdateProcessDefinition(processMetric,WorkerType.METRIC_PROCESS,StatusProcess.INIT);
+    }
+
+    public void scaleup(String idProcess) {
+        registryService.scaleup(findById(idProcess));
+    }
+
+    public void scaledown(String idProcess) {
+        registryService.scaledown(findById(idProcess));
     }
 }
