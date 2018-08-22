@@ -207,9 +207,6 @@ public class RegistryService {
                 RestTemplate restTemplate = new RestTemplate();
                 HttpEntity<ProcessDefinition> request = new HttpEntity<>(consumerState.getProcessDefinition());
                 restTemplate.postForObject(worker.getBaseUrl() + "/manage/" + action, request, String.class);
-                if ("deactivate".equals(action)) {
-                    consumerState.getRegistryWorkers().remove(workerFQDN);
-                }
             } catch (RestClientException e) {
                 log.error("an error occured while triggering" + action + " on " + consumerState.getProcessDefinition(), e.getMessage());
                 hasErrors = true;
@@ -219,6 +216,9 @@ public class RegistryService {
         ConsumerState newState;
         if (!hasErrors) {
             newState = consumerState.withStatusProcess(statusIfOk);
+            if ("deactivate".equals(statusIfOk)) {
+                newState.getRegistryWorkers().clear();
+            }
         } else {
             newState = consumerState.withStatusProcess(statusIfKo);
         }
