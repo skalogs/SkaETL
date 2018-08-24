@@ -30,7 +30,7 @@ public class ESBufferConfiguration {
     private Integer delayBackoff = 1;
     private TimeUnit delayBackoffTimeUnit = SECONDS;
     private Integer backoffMaxRetry = 3;
-    private Integer concurrentRequests = 5;
+    private Integer concurrentRequests = 1;
 
 
     public BackoffPolicy toBackOffPolicy() {
