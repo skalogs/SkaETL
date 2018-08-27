@@ -5,6 +5,8 @@
     <artifactId>parent-importer</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
+    <url>https://skalogs.com</url>
+    <description>SkaLogs ETL</description>
 
     <licenses>
         <license>
