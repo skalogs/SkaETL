@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.skalogs.skaetl</groupId>
     <artifactId>parent-importer</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <licenses>
@@ -437,7 +437,7 @@
         <connection>scm:git:git@github.com:skalogs/SkaETL.git</connection>
         <developerConnection>scm:git:git@github.com:skalogs/SkaETL.git</developerConnection>
         <url>https://github.com/skalogs/SkaETL</url>
-        <tag>parent-importer-1.0.2</tag>
+        <tag>HEAD</tag>
     </scm>
     <distributionManagement>
         <snapshotRepository>

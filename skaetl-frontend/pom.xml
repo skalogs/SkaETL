@@ -3,13 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.skalogs.skaetl</groupId>
     <artifactId>skaetl-frontend</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <parent>
         <groupId>io.skalogs.skaetl</groupId>
         <artifactId>parent-importer</artifactId>
-        <version>1.0.2</version>
+        <version>1.0.3-SNAPSHOT</version>
     </parent>
 
     <properties>
