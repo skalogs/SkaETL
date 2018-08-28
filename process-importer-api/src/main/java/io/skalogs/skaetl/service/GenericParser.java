@@ -90,7 +90,7 @@ public class GenericParser {
         return parserResult;
     }
 
-    public List<ParserDescription> transformatorFunctions() {
+    public List<ParserDescription> parsersFunctions() {
         return parsers
                 .values()
                 .stream()
