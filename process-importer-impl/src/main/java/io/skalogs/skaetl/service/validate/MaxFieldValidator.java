@@ -40,8 +40,8 @@ public class MaxFieldValidator extends ValidatorProcess {
             .linearBuckets(1, 100, 10)
             .register();
 
-    public MaxFieldValidator(TypeValidation type) {
-        super(type);
+    public MaxFieldValidator() {
+        super(TypeValidation.MAX_FIELD,"Max field validator");
     }
 
     public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {

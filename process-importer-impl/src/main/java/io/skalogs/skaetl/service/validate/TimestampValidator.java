@@ -37,8 +37,8 @@ public class TimestampValidator extends ValidatorProcess {
 
     private final SimpleDateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
-    public TimestampValidator(TypeValidation type) {
-        super(type);
+    public TimestampValidator() {
+        super(TypeValidation.TIMESTAMP_VALIDATION,"Timestamp validator");
     }
 
     public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {

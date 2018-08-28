@@ -40,8 +40,8 @@ public class MaxMessageSizeValidator extends ValidatorProcess {
             .linearBuckets(1, 10, 10)
             .register();
 
-    public MaxMessageSizeValidator(TypeValidation type) {
-        super(type);
+    public MaxMessageSizeValidator() {
+        super(TypeValidation.MAX_MESSAGE_SIZE,"Max message size validator");
     }
 
 

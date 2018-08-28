@@ -33,6 +33,7 @@ import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -43,6 +44,10 @@ public class GenericValidator {
     private final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
     private Map<TypeValidation, ValidatorProcess> validators = new HashMap<>();
 
+
+    public void register(ValidatorProcess validatorProcess) {
+        register(validatorProcess.getType(),validatorProcess);
+    }
 
     public void register(TypeValidation typeValidation, ValidatorProcess validatorProcess) {
         validators.put(typeValidation, validatorProcess);
@@ -120,6 +125,15 @@ public class GenericValidator {
         }
         return result;
     }
+
+    public List<ValidatorDescription> validatorDescriptions() {
+        return validators
+                .values()
+                .stream()
+                .map((e) -> new ValidatorDescription(e.getType().name(),e.getDescription()))
+                .collect(Collectors.toList());
+    }
+
 
 
 }

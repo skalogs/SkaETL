@@ -31,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class FieldExistValidator extends ValidatorProcess {
 
-    public FieldExistValidator(TypeValidation type) {
-        super(type);
+    public FieldExistValidator() {
+        super(TypeValidation.FIELD_EXIST,"Field exist validator");
     }
 
     public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {

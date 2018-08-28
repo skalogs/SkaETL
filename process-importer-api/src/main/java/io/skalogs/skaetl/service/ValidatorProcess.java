@@ -36,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class ValidatorProcess {
 
     private final TypeValidation type;
+    private final String description;
 
     private final JSONUtils jsonUtils = JSONUtils.getInstance();
 

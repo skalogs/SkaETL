@@ -47,8 +47,8 @@ public class MandatoryFieldValidator extends ValidatorProcess {
             .help("nb missing mandatory field count.")
             .register();
 
-    public MandatoryFieldValidator(TypeValidation type) {
-        super(type);
+    public MandatoryFieldValidator() {
+        super(TypeValidation.MANDATORY_FIELD,"Mandatory field validator");
     }
 
     public ValidateData process(ProcessValidation processValidation, JsonNode jsonValue) {

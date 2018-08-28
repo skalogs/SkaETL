@@ -35,8 +35,8 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class BlackListValidator extends ValidatorProcess {
 
-    public BlackListValidator(TypeValidation type) {
-        super(type);
+    public BlackListValidator() {
+        super(TypeValidation.BLACK_LIST_FIELD,"Blacklist field validator");
     }
 
     private static final Counter nbMessageBlackList = Counter.build()
