@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.skalogs.skaetl.domain.CEFEvent;
 import io.skalogs.skaetl.domain.ParserResult;
 import io.skalogs.skaetl.domain.ProcessParser;
+import io.skalogs.skaetl.domain.TypeParser;
 import io.skalogs.skaetl.service.ParserProcess;
 import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
@@ -39,9 +40,13 @@ import static org.joda.time.chrono.ISOChronology.getInstanceUTC;
 
 @Slf4j
 @Component
-public class CEFParser implements ParserProcess {
+public class CEFParser extends ParserProcess {
 
     public static final String CEF = "CEF:";
+
+    public CEFParser() {
+        super(TypeParser.CEF, "Common Event Format parser");
+    }
 
     public ParserResult process(String value, ProcessParser processParser) {
         ObjectMapper objectMapper = new ObjectMapper();

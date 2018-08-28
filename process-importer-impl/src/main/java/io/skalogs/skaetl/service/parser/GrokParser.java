@@ -23,6 +23,7 @@ package io.skalogs.skaetl.service.parser;
 import io.skalogs.skaetl.domain.GrokResult;
 import io.skalogs.skaetl.domain.ParserResult;
 import io.skalogs.skaetl.domain.ProcessParser;
+import io.skalogs.skaetl.domain.TypeParser;
 import io.skalogs.skaetl.service.GrokService;
 import io.skalogs.skaetl.service.ParserProcess;
 import lombok.AllArgsConstructor;
@@ -34,9 +35,13 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @AllArgsConstructor
-public class GrokParser implements ParserProcess {
+public class GrokParser extends ParserProcess {
 
     private GrokService grokService;
+
+    public GrokParser() {
+        super(TypeParser.GROK, "Grok parser");
+    }
 
     @Override
     public ParserResult process(String value, ProcessParser processParser) {

@@ -21,10 +21,7 @@ package io.skalogs.skaetl.service;
  */
 
 import io.skalogs.skaetl.config.KafkaConfiguration;
-import io.skalogs.skaetl.domain.ParserResult;
-import io.skalogs.skaetl.domain.ProcessConsumer;
-import io.skalogs.skaetl.domain.ProcessParser;
-import io.skalogs.skaetl.domain.TypeParser;
+import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +31,9 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -45,6 +44,10 @@ public class GenericParser {
 
     public GenericParser(KafkaConfiguration kafkaConfiguration) {
         this.failParserProducer = KafkaUtils.kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, StringSerializer.class);
+    }
+
+    public void register(ParserProcess parserProcess) {
+        parsers.put(parserProcess.getTypeParser(), parserProcess);
     }
 
     public void register(TypeParser typeParser, ParserProcess parserProcess) {
@@ -86,4 +89,13 @@ public class GenericParser {
         }
         return parserResult;
     }
+
+    public List<ParserDescription> transformatorFunctions() {
+        return parsers
+                .values()
+                .stream()
+                .map((e) -> new ParserDescription(e.getTypeParser().name(),e.getDescription()))
+                .collect(Collectors.toList());
+    }
+
 }

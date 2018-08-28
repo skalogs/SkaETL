@@ -24,13 +24,18 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.domain.ParserResult;
 import io.skalogs.skaetl.domain.ProcessParser;
+import io.skalogs.skaetl.domain.TypeParser;
 import io.skalogs.skaetl.service.ParserProcess;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-public class CSVParser implements ParserProcess {
+public class CSVParser extends ParserProcess {
+
+    public CSVParser() {
+        super(TypeParser.CSV, "CSV parser");
+    }
 
     @Override
     public ParserResult process(String value, ProcessParser processParser) {

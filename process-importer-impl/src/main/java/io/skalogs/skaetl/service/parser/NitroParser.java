@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.domain.ParserResult;
 import io.skalogs.skaetl.domain.ProcessParser;
+import io.skalogs.skaetl.domain.TypeParser;
 import io.skalogs.skaetl.service.ParserProcess;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -36,8 +37,12 @@ import java.util.regex.Pattern;
 
 @Slf4j
 @Component
-public class NitroParser implements ParserProcess {
+public class NitroParser extends ParserProcess {
     private final static String NITRO = "McAfeeWG";
+
+    public NitroParser() {
+        super(TypeParser.NITRO, "Nitro parser");
+    }
 
     @Override
     public ParserResult process(String value, ProcessParser processParser) {

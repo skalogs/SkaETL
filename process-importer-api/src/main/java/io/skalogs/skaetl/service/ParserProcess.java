@@ -23,8 +23,16 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.domain.ParserResult;
 import io.skalogs.skaetl.domain.ProcessParser;
+import io.skalogs.skaetl.domain.TypeParser;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-public interface ParserProcess {
+@AllArgsConstructor
+@Getter
+public abstract class ParserProcess {
 
-    ParserResult process(String value, ProcessParser processParser);
+    private final TypeParser typeParser;
+    private final String description;
+
+    public abstract ParserResult process(String value, ProcessParser processParser);
 }

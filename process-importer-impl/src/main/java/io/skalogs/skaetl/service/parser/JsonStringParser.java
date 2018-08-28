@@ -23,6 +23,7 @@ package io.skalogs.skaetl.service.parser;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.domain.ParserResult;
 import io.skalogs.skaetl.domain.ProcessParser;
+import io.skalogs.skaetl.domain.TypeParser;
 import io.skalogs.skaetl.service.ParserProcess;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.AllArgsConstructor;
@@ -32,7 +33,11 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @AllArgsConstructor
-public class JsonStringParser  implements ParserProcess {
+public class JsonStringParser  extends ParserProcess {
+    public JsonStringParser() {
+        super(TypeParser.JSON_AS_STRING, "Json as String parser");
+    }
+
     @Override
     public ParserResult process(String value, ProcessParser processParser) {
         JsonNode asJsonNode= JSONUtils.getInstance().parse(value);
