@@ -1,6 +1,5 @@
 package io.skalogs.skaetl.service;
 
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.service.transform.*;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Lazy;
@@ -18,29 +17,29 @@ public class DefaultTransformators {
 
     @PostConstruct
     public void initDefaults() {
-        genericTransformator.register(TypeValidation.ADD_FIELD, new AddFieldTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_BOOLEAN, new BooleanTransformator());
-        genericTransformator.register(TypeValidation.DELETE_FIELD, new DeleteFieldTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_DOUBLE, new DoubleFieldTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_DATE, new FormatDateTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_GEOPOINT, new GeoPointTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_IP, new IpFieldTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_LONG, new LongFieldTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_KEYWORD, new KeywordFieldTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_TEXT, new TextFieldTransformator());
-        genericTransformator.register(TypeValidation.RENAME_FIELD, new RenameFieldTransformator());
-        genericTransformator.register(TypeValidation.LOOKUP_LIST, new LookupListTransformator());
-        genericTransformator.register(TypeValidation.HASH, new HashFieldTransformator());
-        genericTransformator.register(TypeValidation.CAPITALIZE, new CapitalizeTransformator());
-        genericTransformator.register(TypeValidation.UNCAPITALIZE, new UncapitalizeTransformator());
-        genericTransformator.register(TypeValidation.LOWER_CASE, new LowerCaseTransformator());
-        genericTransformator.register(TypeValidation.UPPER_CASE, new UpperCaseTransformator());
-        genericTransformator.register(TypeValidation.SWAP_CASE, new SwapCaseTransformator());
-        genericTransformator.register(TypeValidation.LOOKUP_EXTERNAL, new LookupHTTPServiceTransformator(externalHTTPService));
-        genericTransformator.register(TypeValidation.ADD_GEO_LOCALISATION, new AddGeoLocalisationTransformator());
-        genericTransformator.register(TypeValidation.FORMAT_EMAIL, new EmailFormatTransformator());
-        genericTransformator.register(TypeValidation.ADD_CSV_LOOKUP, new AddCsvLookupTransformator());
-        genericTransformator.register(TypeValidation.DATE_EXTRACTOR, new DateExtractorTransformator());
-        genericTransformator.register(TypeValidation.TRANSLATE_ARRAY, new TranslateArrayTransformator());
+        genericTransformator.register(new AddFieldTransformator());
+        genericTransformator.register(new BooleanTransformator());
+        genericTransformator.register(new DeleteFieldTransformator());
+        genericTransformator.register(new DoubleFieldTransformator());
+        genericTransformator.register(new FormatDateTransformator());
+        genericTransformator.register(new GeoPointTransformator());
+        genericTransformator.register(new IpFieldTransformator());
+        genericTransformator.register(new LongFieldTransformator());
+        genericTransformator.register(new KeywordFieldTransformator());
+        genericTransformator.register(new TextFieldTransformator());
+        genericTransformator.register(new RenameFieldTransformator());
+        genericTransformator.register(new LookupListTransformator());
+        genericTransformator.register(new HashFieldTransformator());
+        genericTransformator.register(new CapitalizeTransformator());
+        genericTransformator.register(new UncapitalizeTransformator());
+        genericTransformator.register(new LowerCaseTransformator());
+        genericTransformator.register(new UpperCaseTransformator());
+        genericTransformator.register(new SwapCaseTransformator());
+        genericTransformator.register(new LookupHTTPServiceTransformator(externalHTTPService));
+        genericTransformator.register(new AddGeoLocalisationTransformator());
+        genericTransformator.register(new EmailFormatTransformator());
+        genericTransformator.register(new AddCsvLookupTransformator());
+        genericTransformator.register(new DateExtractorTransformator());
+        genericTransformator.register(new TranslateArrayTransformator());
     }
 }
