@@ -26,13 +26,11 @@ import io.skalogs.skaetl.domain.ProcessParser;
 import io.skalogs.skaetl.domain.TypeParser;
 import io.skalogs.skaetl.service.ParserProcess;
 import io.skalogs.skaetl.utils.JSONUtils;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@AllArgsConstructor
 public class JsonStringParser  extends ParserProcess {
     public JsonStringParser() {
         super(TypeParser.JSON_AS_STRING, "Json as String parser");
