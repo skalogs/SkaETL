@@ -8,6 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>enduser-doc</artifactId>
+    <name>enduser-doc</name>
 
     <properties>
         <!-- Force JRuby version to fix error "undefined method `encoding' for nil:NilClass"-->

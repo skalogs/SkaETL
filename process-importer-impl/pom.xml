@@ -8,6 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>process-importer-impl</artifactId>
+    <name>process-importer-impl</name>
 
     <dependencies>
         <dependency>

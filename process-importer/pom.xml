@@ -3,6 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.skalogs.skaetl</groupId>
     <artifactId>process-importer</artifactId>
+    <name>process-importer</name>
     <packaging>jar</packaging>
 
     <parent>

@@ -10,6 +10,7 @@
 
     <groupId>io.skalogs.skaetl</groupId>
     <artifactId>generator</artifactId>
+    <name>generator</name>
     <packaging>jar</packaging>
 
     <properties>

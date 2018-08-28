@@ -3,6 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.skalogs.skaetl</groupId>
     <artifactId>error-importer</artifactId>
+    <name>error-importer</name>
     <packaging>jar</packaging>
 
     <parent>

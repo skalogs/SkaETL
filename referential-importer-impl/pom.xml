@@ -3,6 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>io.skalogs.skaetl</groupId>
     <artifactId>referential-importer-impl</artifactId>
+    <name>referential-importer-impl</name>
     <packaging>jar</packaging>
 
     <parent>

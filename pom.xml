@@ -5,9 +5,9 @@
     <artifactId>parent-importer</artifactId>
     <version>1.0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>SkaETL</name>
+    <name>SkaETL Parent POM</name>
     <url>https://skalogs.com</url>
-    <description>SkaLogs ETL</description>
+    <description>SkaLogs ETL is a unique real time ETL designed for and dedicated to Logs and Events.</description>
 
     <licenses>
         <license>

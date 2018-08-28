@@ -8,6 +8,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>kafka-unit</artifactId>
+    <name>kafka-unit</name>
 
     <dependencies>
         <dependency>

@@ -8,9 +8,8 @@
         <version>1.0.3-SNAPSHOT</version>
     </parent>
 
-    <groupId>io.skalogs.skaetl</groupId>
     <artifactId>skaetl-backend</artifactId>
-    <version>1.0.3-SNAPSHOT</version>
+    <name>skaetl-backend</name>
     <packaging>jar</packaging>
 
     <properties>
