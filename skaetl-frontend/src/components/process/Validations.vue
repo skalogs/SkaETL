@@ -17,7 +17,17 @@
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
           <v-card-text>
-            <v-select label="Type Validation" v-model="editedItem.typeValidation" v-bind:items="type"/>
+            <v-select label="Type Validation" v-model="editedItem.typeValidation" :items="type" item-value="name">
+              <template slot="selection" slot-scope="data">
+                {{data.item.name}}
+              </template>
+              <template slot="item" slot-scope="data">
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
+                  <v-list-tile-sub-title v-html="data.item.description"></v-list-tile-sub-title>
+                </v-list-tile-content>
+              </template>
+            </v-select>
 
             <v-layout row wrap v-show="isMandatory()">
               <v-text-field label="Mandatory (separated by ;)"
@@ -196,9 +206,17 @@
         ],
         keyBlackList: '',
         valueBlackList: '',
-        type: ["MANDATORY_FIELD", "BLACK_LIST_FIELD", "MAX_FIELD", "MAX_MESSAGE_SIZE", "FIELD_EXIST", "TIMESTAMP_VALIDATION"],
+        type: [],
         chronoUnits: ["MILLIS", "SECONDS", "MINUTES", "HOURS", "DAYS"]
       }
+    },
+    mounted() {
+      this.$http.get('/process/transformators', {}).then(response => {
+        this.type = response.data.sort();
+      }, response => {
+        this.viewError = true;
+        this.msgError = "Error during call service";
+      });
     },
     computed: {
       formTitle() {

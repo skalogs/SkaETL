@@ -17,8 +17,19 @@
           </v-card-title>
           <v-card-text>
             <v-layout row wrap>
-              <v-select label="Type Transformation" v-model="editedItem.typeTransformation" v-bind:items="sortedTypeTransformation"
-                        max-height="600"/>
+              <v-select label="Type Transformation" v-model="editedItem.typeTransformation" :items="type"
+                        max-height="600"
+                        item-value="name">
+                <template slot="selection" slot-scope="data">
+                  {{data.item.name}}
+                </template>
+                <template slot="item" slot-scope="data">
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="data.item.description"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </template>
+              </v-select>
             </v-layout>
 
             <v-layout row wrap v-show="isComposeField()">
@@ -204,22 +215,23 @@
         },
         methodCall: ["GET", "POST"],
         typeHash: ["MURMUR3", "SHA256"],
-        type: ["ADD_FIELD", "DELETE_FIELD", "RENAME_FIELD", "FORMAT_DATE", "FORMAT_BOOLEAN", "FORMAT_GEOPOINT",
-          "FORMAT_DOUBLE", "FORMAT_LONG", "FORMAT_IP", "FORMAT_TEXT", "FORMAT_KEYWORD",
-          "LOOKUP_LIST", "LOOKUP_EXTERNAL", "HASH", "ADD_GEO_LOCALISATION",
-          "CAPITALIZE", "UNCAPITALIZE", "UPPER_CASE", "LOWER_CASE", "SWAP_CASE", "TRIM", "FORMAT_EMAIL", "ADD_CSV_LOOKUP",
-          "DATE_EXTRACTOR", "TRANSLATE_ARRAY"],
+        type: [],
         replaceValue: '',
         replaceNewValue: '',
         listLookup: []
       }
     },
+    mounted() {
+      this.$http.get('/process/transformators', {}).then(response => {
+        this.type = response.data.sort();
+      }, response => {
+        this.viewError = true;
+        this.msgError = "Error during call service";
+      });
+    },
     computed: {
       formTitle() {
         return this.editedIndex === -1 ? 'New Item' : 'Edit Item';
-      },
-      sortedTypeTransformation() {
-        return this.type.sort();
       }
     },
     methods: {

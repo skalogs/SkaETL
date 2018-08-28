@@ -18,7 +18,17 @@
             <span class="headline">{{ formTitle }}</span>
           </v-card-title>
           <v-card-text>
-            <v-select label="Choose Parser" v-model="editedItem.typeParser" v-bind:items="typeParser"/>
+            <v-select label="Choose Parser" v-model="editedItem.typeParser" v-bind:items="typeParser" item-value="name">
+              <template slot="selection" slot-scope="data">
+                {{data.item.name}}
+              </template>
+              <template slot="item" slot-scope="data">
+                <v-list-tile-content>
+                  <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
+                  <v-list-tile-sub-title v-html="data.item.description"></v-list-tile-sub-title>
+                </v-list-tile-content>
+              </template>
+            </v-select>
             <v-text-field label="Grok Pattern" v-model="editedItem.grokPattern" v-show="isGrok()"></v-text-field>
             <v-text-field label="CSV (separated by ;)" v-model="editedItem.schemaCSV" v-show="isCSV()"></v-text-field>
             <v-checkbox label="Active Fail Parser Forward " v-model="editedItem.activeFailForward"></v-checkbox>
@@ -71,7 +81,7 @@
     data: function () {
       return {
         dialog: false,
-        typeParser: ["CEF", "NITRO", "GROK", "CSV", "JSON_AS_STRING"],
+        typeParser: [],
         editedItem: {},
         defaultItem: {},
         editedIndex: -1,
@@ -80,6 +90,14 @@
           { text: 'Actions', value: 'typeParser', sortable: false }
         ],
       }
+    },
+    mounted() {
+      this.$http.get('/process/parsers', {}).then(response => {
+        this.typeParser = response.data;
+      }, response => {
+        this.viewError = true;
+        this.msgError = "Error during call service";
+      });
     },
     computed: {
       formTitle () {

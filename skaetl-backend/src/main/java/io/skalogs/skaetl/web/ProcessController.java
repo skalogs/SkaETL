@@ -20,8 +20,10 @@ package io.skalogs.skaetl.web;
  * #L%
  */
 
-import io.skalogs.skaetl.domain.ConsumerState;
-import io.skalogs.skaetl.domain.ProcessConsumer;
+import io.skalogs.skaetl.domain.*;
+import io.skalogs.skaetl.repository.ParserDescriptionRepository;
+import io.skalogs.skaetl.repository.TransformatorDescriptionRepository;
+import io.skalogs.skaetl.repository.ValidatorDescriptionRepository;
 import io.skalogs.skaetl.service.ProcessService;
 import io.skalogs.skaetl.service.UtilsNetworkService;
 import io.skalogs.skaetl.web.domain.NetworkWeb;
@@ -40,6 +42,9 @@ public class ProcessController {
 
     private final ProcessService processService;
     private final UtilsNetworkService utilsNetworkService;
+    private final ParserDescriptionRepository parserDescriptionRepository;
+    private final TransformatorDescriptionRepository transformatorDescriptionRepository;
+    private final ValidatorDescriptionRepository validatorDescriptionRepository;
 
     @ResponseStatus(OK)
     @GetMapping("network")
@@ -105,5 +110,20 @@ public class ProcessController {
     @GetMapping("scaledown")
     public void scaledown(@PathParam("idProcess") String idProcess) throws Exception {
         processService.scaledown(idProcess);
+    }
+
+    @GetMapping("parsers")
+    public List<ParserDescription> parsers() {
+        return parserDescriptionRepository.findAll();
+    }
+
+    @GetMapping("transformators")
+    public List<TransformatorDescription> transformators() {
+        return transformatorDescriptionRepository.findAll();
+    }
+
+    @GetMapping("validators")
+    public List<ValidatorDescription> validators() {
+        return validatorDescriptionRepository.findAll();
     }
 }

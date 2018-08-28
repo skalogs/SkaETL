@@ -22,6 +22,7 @@ package io.skalogs.skaetl.service;
 
 import io.skalogs.skaetl.config.KafkaConfiguration;
 import io.skalogs.skaetl.domain.*;
+import io.skalogs.skaetl.repository.ParserDescriptionRepository;
 import io.skalogs.skaetl.utils.KafkaUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -31,27 +32,28 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class GenericParser {
 
     private final Producer<String, String> failParserProducer;
+    private final ParserDescriptionRepository parserDescriptionRepository;
     private final Map<TypeParser, ParserProcess> parsers = new HashMap<>();
 
-    public GenericParser(KafkaConfiguration kafkaConfiguration) {
+    public GenericParser(KafkaConfiguration kafkaConfiguration, ParserDescriptionRepository parserDescriptionRepository) {
         this.failParserProducer = KafkaUtils.kafkaProducer(kafkaConfiguration.getBootstrapServers(), StringSerializer.class, StringSerializer.class);
+        this.parserDescriptionRepository = parserDescriptionRepository;
     }
 
     public void register(ParserProcess parserProcess) {
-        parsers.put(parserProcess.getTypeParser(), parserProcess);
+        register(parserProcess.getTypeParser(), parserProcess);
     }
 
     public void register(TypeParser typeParser, ParserProcess parserProcess) {
         parsers.put(typeParser, parserProcess);
+        parserDescriptionRepository.save(new ParserDescription(parserProcess.getTypeParser().name(),parserProcess.getDescription()));
     }
 
     public String apply(String value, ProcessConsumer processConsumer) {
@@ -88,14 +90,6 @@ public class GenericParser {
             }
         }
         return parserResult;
-    }
-
-    public List<ParserDescription> parsersFunctions() {
-        return parsers
-                .values()
-                .stream()
-                .map((e) -> new ParserDescription(e.getTypeParser().name(),e.getDescription()))
-                .collect(Collectors.toList());
     }
 
 }

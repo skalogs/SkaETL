@@ -27,13 +27,13 @@ import com.google.common.collect.Lists;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
 import io.skalogs.skaetl.domain.*;
+import io.skalogs.skaetl.repository.ValidatorDescriptionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -41,16 +41,23 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class GenericValidator {
 
+    private final ValidatorDescriptionRepository validatorDescriptionRepository;
+
     private final ISO8601DateFormat dateFormat = new ISO8601DateFormat();
     private Map<TypeValidation, ValidatorProcess> validators = new HashMap<>();
 
+    public GenericValidator(ValidatorDescriptionRepository validatorDescriptionRepository) {
+        this.validatorDescriptionRepository = validatorDescriptionRepository;
+    }
+
 
     public void register(ValidatorProcess validatorProcess) {
-        register(validatorProcess.getType(),validatorProcess);
+        register(validatorProcess.getType(), validatorProcess);
     }
 
     public void register(TypeValidation typeValidation, ValidatorProcess validatorProcess) {
         validators.put(typeValidation, validatorProcess);
+        validatorDescriptionRepository.save(new ValidatorDescription(validatorProcess.getType().name(), validatorProcess.getDescription()));
     }
 
     public ValidateData mandatoryImporter(ObjectNode jsonValue) {
@@ -125,16 +132,5 @@ public class GenericValidator {
         }
         return result;
     }
-
-    public List<ValidatorDescription> validatorDescriptions() {
-        return validators
-                .values()
-                .stream()
-                .map((e) -> new ValidatorDescription(e.getType().name(),e.getDescription()))
-                .collect(Collectors.toList());
-    }
-
-
-
 }
 

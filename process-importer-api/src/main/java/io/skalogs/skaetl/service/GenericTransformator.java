@@ -26,26 +26,31 @@ import io.skalogs.skaetl.domain.ProcessConsumer;
 import io.skalogs.skaetl.domain.ProcessTransformation;
 import io.skalogs.skaetl.domain.TransformatorDescription;
 import io.skalogs.skaetl.domain.TypeValidation;
+import io.skalogs.skaetl.repository.TransformatorDescriptionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class GenericTransformator {
 
     private final Map<TypeValidation, TransformatorProcess> transformators = new HashMap<>();
+    private final TransformatorDescriptionRepository transformatorDescriptionRepository;
+
+    public GenericTransformator(TransformatorDescriptionRepository transformatorDescriptionRepository) {
+        this.transformatorDescriptionRepository = transformatorDescriptionRepository;
+    }
 
     public void register(TransformatorProcess transformatorProcess) {
-        register(transformatorProcess.getType(),transformatorProcess);
+        register(transformatorProcess.getType(), transformatorProcess);
     }
 
     public void register(TypeValidation typeValidation, TransformatorProcess transformatorProcess) {
-        transformators.put(typeValidation,transformatorProcess);
+        transformators.put(typeValidation, transformatorProcess);
+        transformatorDescriptionRepository.save(new TransformatorDescription(transformatorProcess.getType().name(), transformatorProcess.getDescription()));
     }
 
     public ObjectNode apply(JsonNode value, ProcessConsumer processConsumer) {
@@ -61,13 +66,4 @@ public class GenericTransformator {
         }
         return jsonValue;
     }
-
-    public List<TransformatorDescription> transformatorFunctions() {
-        return transformators
-                .values()
-                .stream()
-                .map((e) -> new TransformatorDescription(e.getType().name(),e.getDescription()))
-                .collect(Collectors.toList());
-    }
-
 }
