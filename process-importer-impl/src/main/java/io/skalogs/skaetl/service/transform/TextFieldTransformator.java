@@ -32,8 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class TextFieldTransformator extends TransformatorProcess {
 
-    public TextFieldTransformator(TypeValidation type) {
-        super(type);
+    public TextFieldTransformator() {
+        super(TypeValidation.FORMAT_TEXT, "Format a field as text");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

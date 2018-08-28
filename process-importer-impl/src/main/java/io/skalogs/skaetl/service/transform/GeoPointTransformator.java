@@ -31,8 +31,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GeoPointTransformator extends TransformatorProcess {
 
-    public GeoPointTransformator(TypeValidation type) {
-        super(type);
+    public GeoPointTransformator() {
+        super(TypeValidation.FORMAT_GEOPOINT, "Format a field as geo point");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

@@ -34,8 +34,8 @@ import java.util.Date;
 @Slf4j
 public class FormatDateTransformator extends TransformatorProcess {
 
-    public FormatDateTransformator(TypeValidation type) {
-        super(type);
+    public FormatDateTransformator() {
+        super(TypeValidation.FORMAT_DATE, "Format a field as date");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

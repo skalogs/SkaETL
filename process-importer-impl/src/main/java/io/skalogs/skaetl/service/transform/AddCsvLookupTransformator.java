@@ -31,8 +31,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class AddCsvLookupTransformator extends TransformatorProcess {
 
-    public AddCsvLookupTransformator(TypeValidation type) {
-        super(type);
+    public AddCsvLookupTransformator() {
+        super(TypeValidation.ADD_CSV_LOOKUP, "Translate key into key value pairs from a CSV");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

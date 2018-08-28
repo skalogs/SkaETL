@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class IpFieldTransformator extends TransformatorProcess {
 
-    public IpFieldTransformator(TypeValidation type) {
-        super(type);
+    public IpFieldTransformator() {
+        super(TypeValidation.FORMAT_IP,"Fomat a field as an ip");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

@@ -33,8 +33,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class HashFieldTransformator extends TransformatorProcess {
 
-    public HashFieldTransformator(TypeValidation type) {
-        super(type);
+    public HashFieldTransformator() {
+        super(TypeValidation.HASH, "Hash a field");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

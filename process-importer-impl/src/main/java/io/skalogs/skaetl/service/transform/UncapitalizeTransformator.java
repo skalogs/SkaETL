@@ -28,8 +28,8 @@ import io.skalogs.skaetl.service.TransformatorProcess;
 import org.apache.commons.lang3.StringUtils;
 
 public class UncapitalizeTransformator extends TransformatorProcess {
-    public UncapitalizeTransformator(TypeValidation type) {
-        super(type);
+    public UncapitalizeTransformator() {
+        super(TypeValidation.UNCAPITALIZE, "Uncapitalize a field");
     }
 
     @Override

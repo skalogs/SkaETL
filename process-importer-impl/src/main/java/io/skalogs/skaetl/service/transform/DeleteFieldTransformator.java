@@ -29,8 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class DeleteFieldTransformator extends TransformatorProcess {
 
-    public DeleteFieldTransformator(TypeValidation type) {
-        super(type);
+    public DeleteFieldTransformator() {
+        super(TypeValidation.DELETE_FIELD,"Delete a field");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

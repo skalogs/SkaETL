@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class DoubleFieldTransformator extends TransformatorProcess {
 
-    public DoubleFieldTransformator(TypeValidation type) {
-        super(type);
+    public DoubleFieldTransformator() {
+        super(TypeValidation.FORMAT_DOUBLE,"Format a field as double");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

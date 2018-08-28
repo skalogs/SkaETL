@@ -26,7 +26,6 @@ import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.CsvLookupData;
 import io.skalogs.skaetl.domain.ParameterTransformation;
 import io.skalogs.skaetl.domain.ProcessKeyValue;
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -42,7 +41,7 @@ public class AddCsvLookupTransformatorTest {
 
     @Test
     public void should_Process_Ok() throws Exception {
-        AddCsvLookupTransformator addCsvLookupTransformator = new AddCsvLookupTransformator(TypeValidation.ADD_CSV_LOOKUP);
+        AddCsvLookupTransformator addCsvLookupTransformator = new AddCsvLookupTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("project value").type("typeToDefine").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -67,7 +66,7 @@ public class AddCsvLookupTransformatorTest {
 
     @Test
     public void should_Process_Ko() throws Exception {
-        AddCsvLookupTransformator addCsvLookupTransformator = new AddCsvLookupTransformator(TypeValidation.ADD_CSV_LOOKUP);
+        AddCsvLookupTransformator addCsvLookupTransformator = new AddCsvLookupTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("project value").type("typeToDefine").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);

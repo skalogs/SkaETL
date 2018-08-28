@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class LongFieldTransformator extends TransformatorProcess {
 
-    public LongFieldTransformator(TypeValidation type) {
-        super(type);
+    public LongFieldTransformator() {
+        super(TypeValidation.FORMAT_LONG,"Format a field as a long");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

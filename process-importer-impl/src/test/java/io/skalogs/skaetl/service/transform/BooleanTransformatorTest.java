@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.ParameterTransformation;
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -36,7 +35,7 @@ public class BooleanTransformatorTest {
 
     @Test
     public void should_Process_Ok() throws Exception {
-        BooleanTransformator booleanTransformator = new BooleanTransformator(TypeValidation.FORMAT_BOOLEAN);
+        BooleanTransformator booleanTransformator = new BooleanTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("true").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -54,7 +53,7 @@ public class BooleanTransformatorTest {
 
     @Test
     public void should_Process_Ko() throws Exception {
-        BooleanTransformator booleanTransformator = new BooleanTransformator(TypeValidation.FORMAT_BOOLEAN);
+        BooleanTransformator booleanTransformator = new BooleanTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("true").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -71,7 +70,7 @@ public class BooleanTransformatorTest {
 
     @Test
     public void should_Process_Upper_Ok() throws Exception {
-        BooleanTransformator booleanTransformator = new BooleanTransformator(TypeValidation.FORMAT_BOOLEAN);
+        BooleanTransformator booleanTransformator = new BooleanTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("TRUE").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);

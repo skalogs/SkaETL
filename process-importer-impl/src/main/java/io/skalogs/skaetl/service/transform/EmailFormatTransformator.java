@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class EmailFormatTransformator extends TransformatorProcess {
 
-    public EmailFormatTransformator(TypeValidation type) {
-        super(type);
+    public EmailFormatTransformator() {
+        super(TypeValidation.FORMAT_EMAIL,"Format a field as a email");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

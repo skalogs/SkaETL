@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class LookupListTransformator extends TransformatorProcess {
 
-    public LookupListTransformator(TypeValidation type) {
-        super(type);
+    public LookupListTransformator() {
+        super(TypeValidation.LOOKUP_LIST, "Lookup from a list");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

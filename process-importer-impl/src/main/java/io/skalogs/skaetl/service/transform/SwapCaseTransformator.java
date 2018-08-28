@@ -28,8 +28,8 @@ import io.skalogs.skaetl.service.TransformatorProcess;
 import org.apache.commons.lang3.StringUtils;
 
 public class SwapCaseTransformator extends TransformatorProcess {
-    public SwapCaseTransformator(TypeValidation type) {
-        super(type);
+    public SwapCaseTransformator() {
+        super(TypeValidation.SWAP_CASE, "Swap case of a field");
     }
 
     @Override

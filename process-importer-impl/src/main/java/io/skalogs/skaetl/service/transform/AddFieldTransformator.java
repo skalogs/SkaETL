@@ -29,8 +29,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class AddFieldTransformator extends TransformatorProcess {
 
-    public AddFieldTransformator(TypeValidation type) {
-        super(type);
+    public AddFieldTransformator() {
+        super(TypeValidation.ADD_FIELD,"Add a new field");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

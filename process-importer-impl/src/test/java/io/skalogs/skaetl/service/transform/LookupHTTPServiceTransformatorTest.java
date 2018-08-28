@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.ParameterTransformation;
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.domain.WorkerHTTPService;
 import io.skalogs.skaetl.service.ExternalHTTPService;
 import io.skalogs.skaetl.utils.JSONUtils;
@@ -47,7 +46,7 @@ public class LookupHTTPServiceTransformatorTest {
         mapTest.put("messageSend", "new value of message");
         mapTest.put("gna", "test of gna");
         service.getMapExternalService().put("10", WorkerHTTPService.builder().mapResult(mapTest).build());
-        LookupHTTPServiceTransformator lookupHTTPServiceTransformator = new LookupHTTPServiceTransformator(TypeValidation.LOOKUP_EXTERNAL, service);
+        LookupHTTPServiceTransformator lookupHTTPServiceTransformator = new LookupHTTPServiceTransformator(service);
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("value of project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -71,7 +70,7 @@ public class LookupHTTPServiceTransformatorTest {
         mapTest.put("messageSend", "new value of message");
         mapTest.put("gna", "test of gna");
         service.getMapExternalService().put("10", WorkerHTTPService.builder().mapResult(mapTest).build());
-        LookupHTTPServiceTransformator lookupHTTPServiceTransformator = new LookupHTTPServiceTransformator(TypeValidation.LOOKUP_EXTERNAL, service);
+        LookupHTTPServiceTransformator lookupHTTPServiceTransformator = new LookupHTTPServiceTransformator(service);
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("value of project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -95,7 +94,7 @@ public class LookupHTTPServiceTransformatorTest {
         mapTest.put("messageSend", "new value of message");
         mapTest.put("type", "test of type");
         service.getMapExternalService().put("10", WorkerHTTPService.builder().mapResult(mapTest).build());
-        LookupHTTPServiceTransformator lookupHTTPServiceTransformator = new LookupHTTPServiceTransformator(TypeValidation.LOOKUP_EXTERNAL, service);
+        LookupHTTPServiceTransformator lookupHTTPServiceTransformator = new LookupHTTPServiceTransformator(service);
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("value of project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -118,7 +117,7 @@ public class LookupHTTPServiceTransformatorTest {
         mapTest.put("messageSend", "new value of message");
         mapTest.put("typea", "test of type");
         service.getMapExternalService().put("10", WorkerHTTPService.builder().mapResult(mapTest).build());
-        LookupHTTPServiceTransformator lookupHTTPServiceTransformator = new LookupHTTPServiceTransformator(TypeValidation.LOOKUP_EXTERNAL, service);
+        LookupHTTPServiceTransformator lookupHTTPServiceTransformator = new LookupHTTPServiceTransformator(service);
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("value of project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);

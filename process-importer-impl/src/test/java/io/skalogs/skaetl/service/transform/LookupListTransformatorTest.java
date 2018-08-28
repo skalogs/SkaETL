@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.ParameterTransformation;
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -38,7 +37,7 @@ public class LookupListTransformatorTest {
 
     @Test
     public void should_Process_Ok() throws Exception {
-        LookupListTransformator lookupListTransformator = new LookupListTransformator(TypeValidation.LOOKUP_LIST);
+        LookupListTransformator lookupListTransformator = new LookupListTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("project value").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -60,7 +59,7 @@ public class LookupListTransformatorTest {
 
     @Test
     public void should_Process_Limit_Ok() throws Exception {
-        LookupListTransformator lookupListTransformator = new LookupListTransformator(TypeValidation.LOOKUP_LIST);
+        LookupListTransformator lookupListTransformator = new LookupListTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("project value").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -82,7 +81,7 @@ public class LookupListTransformatorTest {
 
     @Test
     public void should_Process_Limit_Ko() throws Exception {
-        LookupListTransformator lookupListTransformator = new LookupListTransformator(TypeValidation.LOOKUP_LIST);
+        LookupListTransformator lookupListTransformator = new LookupListTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("gni").project("project value").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);

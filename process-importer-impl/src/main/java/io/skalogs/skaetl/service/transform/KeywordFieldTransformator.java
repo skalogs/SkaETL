@@ -32,8 +32,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class KeywordFieldTransformator extends TransformatorProcess {
 
-    public KeywordFieldTransformator(TypeValidation type) {
-        super(type);
+    public KeywordFieldTransformator() {
+        super(TypeValidation.FORMAT_KEYWORD,"Format a field as a keyword");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

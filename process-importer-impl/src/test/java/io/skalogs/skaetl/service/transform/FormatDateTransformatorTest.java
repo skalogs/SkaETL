@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.FormatDateValue;
 import io.skalogs.skaetl.domain.ParameterTransformation;
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -37,7 +36,7 @@ public class FormatDateTransformatorTest {
 
     @Test
     public void should_Process_Ok() throws Exception {
-        FormatDateTransformator formatDateTransformator = new FormatDateTransformator(TypeValidation.FORMAT_DATE);
+        FormatDateTransformator formatDateTransformator = new FormatDateTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("2018-01-15").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -59,7 +58,7 @@ public class FormatDateTransformatorTest {
 
     @Test
     public void should_Process_Ko() throws Exception {
-        FormatDateTransformator formatDateTransformator = new FormatDateTransformator(TypeValidation.FORMAT_DATE);
+        FormatDateTransformator formatDateTransformator = new FormatDateTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("2018-01-15").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);

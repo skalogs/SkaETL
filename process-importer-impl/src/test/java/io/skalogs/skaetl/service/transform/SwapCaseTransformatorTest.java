@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.ParameterTransformation;
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.utils.JSONUtils;
 import org.junit.Test;
 
@@ -33,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class SwapCaseTransformatorTest {
     @Test
     public void should_Process_Ok() throws Exception {
-        SwapCaseTransformator swapCaseTransformator = new SwapCaseTransformator(TypeValidation.SWAP_CASE);
+        SwapCaseTransformator swapCaseTransformator = new SwapCaseTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("gNI gNU").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);

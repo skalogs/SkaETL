@@ -28,8 +28,8 @@ import io.skalogs.skaetl.service.TransformatorProcess;
 import org.apache.commons.lang3.StringUtils;
 
 public class UpperCaseTransformator extends TransformatorProcess {
-    public UpperCaseTransformator(TypeValidation type) {
-        super(type);
+    public UpperCaseTransformator() {
+        super(TypeValidation.UPPER_CASE,"Upper case a field");
     }
 
     @Override

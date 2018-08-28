@@ -28,8 +28,8 @@ import io.skalogs.skaetl.service.TransformatorProcess;
 import org.apache.commons.lang3.StringUtils;
 
 public class TrimTransformator extends TransformatorProcess {
-    public TrimTransformator(TypeValidation type) {
-        super(type);
+    public TrimTransformator() {
+        super(TypeValidation.TRIM,"Trim a field");
     }
 
     @Override

@@ -38,8 +38,8 @@ public class LookupHTTPServiceTransformator extends TransformatorProcess {
 
     private final ExternalHTTPService externalHTTPService;
 
-    public LookupHTTPServiceTransformator(TypeValidation type, ExternalHTTPService externalHTTPService) {
-        super(type);
+    public LookupHTTPServiceTransformator(ExternalHTTPService externalHTTPService) {
+        super(TypeValidation.LOOKUP_EXTERNAL, "Lookup using external source");
         this.externalHTTPService = externalHTTPService;
     }
 

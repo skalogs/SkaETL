@@ -29,8 +29,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class TranslateArrayTransformator extends TransformatorProcess {
 
-    public TranslateArrayTransformator(TypeValidation type) {
-        super(type);
+    public TranslateArrayTransformator() {
+        super(TypeValidation.TRANSLATE_ARRAY, "Translate a string array into boolean properties");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

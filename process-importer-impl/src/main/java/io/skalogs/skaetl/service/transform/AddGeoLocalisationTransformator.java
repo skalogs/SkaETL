@@ -41,8 +41,8 @@ public class AddGeoLocalisationTransformator extends TransformatorProcess {
 
     private DatabaseReader reader;
 
-    public AddGeoLocalisationTransformator(TypeValidation type) {
-        super(type);
+    public AddGeoLocalisationTransformator() {
+        super(TypeValidation.ADD_GEO_LOCALISATION,"Translate an ip into geo localisation");
 
         // TODO: Replace this bullshit code
         try {

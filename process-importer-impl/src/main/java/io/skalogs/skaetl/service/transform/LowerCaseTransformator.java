@@ -28,8 +28,8 @@ import io.skalogs.skaetl.service.TransformatorProcess;
 import org.apache.commons.lang3.StringUtils;
 
 public class LowerCaseTransformator extends TransformatorProcess {
-    public LowerCaseTransformator(TypeValidation type) {
-        super(type);
+    public LowerCaseTransformator() {
+        super(TypeValidation.LOWER_CASE,"Lower case a field");
     }
 
     @Override

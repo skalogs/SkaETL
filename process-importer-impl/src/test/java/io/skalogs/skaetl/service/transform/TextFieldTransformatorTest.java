@@ -24,7 +24,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.ParameterTransformation;
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.utils.JSONUtils;
 import org.junit.Test;
 
@@ -34,7 +33,7 @@ public class TextFieldTransformatorTest {
 
     @Test
     public void should_Process_Ok() throws Exception {
-        TextFieldTransformator textFieldTransformator = new TextFieldTransformator(TypeValidation.FORMAT_TEXT);
+        TextFieldTransformator textFieldTransformator = new TextFieldTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("1548").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);
@@ -50,7 +49,7 @@ public class TextFieldTransformatorTest {
 
     @Test
     public void should_Process_nestedObject_Ok() throws Exception {
-        TextFieldTransformator textFieldTransformator = new TextFieldTransformator(TypeValidation.FORMAT_TEXT);
+        TextFieldTransformator textFieldTransformator = new TextFieldTransformator();
         String value = "{\"something\":\"test\",\"comment\": {\"value\":\"value1\"}}";
         ObjectNode jsonValue = JSONUtils.getInstance().parseObj(value);
 
@@ -65,7 +64,7 @@ public class TextFieldTransformatorTest {
 
     @Test
     public void should_Process_Ko() throws Exception {
-        TextFieldTransformator textFieldTransformator = new TextFieldTransformator(TypeValidation.FORMAT_TEXT);
+        TextFieldTransformator textFieldTransformator = new TextFieldTransformator();
         RawDataGen rd = RawDataGen.builder().messageSend("1548").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
         String value = obj.writeValueAsString(rd);

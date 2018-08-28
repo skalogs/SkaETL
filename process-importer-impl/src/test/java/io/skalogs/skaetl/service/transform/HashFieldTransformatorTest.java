@@ -26,7 +26,6 @@ import io.skalogs.skaetl.RawDataGen;
 import io.skalogs.skaetl.domain.ParameterTransformation;
 import io.skalogs.skaetl.domain.ProcessHashData;
 import io.skalogs.skaetl.domain.TypeHash;
-import io.skalogs.skaetl.domain.TypeValidation;
 import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -37,7 +36,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class HashFieldTransformatorTest {
     @Test
     public void should_Process_Ok() throws Exception {
-        HashFieldTransformator hashFieldTransformator = new HashFieldTransformator(TypeValidation.HASH);
+        HashFieldTransformator hashFieldTransformator = new HashFieldTransformator();
 
         RawDataGen rd = RawDataGen.builder().messageSend("message gni de test").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();
@@ -55,7 +54,7 @@ public class HashFieldTransformatorTest {
 
     @Test
     public void should_Process_Ko() throws Exception {
-        HashFieldTransformator hashFieldTransformator = new HashFieldTransformator(TypeValidation.HASH);
+        HashFieldTransformator hashFieldTransformator = new HashFieldTransformator();
 
         RawDataGen rd = RawDataGen.builder().messageSend("").project("project").type("type").build();
         ObjectMapper obj = new ObjectMapper();

@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 @Slf4j
 public class BooleanTransformator extends TransformatorProcess {
 
-    public BooleanTransformator(TypeValidation type) {
-        super(type);
+    public BooleanTransformator() {
+        super(TypeValidation.FORMAT_BOOLEAN, "Format a field into boolean");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

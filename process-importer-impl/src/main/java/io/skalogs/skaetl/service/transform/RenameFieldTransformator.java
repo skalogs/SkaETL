@@ -30,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RenameFieldTransformator extends TransformatorProcess {
 
-    public RenameFieldTransformator(TypeValidation type) {
-        super(type);
+    public RenameFieldTransformator() {
+        super(TypeValidation.RENAME_FIELD,"Rename a field");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {

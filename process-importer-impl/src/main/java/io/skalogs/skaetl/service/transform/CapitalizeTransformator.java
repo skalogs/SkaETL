@@ -28,8 +28,8 @@ import io.skalogs.skaetl.service.TransformatorProcess;
 import org.apache.commons.lang3.StringUtils;
 
 public class CapitalizeTransformator extends TransformatorProcess {
-    public CapitalizeTransformator(TypeValidation type) {
-        super(type);
+    public CapitalizeTransformator() {
+        super(TypeValidation.CAPITALIZE, "Capitalize a field");
     }
 
     @Override

@@ -40,8 +40,8 @@ public class DateExtractorTransformator extends TransformatorProcess {
 
     private final Map<String,FastDateFormat> srcFormats= new HashMap<>();
     private final Map<String,DateTimeFormatter> destFormats= new HashMap<>();
-    public DateExtractorTransformator(TypeValidation type) {
-        super(type);
+    public DateExtractorTransformator() {
+        super(TypeValidation.DATE_EXTRACTOR, "Extract date patterns");
     }
 
     public void apply(String idProcess, ParameterTransformation parameterTransformation, ObjectNode jsonValue) {
