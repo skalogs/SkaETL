@@ -28,6 +28,9 @@ import static io.skalogs.skaetl.rules.JSONUtils.createJsonNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FunctionRegistryTest {
+
+    private final FunctionRegistry functionRegistry= new FunctionRegistry();
+
     @Test
     public void contains_OK() {
         String test = "{\"key1\": \"blablablabla toto blablabla\"}";
@@ -92,7 +95,7 @@ public class FunctionRegistryTest {
     }
 
     private boolean evaluate(String functionName, Object... args) {
-        return FunctionRegistry.getInstance().evaluate(functionName, args);
+        return functionRegistry.evaluate(functionName, args);
     }
 
 

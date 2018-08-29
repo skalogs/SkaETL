@@ -24,9 +24,12 @@ package io.skalogs.skaetl.rules.filters;
 import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
 import io.skalogs.skaetl.rules.codegeneration.filters.RuleFilterToJava;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Constructor;
 
 @AllArgsConstructor
 @Component
@@ -34,6 +37,7 @@ import org.springframework.stereotype.Component;
 public class RuleFilterExecutor {
 
     private final RuleFilterToJava ruleFilterToJava;
+    private final FunctionRegistry functionRegistry;
 
     public GenericFilter instanciate(String name, String dsl, ProcessFilter processFilter) {
         return instanciate(ruleFilterToJava.convert(name, dsl, processFilter));
@@ -48,7 +52,8 @@ public class RuleFilterExecutor {
     }
 
     private GenericFilter instanciate(Class aClass) throws Exception {
-        return (GenericFilter) aClass.newInstance();
+        Constructor constructor = aClass.getConstructor(FunctionRegistry.class);
+        return (GenericFilter) constructor.newInstance(functionRegistry);
     }
 
 }

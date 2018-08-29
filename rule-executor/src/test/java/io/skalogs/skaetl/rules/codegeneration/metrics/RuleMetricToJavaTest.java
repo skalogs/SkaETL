@@ -22,15 +22,17 @@ package io.skalogs.skaetl.rules.codegeneration.metrics;
 
 import io.skalogs.skaetl.rules.codegeneration.SyntaxErrorListener;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleMetricToJavaTest {
+    private final FunctionRegistry functionRegistry= new FunctionRegistry();
 
     @Test
     public void checkJavaClassName() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES)";
         RuleCode rule = ruleToJava.convert("my simple rule", dsl);
         assertThat(rule.getName()).isEqualTo("MySimpleRule");
@@ -40,7 +42,7 @@ public class RuleMetricToJavaTest {
 
     @Test
     public void functionNoArg() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT COUNT(*) FROM mytopic WINDOW TUMBLING(5 MINUTES)";
         RuleCode rule = ruleToJava.convert("My_Count_Rule", dsl);
         assertThat(rule)
@@ -63,6 +65,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
+                                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -72,8 +75,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyCountRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyCountRule(ProcessMetric processMetric) {\n" +
-                                "        super(processMetric, \"mytopic\");\n" +
+                                "    public MyCountRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -90,7 +93,7 @@ public class RuleMetricToJavaTest {
 
     @Test
     public void min() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES)";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
@@ -113,6 +116,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
+                                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -122,8 +126,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric) {\n" +
-                                "        super(processMetric, \"mytopic\");\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -147,7 +151,7 @@ public class RuleMetricToJavaTest {
 
     @Test
     public void filterWithFilter() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) WHERE type = \"something\"";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
@@ -170,6 +174,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
+                                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -179,8 +184,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric) {\n" +
-                                "        super(processMetric, \"mytopic\");\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -208,7 +213,7 @@ public class RuleMetricToJavaTest {
 
     @Test
     public void groupBy() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) GROUP BY type";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
@@ -231,6 +236,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
+                                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -240,8 +246,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric) {\n" +
-                                "        super(processMetric, \"mytopic\");\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -275,7 +281,7 @@ public class RuleMetricToJavaTest {
 
     @Test
     public void having() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) HAVING result > 10";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
@@ -298,6 +304,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
+                                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -307,8 +314,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric) {\n" +
-                                "        super(processMetric, \"mytopic\");\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -336,7 +343,7 @@ public class RuleMetricToJavaTest {
 
     @Test
     public void join() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB)  WINDOWED BY 10 MINUTES";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
@@ -359,6 +366,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
+                                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -368,8 +376,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric) {\n" +
-                                "        super(processMetric, \"mytopic\", \"mytopic2\");\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", \"mytopic2\", functionRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -415,7 +423,7 @@ public class RuleMetricToJavaTest {
 
     @Test
     public void joinWithWhereClause() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT MIN(duration) FROM mytopic WINDOW TUMBLING(5 MINUTES) JOIN mytopic2 ON (userFromA, userFromB) WHERE ageDuCapitaine >= 42 WINDOWED BY 10 MINUTES";
         RuleCode rule = ruleToJava.convert("My_Min_Rule", dsl);
         assertThat(rule)
@@ -438,6 +446,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
+                                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -447,8 +456,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric) {\n" +
-                                "        super(processMetric, \"mytopic\", \"mytopic2\");\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", \"mytopic2\", functionRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -499,7 +508,7 @@ public class RuleMetricToJavaTest {
 
     @Test(expected = SyntaxErrorListener.SyntaxException.class)
     public void wrongSyntax() {
-        RuleMetricToJava ruleToJava = new RuleMetricToJava();
+        RuleMetricToJava ruleToJava = new RuleMetricToJava(functionRegistry);
         String dsl = "SELECT MIN(duration) GROUP BY type TO targettopic FROM mytopic ";
         ruleToJava.convert("MyMinRule", dsl);
     }

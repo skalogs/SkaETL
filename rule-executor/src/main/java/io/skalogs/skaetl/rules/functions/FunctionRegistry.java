@@ -23,19 +23,19 @@ package io.skalogs.skaetl.rules.functions;
 import io.skalogs.skaetl.rules.domain.FilterFunctionDescription;
 import io.skalogs.skaetl.rules.functions.numbers.*;
 import io.skalogs.skaetl.rules.functions.strings.*;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Component
 public class FunctionRegistry {
-
-    private static FunctionRegistry INSTANCE = new FunctionRegistry();
 
     private Map<String, RuleFunction> registry = new HashMap<>();
 
-    private FunctionRegistry() {
+    public FunctionRegistry() {
         register("IS_NUMBER", new IsNumberFunction());
 
         register("IS_BLANK", new IsBlankFunction());
@@ -57,10 +57,6 @@ public class FunctionRegistry {
 
     public void register(String name, RuleFunction ruleFunction) {
         registry.put(name, ruleFunction);
-    }
-
-    public static FunctionRegistry getInstance() {
-        return INSTANCE;
     }
 
     public <T> T evaluate(String functionName, Object... args) {

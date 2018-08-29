@@ -23,6 +23,7 @@ package io.skalogs.skaetl.rules.codegeneration.filters;
 import io.skalogs.skaetl.rules.RuleFilterBaseVisitor;
 import io.skalogs.skaetl.rules.RuleFilterParser;
 import io.skalogs.skaetl.rules.codegeneration.exceptions.RuleVisitorException;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -35,6 +36,12 @@ import static io.skalogs.skaetl.rules.codegeneration.RuleToJava.*;
 public class RuleFilterVisitorImpl extends RuleFilterBaseVisitor<String> {
 
     private String filter;
+
+    private final FunctionRegistry functionRegistry;
+
+    public RuleFilterVisitorImpl(FunctionRegistry functionRegistry) {
+        this.functionRegistry = functionRegistry;
+    }
 
     @Override
     public String visitParse(RuleFilterParser.ParseContext ctx) {
@@ -131,7 +138,7 @@ public class RuleFilterVisitorImpl extends RuleFilterBaseVisitor<String> {
     @Override
     public String visitOneArgCondition(RuleFilterParser.OneArgConditionContext ctx) {
         String functionName = visit(ctx.functionname());
-        return oneArgCondition(functionName, visit(ctx.fieldname()));
+        return oneArgCondition(functionRegistry, functionName, visit(ctx.fieldname()));
     }
 
     @Override
@@ -141,7 +148,7 @@ public class RuleFilterVisitorImpl extends RuleFilterBaseVisitor<String> {
 
         String fieldValue = visit(ctx.fieldname());
         String args = visit(ctx.expr(), ",", "", "");
-        return notOperation + varArgCondition(functionName, fieldValue, args);
+        return notOperation + varArgCondition(functionRegistry, functionName, fieldValue, args);
     }
 
     protected String visit(List<RuleFilterParser.ExprContext> exprs, String visitSeparators, String appendToVisitResultBegin, String appendToVisitResultEnd) {

@@ -24,6 +24,7 @@ import io.skalogs.skaetl.domain.JoinType;
 import io.skalogs.skaetl.rules.RuleMetricBaseVisitor;
 import io.skalogs.skaetl.rules.RuleMetricParser;
 import io.skalogs.skaetl.rules.codegeneration.exceptions.RuleVisitorException;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import lombok.Getter;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -52,6 +53,12 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
     private String joinKeyFromB;
     private String joinWhere;
     private String joinWindow;
+
+    private final FunctionRegistry functionRegistry;
+
+    public RuleMetricVisitorImpl(FunctionRegistry functionRegistry) {
+        this.functionRegistry = functionRegistry;
+    }
 
     @Override
     public String visitParse(RuleMetricParser.ParseContext ctx) {
@@ -262,7 +269,7 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
     @Override
     public String visitOneArgCondition(RuleMetricParser.OneArgConditionContext ctx) {
         String functionName = visit(ctx.functionname());
-        return oneArgCondition(functionName, visit(ctx.fieldvalue()));
+        return oneArgCondition(functionRegistry, functionName, visit(ctx.fieldvalue()));
     }
 
     @Override
@@ -271,7 +278,7 @@ public class RuleMetricVisitorImpl extends RuleMetricBaseVisitor<String> {
         String notOperation = ctx.NOT_OPERATION() != null ? "!" : "";
         String fieldValue = visit(ctx.fieldvalue());
         String args = visit(ctx.expr(), ",", "", "");
-        return notOperation + varArgCondition(functionName, fieldValue, args);
+        return notOperation + varArgCondition(functionRegistry, functionName, fieldValue, args);
     }
 
 

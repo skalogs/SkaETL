@@ -64,16 +64,17 @@ public abstract class GenericMetricProcessor {
     private final String srcTopic2;
     @Setter
     private ApplicationContext applicationContext;
+    private final FunctionRegistry functionRegistry;
 
-
-    protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic) {
-        this(processMetric, srcTopic, null);
+    protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic, FunctionRegistry functionRegistry) {
+        this(processMetric, srcTopic, null, functionRegistry);
     }
 
-    protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic, String srcTopic2) {
+    protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic, String srcTopic2, FunctionRegistry functionRegistry) {
         this.processMetric = processMetric;
         this.srcTopic = srcTopic;
         this.srcTopic2 = srcTopic2;
+        this.functionRegistry = functionRegistry;
     }
 
     public KafkaStreams buildStream(Properties props) {
@@ -280,11 +281,11 @@ public abstract class GenericMetricProcessor {
     }
 
     protected boolean evaluate(String functionName, Object... args) {
-        return FunctionRegistry.getInstance().evaluate(functionName, args);
+        return functionRegistry.evaluate(functionName, args);
     }
 
     protected Double evaluateOperation(String functionName, Double... args) {
-        return FunctionRegistry.getInstance().evaluate(functionName, args);
+        return functionRegistry.evaluate(functionName, args);
     }
 
     protected KTable<Windowed<Keys>, Double> aggregateHoppingWindow(KGroupedStream<Keys, JsonNode> kGroupedStream,

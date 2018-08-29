@@ -27,6 +27,7 @@ import io.skalogs.skaetl.domain.*;
 import io.skalogs.skaetl.kafka.KafkaUnit;
 import io.skalogs.skaetl.kafka.KafkaUnitRule;
 import io.skalogs.skaetl.rules.UtilsValidator;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import io.skalogs.skaetl.rules.metrics.domain.Keys;
 import io.skalogs.skaetl.rules.metrics.domain.MetricResult;
 import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;
@@ -51,6 +52,8 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericMetricProcessorIT {
+
+    private final FunctionRegistry functionRegistry = new FunctionRegistry();
     @ClassRule
     public static KafkaUnitRule kafkaUnitRule = new KafkaUnitRule();
 
@@ -84,7 +87,7 @@ public class GenericMetricProcessorIT {
                 toJsonNode("{\"project\":\"myproject\",\"type\":\"somethingelse\",\"duration\": 10}")
         );
         String destTopic = "count-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count", destTopic), "count-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count", destTopic), "count-src", functionRegistry) {
             @Override
             protected AggregateFunction aggInitializer() {
                 return aggFunction("count");
@@ -120,7 +123,7 @@ public class GenericMetricProcessorIT {
 
         );
         String destTopic = "count-distinct-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count-distinct", destTopic), "count-distinct-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count-distinct", destTopic), "count-distinct-src", functionRegistry) {
             @Override
             protected AggregateFunction aggInitializer() {
                 return aggFunction("count-distinct");
@@ -169,7 +172,7 @@ public class GenericMetricProcessorIT {
                 toJsonNode("{\"project\":\"myproject\",\"type\":\"somethingelse\",\"duration\": 10}")
         );
         String destTopic = "min-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("min", destTopic), "min-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("min", destTopic), "min-src", functionRegistry) {
             @Override
             protected AggregateFunction aggInitializer() {
                 return aggFunction("min");
@@ -202,7 +205,7 @@ public class GenericMetricProcessorIT {
         );
         String destTopic = "max-dest";
 
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("max", destTopic), "max-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("max", destTopic), "max-src", functionRegistry) {
 
             @Override
             protected AggregateFunction aggInitializer() {
@@ -238,7 +241,7 @@ public class GenericMetricProcessorIT {
 
 
         String destTopic = "avg-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("avg", destTopic), "avg-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("avg", destTopic), "avg-src", functionRegistry) {
 
             @Override
             protected AggregateFunction aggInitializer() {
@@ -274,7 +277,7 @@ public class GenericMetricProcessorIT {
 
 
         String destTopic = "sum-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("sum", destTopic), "sum-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("sum", destTopic), "sum-src", functionRegistry) {
 
             @Override
             protected AggregateFunction aggInitializer() {
@@ -315,7 +318,7 @@ public class GenericMetricProcessorIT {
 
 
         String destTopic = "median-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("median", destTopic), "median-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("median", destTopic), "median-src", functionRegistry) {
 
             @Override
             protected AggregateFunction aggInitializer() {
@@ -352,7 +355,7 @@ public class GenericMetricProcessorIT {
 
 
         String destTopic = "sum-groupby-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("sum-groupby", destTopic), "sum-groupby-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("sum-groupby", destTopic), "sum-groupby-src", functionRegistry) {
 
             @Override
             protected AggregateFunction aggInitializer() {
@@ -411,7 +414,7 @@ public class GenericMetricProcessorIT {
 
 
         String destTopic = "count-groupby-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count-groupby", destTopic), "count-groupby-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count-groupby", destTopic), "count-groupby-src", functionRegistry) {
 
             @Override
             protected AggregateFunction aggInitializer() {
@@ -481,7 +484,7 @@ public class GenericMetricProcessorIT {
 
 
         String destTopic = "count-cb-ko-join-payment";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count-incident-payment", destTopic), "operation-cb", "payment") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("count-incident-payment", destTopic), "operation-cb", "payment", functionRegistry) {
 
             @Override
             protected JoinType joinType() {
@@ -549,7 +552,7 @@ public class GenericMetricProcessorIT {
 
 
         String destTopic = "sum-withfilter-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("sum-withfilter", destTopic), "sum-withfilter-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("sum-withfilter", destTopic), "sum-withfilter-src", functionRegistry) {
             @Override
             protected AggregateFunction aggInitializer() {
                 return aggFunction("sum");
@@ -603,7 +606,7 @@ public class GenericMetricProcessorIT {
         input.addAll(inputsDelayed);
 
         String destTopic = "min-dest";
-        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("min",destTopic), "dsl", "min-src") {
+        GenericMetricProcessor minDuration = new GenericMetricProcessor(buildProcessMetric("min",destTopic), "dsl", "min-src", functionRegistry) {
             @Override
             protected AggregateFunction aggInitializer() {
                 return aggFunction("min");

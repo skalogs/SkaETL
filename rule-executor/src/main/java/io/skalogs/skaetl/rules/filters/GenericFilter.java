@@ -24,8 +24,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.domain.FilterResult;
 import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.functions.FunctionRegistry;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public abstract class GenericFilter {
+
+    private final FunctionRegistry functionRegistry;
 
     public FilterResult filter(JsonNode jsonValue) {
         if (jsonValue == null) {
@@ -42,11 +46,11 @@ public abstract class GenericFilter {
     protected abstract ProcessFilter getProcessFilter();
 
     protected boolean evaluate(String functionName, Object... args) {
-        return FunctionRegistry.getInstance().evaluate(functionName, args);
+        return functionRegistry.evaluate(functionName, args);
     }
 
     protected Double evaluateOperation(String functionName, Object... args) {
-        return FunctionRegistry.getInstance().evaluate(functionName, args);
+        return functionRegistry.evaluate(functionName, args);
     }
 
 }

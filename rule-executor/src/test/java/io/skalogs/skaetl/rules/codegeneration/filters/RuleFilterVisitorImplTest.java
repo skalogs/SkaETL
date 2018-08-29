@@ -20,12 +20,14 @@ package io.skalogs.skaetl.rules.codegeneration.filters;
  * #L%
  */
 
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleFilterVisitorImplTest {
-    private final RuleFilterVisitorImpl generator = new RuleFilterVisitorImpl();
+    private final FunctionRegistry functionRegistry = new FunctionRegistry();
+    private final RuleFilterVisitorImpl generator = new RuleFilterVisitorImpl(functionRegistry);
 
     @Test
     public void expr_int_atom() {
@@ -193,7 +195,7 @@ public class RuleFilterVisitorImplTest {
     }
 
     public RuleFilterVisitorImpl convert(String dsl) {
-        RuleFilterVisitorImpl ruleVisitor = new RuleFilterVisitorImpl();
+        RuleFilterVisitorImpl ruleVisitor = new RuleFilterVisitorImpl(functionRegistry);
         ruleVisitor.visit(RuleFilterToJava.parser(dsl).parse());
 
         return ruleVisitor;

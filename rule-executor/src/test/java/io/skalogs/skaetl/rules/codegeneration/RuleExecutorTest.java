@@ -25,6 +25,7 @@ import io.skalogs.skaetl.domain.ProcessFilter;
 import io.skalogs.skaetl.rules.codegeneration.filters.RuleFilterToJava;
 import io.skalogs.skaetl.rules.filters.GenericFilter;
 import io.skalogs.skaetl.rules.filters.RuleFilterExecutor;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import org.junit.Test;
 
 import static io.skalogs.skaetl.rules.JSONUtils.createJsonNode;
@@ -33,7 +34,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleExecutorTest {
 
-    private RuleFilterExecutor ruleExecutor = new RuleFilterExecutor(new RuleFilterToJava());
+    private final FunctionRegistry functionRegistry = new FunctionRegistry();
+    private RuleFilterExecutor ruleExecutor = new RuleFilterExecutor(new RuleFilterToJava(functionRegistry),functionRegistry);
 
     @Test
     public void shouldCompile() {

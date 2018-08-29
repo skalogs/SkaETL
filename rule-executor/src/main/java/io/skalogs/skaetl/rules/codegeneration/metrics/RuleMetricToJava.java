@@ -26,6 +26,8 @@ import io.skalogs.skaetl.rules.codegeneration.RuleToJava;
 import io.skalogs.skaetl.rules.codegeneration.SyntaxErrorListener;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
 import io.skalogs.skaetl.rules.codegeneration.exceptions.TemplatingException;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
+import lombok.AllArgsConstructor;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
@@ -38,12 +40,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.skalogs.skaetl.rules.codegeneration.RuleToJava.nullSafePredicate;
 
 @Component
+@AllArgsConstructor
 public class RuleMetricToJava {
+
+    private final FunctionRegistry functionRegistry;
 
     public RuleCode convert(String name, String dsl) {
         checkNotNull(name);
         checkNotNull(dsl);
-        RuleMetricVisitorImpl ruleMetricVisitor = new RuleMetricVisitorImpl();
+        RuleMetricVisitorImpl ruleMetricVisitor = new RuleMetricVisitorImpl(functionRegistry);
         ruleMetricVisitor.visit(parser(dsl).parse());
         try {
             return templating(name, dsl, ruleMetricVisitor);
@@ -72,6 +77,7 @@ public class RuleMetricToJava {
                 "import static io.skalogs.skaetl.rules.UtilsValidator.*;\n" +
                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
+                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                 "\n" +
                 "import org.apache.kafka.streams.kstream.*;\n" +
                 "\n" +
@@ -81,11 +87,11 @@ public class RuleMetricToJava {
                 "@Generated(\"etlMetric\")\n" +
                 "public class " + ruleClassName + " extends GenericMetricProcessor {\n" +
                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                "    public " + ruleClassName + "(ProcessMetric processMetric) {\n";
+                "    public " + ruleClassName + "(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n";
         if (StringUtils.isBlank(ruleMetricVisitor.getJoinFrom())) {
-            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\");\n";
+            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", functionRegistry);\n";
         } else {
-            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", \"" + ruleMetricVisitor.getJoinFrom() + "\");\n";
+            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", \"" + ruleMetricVisitor.getJoinFrom() + "\", functionRegistry);\n";
         }
 
         javaCode += "    }\n" +

@@ -27,6 +27,8 @@ import io.skalogs.skaetl.rules.codegeneration.RuleToJava;
 import io.skalogs.skaetl.rules.codegeneration.SyntaxErrorListener;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
 import io.skalogs.skaetl.rules.codegeneration.exceptions.TemplatingException;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
+import lombok.AllArgsConstructor;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.atn.PredictionMode;
@@ -37,12 +39,15 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static io.skalogs.skaetl.rules.codegeneration.RuleToJava.nullSafePredicate;
 
 @Component
+@AllArgsConstructor
 public class RuleFilterToJava {
+
+    private final FunctionRegistry functionRegistry;
 
     public RuleCode convert(String name, String dsl, ProcessFilter processFilter) {
         checkNotNull(name);
         checkNotNull(dsl);
-        RuleFilterVisitorImpl ruleFilterVisitor = new RuleFilterVisitorImpl();
+        RuleFilterVisitorImpl ruleFilterVisitor = new RuleFilterVisitorImpl(functionRegistry);
         ruleFilterVisitor.visit(parser(dsl).parse());
         try {
             return templating(name, dsl, ruleFilterVisitor, processFilter);
@@ -68,12 +73,16 @@ public class RuleFilterToJava {
                 "import com.fasterxml.jackson.databind.JsonNode;\n" +
                 "import io.skalogs.skaetl.domain.ProcessFilter;\n" +
                 "import io.skalogs.skaetl.rules.filters.GenericFilter;\n" +
+                "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
                 "\n" +
                 "/*\n" +
                 dsl + "\n" +
                 "*/\n" +
                 "@Generated(\"etlFilter\")\n" +
                 "public class " + ruleClassName + " extends GenericFilter {\n" +
+                "    public " + ruleClassName + "(FunctionRegistry functionRegistry) {\n" +
+                "        super(functionRegistry);\n" +
+                "    }\n" +
                 "    @Override\n" +
                 "    public ProcessFilter getProcessFilter(){\n"+
                 "        return ProcessFilter.builder().activeFailForward("+processFilter.getActiveFailForward()+").failForwardTopic(\""+processFilter.getFailForwardTopic()+"\").build();\n"+

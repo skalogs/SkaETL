@@ -34,9 +34,11 @@ import java.util.List;
 @AllArgsConstructor
 public class SkaDSLController {
 
+    private final FunctionRegistry functionRegistry;
+
     @GetMapping("/filterFunctions")
     public List<FilterFunctionDescription> filterFunctions() {
-        return FunctionRegistry.getInstance().filterFunctions();
+        return functionRegistry.filterFunctions();
 
     }
 }

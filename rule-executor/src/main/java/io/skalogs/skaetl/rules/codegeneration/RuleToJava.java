@@ -149,8 +149,8 @@ public class RuleToJava {
         return "(" + condition + ")?(" + thenClause + "):(" + elseClause + ")";
     }
 
-    public static String oneArgCondition(String functionName, String fieldValue) {
-        if (FunctionRegistry.getInstance().getRuleFunction(functionName) == null) {
+    public static String oneArgCondition(FunctionRegistry functionRegistry, String functionName, String fieldValue) {
+        if (functionRegistry.getRuleFunction(functionName) == null) {
             throw new IllegalArgumentException("Unknown function " + functionName);
         }
         return "evaluate(\"" + functionName + "\"," + fieldValue + ")";
@@ -160,8 +160,8 @@ public class RuleToJava {
         return "evaluateOperation(\"" + function + "\"," + expr1 + "," + expr2 + ")";
     }
 
-    public static String varArgCondition(String functionName, String fieldValue, String args) {
-        if (FunctionRegistry.getInstance().getRuleFunction(functionName) == null) {
+    public static String varArgCondition(FunctionRegistry functionRegistry, String functionName, String fieldValue, String args) {
+        if (functionRegistry.getRuleFunction(functionName) == null) {
             throw new IllegalArgumentException("Unknown function " + functionName);
         }
 

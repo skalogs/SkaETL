@@ -21,12 +21,14 @@ package io.skalogs.skaetl.rules.codegeneration.metrics;
  */
 
 import io.skalogs.skaetl.domain.JoinType;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleMetricVisitorImplTest {
-    private final RuleMetricVisitorImpl generator = new RuleMetricVisitorImpl();
+    private final FunctionRegistry functionRegistry= new FunctionRegistry();
+    private final RuleMetricVisitorImpl generator = new RuleMetricVisitorImpl(functionRegistry);
 
     @Test
     public void expr_int_atom() {
@@ -250,7 +252,7 @@ public class RuleMetricVisitorImplTest {
     }
 
     public RuleMetricVisitorImpl convert(String dsl) {
-        RuleMetricVisitorImpl ruleVisitor = new RuleMetricVisitorImpl();
+        RuleMetricVisitorImpl ruleVisitor = new RuleMetricVisitorImpl(functionRegistry);
         ruleVisitor.visit(RuleMetricToJava.parser(dsl).parse());
 
         return ruleVisitor;

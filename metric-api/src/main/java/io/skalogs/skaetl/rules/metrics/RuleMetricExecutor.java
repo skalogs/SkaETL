@@ -9,9 +9,9 @@ package io.skalogs.skaetl.rules.metrics;
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@ package io.skalogs.skaetl.rules.metrics;
 import io.skalogs.skaetl.domain.ProcessMetric;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
 import io.skalogs.skaetl.rules.codegeneration.metrics.RuleMetricToJava;
+import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -34,21 +35,22 @@ import org.springframework.stereotype.Component;
 public class RuleMetricExecutor {
 
     private final RuleMetricToJava ruleMetricToJava;
+    private final FunctionRegistry functionRegistry;
 
     public GenericMetricProcessor instanciate(ProcessMetric processMetric) {
-        return instanciate(ruleMetricToJava.convert(processMetric.getName(), processMetric.toDSL()),processMetric);
+        return instanciate(ruleMetricToJava.convert(processMetric.getName(), processMetric.toDSL()), processMetric);
     }
 
     private GenericMetricProcessor instanciate(RuleCode ruleCode, ProcessMetric processMetric) {
         try {
-            return instanciate(ruleCode.compile(),processMetric);
+            return instanciate(ruleCode.compile(), processMetric);
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    private GenericMetricProcessor instanciate(Class aClass,ProcessMetric processMetric) throws Exception {
-        return (GenericMetricProcessor) aClass.getConstructor(ProcessMetric.class).newInstance(processMetric);
+    private GenericMetricProcessor instanciate(Class aClass, ProcessMetric processMetric) throws Exception {
+        return (GenericMetricProcessor) aClass.getConstructor(ProcessMetric.class, FunctionRegistry.class).newInstance(processMetric, functionRegistry);
     }
 
 
