@@ -22,14 +22,16 @@ package io.skalogs.skaetl.rules.functions;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.skalogs.skaetl.rules.UtilsValidator;
+import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static io.skalogs.skaetl.rules.JSONUtils.createJsonNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class FunctionRegistryTest {
-
-    private final FunctionRegistry functionRegistry= new FunctionRegistry();
+    private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepositoryMock = Mockito.mock(FilterFunctionDescriptionRepository.class);
+    private final FunctionRegistry functionRegistry= new FunctionRegistry(filterFunctionDescriptionRepositoryMock);
 
     @Test
     public void contains_OK() {

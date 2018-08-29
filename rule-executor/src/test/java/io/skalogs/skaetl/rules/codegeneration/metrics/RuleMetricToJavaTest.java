@@ -23,12 +23,15 @@ package io.skalogs.skaetl.rules.codegeneration.metrics;
 import io.skalogs.skaetl.rules.codegeneration.SyntaxErrorListener;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
 import io.skalogs.skaetl.rules.functions.FunctionRegistry;
+import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleMetricToJavaTest {
-    private final FunctionRegistry functionRegistry= new FunctionRegistry();
+    private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepositoryMock = Mockito.mock(FilterFunctionDescriptionRepository.class);
+    private final FunctionRegistry functionRegistry= new FunctionRegistry(filterFunctionDescriptionRepositoryMock);
 
     @Test
     public void checkJavaClassName() {

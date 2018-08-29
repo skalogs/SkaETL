@@ -31,6 +31,7 @@ import io.skalogs.skaetl.rules.functions.FunctionRegistry;
 import io.skalogs.skaetl.rules.metrics.domain.Keys;
 import io.skalogs.skaetl.rules.metrics.domain.MetricResult;
 import io.skalogs.skaetl.rules.metrics.udaf.AggregateFunction;
+import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import io.skalogs.skaetl.serdes.JsonNodeSerialializer;
 import io.skalogs.skaetl.utils.JSONUtils;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -44,6 +45,7 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Windowed;
 import org.assertj.core.util.Lists;
 import org.junit.*;
+import org.mockito.Mockito;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -52,8 +54,8 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class GenericMetricProcessorIT {
-
-    private final FunctionRegistry functionRegistry = new FunctionRegistry();
+    private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepositoryMock = Mockito.mock(FilterFunctionDescriptionRepository.class);
+    private final FunctionRegistry functionRegistry = new FunctionRegistry(filterFunctionDescriptionRepositoryMock);
     @ClassRule
     public static KafkaUnitRule kafkaUnitRule = new KafkaUnitRule();
 

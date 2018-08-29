@@ -52,7 +52,7 @@ public class ProcessController {
        return utilsNetworkService.viewNetwork();
     }
 
-    @GetMapping("init")
+    @GetMapping("initDefaults")
     public ProcessConsumer init() {
         return processService.initProcessConsumer();
     }

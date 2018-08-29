@@ -21,7 +21,7 @@ package io.skalogs.skaetl.web;
  */
 
 import io.skalogs.skaetl.rules.domain.FilterFunctionDescription;
-import io.skalogs.skaetl.rules.functions.FunctionRegistry;
+import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,11 +34,10 @@ import java.util.List;
 @AllArgsConstructor
 public class SkaDSLController {
 
-    private final FunctionRegistry functionRegistry;
+    private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepository;
 
     @GetMapping("/filterFunctions")
     public List<FilterFunctionDescription> filterFunctions() {
-        return functionRegistry.filterFunctions();
-
+        return filterFunctionDescriptionRepository.findAll();
     }
 }

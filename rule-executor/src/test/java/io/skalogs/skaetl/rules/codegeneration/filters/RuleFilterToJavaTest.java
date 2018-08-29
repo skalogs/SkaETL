@@ -25,8 +25,10 @@ import io.skalogs.skaetl.rules.codegeneration.CodeGenerationUtils;
 import io.skalogs.skaetl.rules.codegeneration.SyntaxErrorListener;
 import io.skalogs.skaetl.rules.codegeneration.domain.RuleCode;
 import io.skalogs.skaetl.rules.functions.FunctionRegistry;
+import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.io.File;
 
@@ -34,7 +36,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleFilterToJavaTest {
 
-    private final FunctionRegistry functionRegistry = new FunctionRegistry();
+    private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepositoryMock = Mockito.mock(FilterFunctionDescriptionRepository.class);
+    private final FunctionRegistry functionRegistry = new FunctionRegistry(filterFunctionDescriptionRepositoryMock);
 
     @Test
     public void checkJavaClassName() {

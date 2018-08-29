@@ -26,15 +26,17 @@ import io.skalogs.skaetl.rules.codegeneration.filters.RuleFilterToJava;
 import io.skalogs.skaetl.rules.filters.GenericFilter;
 import io.skalogs.skaetl.rules.filters.RuleFilterExecutor;
 import io.skalogs.skaetl.rules.functions.FunctionRegistry;
+import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static io.skalogs.skaetl.rules.JSONUtils.createJsonNode;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class RuleExecutorTest {
-
-    private final FunctionRegistry functionRegistry = new FunctionRegistry();
+    private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepositoryMock = Mockito.mock(FilterFunctionDescriptionRepository.class);
+    private final FunctionRegistry functionRegistry = new FunctionRegistry(filterFunctionDescriptionRepositoryMock);
     private RuleFilterExecutor ruleExecutor = new RuleFilterExecutor(new RuleFilterToJava(functionRegistry),functionRegistry);
 
     @Test

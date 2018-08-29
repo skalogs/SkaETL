@@ -22,12 +22,15 @@ package io.skalogs.skaetl.rules.codegeneration.metrics;
 
 import io.skalogs.skaetl.domain.JoinType;
 import io.skalogs.skaetl.rules.functions.FunctionRegistry;
+import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuleMetricVisitorImplTest {
-    private final FunctionRegistry functionRegistry= new FunctionRegistry();
+    private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepositoryMock = Mockito.mock(FilterFunctionDescriptionRepository.class);
+    private final FunctionRegistry functionRegistry= new FunctionRegistry(filterFunctionDescriptionRepositoryMock);
     private final RuleMetricVisitorImpl generator = new RuleMetricVisitorImpl(functionRegistry);
 
     @Test

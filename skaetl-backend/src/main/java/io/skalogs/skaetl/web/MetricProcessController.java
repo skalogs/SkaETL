@@ -56,7 +56,7 @@ public class MetricProcessController {
     }
 
     @ResponseStatus(OK)
-    @GetMapping("init")
+    @GetMapping("initDefaults")
     public ProcessMetric init() {
         return metricProcessService.init();
     }

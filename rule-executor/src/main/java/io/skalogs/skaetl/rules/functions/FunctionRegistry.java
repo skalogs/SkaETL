@@ -23,19 +23,25 @@ package io.skalogs.skaetl.rules.functions;
 import io.skalogs.skaetl.rules.domain.FilterFunctionDescription;
 import io.skalogs.skaetl.rules.functions.numbers.*;
 import io.skalogs.skaetl.rules.functions.strings.*;
+import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Component
 public class FunctionRegistry {
 
     private Map<String, RuleFunction> registry = new HashMap<>();
 
-    public FunctionRegistry() {
+    private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepository;
+
+    public FunctionRegistry(FilterFunctionDescriptionRepository filterFunctionDescriptionRepository) {
+        this.filterFunctionDescriptionRepository = filterFunctionDescriptionRepository;
+        initDefaults();
+    }
+
+    public void initDefaults() {
         register("IS_NUMBER", new IsNumberFunction());
 
         register("IS_BLANK", new IsBlankFunction());
@@ -57,6 +63,7 @@ public class FunctionRegistry {
 
     public void register(String name, RuleFunction ruleFunction) {
         registry.put(name, ruleFunction);
+        filterFunctionDescriptionRepository.save(new FilterFunctionDescription(name,ruleFunction.getDescription(),ruleFunction.getDescription()));
     }
 
     public <T> T evaluate(String functionName, Object... args) {
@@ -67,11 +74,4 @@ public class FunctionRegistry {
         return registry.get(functionName.toUpperCase());
     }
 
-    public List<FilterFunctionDescription> filterFunctions() {
-        return registry
-                .entrySet()
-                .stream()
-                .map((e) -> new FilterFunctionDescription(e.getKey(),e.getValue().getDescription(),e.getValue().getExample()))
-                .collect(Collectors.toList());
-    }
 }
