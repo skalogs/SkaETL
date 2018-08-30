@@ -126,4 +126,11 @@ public class ProcessController {
     public List<ValidatorDescription> validators() {
         return validatorDescriptionRepository.findAll();
     }
+
+    @GetMapping("clear-descriptions")
+    public void clearExtentionPointDescritions() {
+        parserDescriptionRepository.deleteAll();
+        transformatorDescriptionRepository.deleteAll();
+        validatorDescriptionRepository.deleteAll();
+    }
 }
