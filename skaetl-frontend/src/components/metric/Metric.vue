@@ -162,8 +162,19 @@
           <v-card-text>
             <v-layout row>
               <v-select v-bind:items="functions" v-model="metricProcess.functionName" label="Select function"
-                        item-value="text" required
-                        :rules="[() => !!metricProcess.functionName || 'This field is required']"></v-select>
+                        required
+                        :rules="[() => !!metricProcess.functionName || 'This field is required']"
+                        item-value="name">
+                <template slot="selection" slot-scope="data">
+                  {{data.item.name}}
+                </template>
+                <template slot="item" slot-scope="data">
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="data.item.description"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </template>
+              </v-select>
               <v-text-field label="Field" v-model="metricProcess.functionField" required
                             :rules="[() => !!metricProcess.functionField || 'This field is required']"></v-text-field>
             </v-layout>
@@ -367,7 +378,7 @@
           having: "",
           processOutputs: []
         },
-        functions: ["COUNT", "COUNT-DISTINCT", "SUM", "AVG", "MIN", "MAX", "STDDEV", "MEAN"],
+        functions: [],
         windowTypes: ["TUMBLING", "HOPPING", "SESSION"],
         timeunits: ["SECONDS", "MINUTES", "HOURS", "DAYS"],
         joinTypes: ["NONE", "INNER", "OUTER", "LEFT" ],
@@ -379,7 +390,12 @@
     },
     mounted() {
       this.metricProcess.idProcess = this.$route.query.idProcess;
-
+      this.$http.get('/dsl/aggFunctions', {}).then(response => {
+        this.functions = response.data.sort();
+      }, response => {
+        this.viewError = true;
+        this.msgError = "Error during call service";
+      });
       if (this.metricProcess.idProcess) {
         this.editMode = true;
         this.$http.get('/metric/findById', {params: {idProcess: this.metricProcess.idProcess}}).then(response => {
