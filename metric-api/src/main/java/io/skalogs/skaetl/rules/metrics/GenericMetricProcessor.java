@@ -65,16 +65,18 @@ public abstract class GenericMetricProcessor {
     @Setter
     private ApplicationContext applicationContext;
     private final FunctionRegistry functionRegistry;
+    private final UDAFRegistry udafRegistry;
 
-    protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic, FunctionRegistry functionRegistry) {
-        this(processMetric, srcTopic, null, functionRegistry);
+    protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {
+        this(processMetric, srcTopic, null, functionRegistry, udafRegistry);
     }
 
-    protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic, String srcTopic2, FunctionRegistry functionRegistry) {
+    protected GenericMetricProcessor(ProcessMetric processMetric, String srcTopic, String srcTopic2, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {
         this.processMetric = processMetric;
         this.srcTopic = srcTopic;
         this.srcTopic2 = srcTopic2;
         this.functionRegistry = functionRegistry;
+        this.udafRegistry = udafRegistry;
     }
 
     public KafkaStreams buildStream(Properties props) {
@@ -233,7 +235,7 @@ public abstract class GenericMetricProcessor {
     }
 
     protected AggregateFunction aggFunction(String aggFunctionName) {
-        return UDAFRegistry.getInstance().get(aggFunctionName);
+        return udafRegistry.get(aggFunctionName);
     }
 
     // MANDATORY METHODS

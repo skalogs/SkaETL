@@ -36,6 +36,7 @@ public class RuleMetricExecutor {
 
     private final RuleMetricToJava ruleMetricToJava;
     private final FunctionRegistry functionRegistry;
+    private final UDAFRegistry udafRegistry;
 
     public GenericMetricProcessor instanciate(ProcessMetric processMetric) {
         return instanciate(ruleMetricToJava.convert(processMetric.getName(), processMetric.toDSL()), processMetric);
@@ -50,7 +51,7 @@ public class RuleMetricExecutor {
     }
 
     private GenericMetricProcessor instanciate(Class aClass, ProcessMetric processMetric) throws Exception {
-        return (GenericMetricProcessor) aClass.getConstructor(ProcessMetric.class, FunctionRegistry.class).newInstance(processMetric, functionRegistry);
+        return (GenericMetricProcessor) aClass.getConstructor(ProcessMetric.class, FunctionRegistry.class, UDAFRegistry.class).newInstance(processMetric, functionRegistry, udafRegistry);
     }
 
 

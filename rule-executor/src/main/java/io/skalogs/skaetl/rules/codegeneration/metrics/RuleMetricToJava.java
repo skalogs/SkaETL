@@ -78,6 +78,7 @@ public class RuleMetricToJava {
                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                 "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
+                "import io.skalogs.skaetl.rules.metrics.UDAFRegistry;\n" +
                 "\n" +
                 "import org.apache.kafka.streams.kstream.*;\n" +
                 "\n" +
@@ -87,11 +88,11 @@ public class RuleMetricToJava {
                 "@Generated(\"etlMetric\")\n" +
                 "public class " + ruleClassName + " extends GenericMetricProcessor {\n" +
                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                "    public " + ruleClassName + "(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n";
+                "    public " + ruleClassName + "(ProcessMetric processMetric, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {\n";
         if (StringUtils.isBlank(ruleMetricVisitor.getJoinFrom())) {
-            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", functionRegistry);\n";
+            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", functionRegistry, udafRegistry);\n";
         } else {
-            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", \"" + ruleMetricVisitor.getJoinFrom() + "\", functionRegistry);\n";
+            javaCode += "        super(processMetric, \"" + ruleMetricVisitor.getFrom() + "\", \"" + ruleMetricVisitor.getJoinFrom() + "\", functionRegistry, udafRegistry);\n";
         }
 
         javaCode += "    }\n" +

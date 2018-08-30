@@ -69,6 +69,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
+                                "import io.skalogs.skaetl.rules.metrics.UDAFRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -78,8 +79,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyCountRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyCountRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
-                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
+                                "    public MyCountRule(ProcessMetric processMetric, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry, udafRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -120,6 +121,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
+                                "import io.skalogs.skaetl.rules.metrics.UDAFRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -129,8 +131,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
-                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry, udafRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -178,6 +180,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
+                                "import io.skalogs.skaetl.rules.metrics.UDAFRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -187,8 +190,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
-                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry, udafRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -240,6 +243,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
+                                "import io.skalogs.skaetl.rules.metrics.UDAFRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -249,8 +253,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
-                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry, udafRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -308,6 +312,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
+                                "import io.skalogs.skaetl.rules.metrics.UDAFRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -317,8 +322,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
-                                "        super(processMetric, \"mytopic\", functionRegistry);\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", functionRegistry, udafRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -370,6 +375,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
+                                "import io.skalogs.skaetl.rules.metrics.UDAFRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -379,8 +385,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
-                                "        super(processMetric, \"mytopic\", \"mytopic2\", functionRegistry);\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", \"mytopic2\", functionRegistry, udafRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
@@ -450,6 +456,7 @@ public class RuleMetricToJavaTest {
                                 "import static io.skalogs.skaetl.domain.JoinType.*;\n" +
                                 "import static io.skalogs.skaetl.domain.RetentionLevel.*;\n" +
                                 "import io.skalogs.skaetl.rules.functions.FunctionRegistry;\n" +
+                                "import io.skalogs.skaetl.rules.metrics.UDAFRegistry;\n" +
                                 "\n" +
                                 "import org.apache.kafka.streams.kstream.*;\n" +
                                 "\n" +
@@ -459,8 +466,8 @@ public class RuleMetricToJavaTest {
                                 "@Generated(\"etlMetric\")\n" +
                                 "public class MyMinRule extends GenericMetricProcessor {\n" +
                                 "    private final JSONUtils jsonUtils = JSONUtils.getInstance();\n" +
-                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry) {\n" +
-                                "        super(processMetric, \"mytopic\", \"mytopic2\", functionRegistry);\n" +
+                                "    public MyMinRule(ProcessMetric processMetric, FunctionRegistry functionRegistry, UDAFRegistry udafRegistry) {\n" +
+                                "        super(processMetric, \"mytopic\", \"mytopic2\", functionRegistry, udafRegistry);\n" +
                                 "    }\n" +
                                 "    \n" +
                                 "    @Override\n" +
