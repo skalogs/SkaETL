@@ -8,19 +8,17 @@ Core features :
 
  * Centralized Logstash Configuration
  * Consumer Processes: Ingestion Pipeline handling through guided workflow
-  * Ingestion, Parsing, Transformation, Metrics, Notifications, Parsing Simulations
+   * Ingestion, Parsing, Transformation, Metrics, Notifications, Parsing Simulations
  * Build data referential on the fly based on events processed by SkaETL
  * Build metrics on the fly (standard statistical & count functions): before storing in ES (avoids computations in ES, reduces ressources dedicated to ES cluster)
-  * Create new mathematical functions to extend standard statistical metrics
-  * Link complex python ML algorithms
+   * Create new mathematical functions to extend standard statistical metrics
  * Create threshold and notifications
  * Preview live data (before storing and indexing in ES)
-  * At ingestion in Kafka
-  * After Parsing
-  * After Transforming
- * Output: ES
-  * Snapshot / Restore: (AWS or on-premise), GCP Cloud Storage, Azure
-  *  https://www.elastic.co/guide/en/elasticsearch/plugins/current/repository.htmlS3
+   * At ingestion in Kafka
+   * After Parsing
+   * After Transforming
+ * Output: ES, Kafka
+ * Notifications: email, Slack
  
  SkaETL parses and enhances data from Kafka topics to any output :
  
