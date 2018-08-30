@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>parent-importer</artifactId>
         <groupId>io.skalogs.skaetl</groupId>
@@ -7,28 +9,21 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>metric-api</artifactId>
-    <name>metric-api</name>
+    <artifactId>metric-impl</artifactId>
+    <name>metric-impl</name>
+
 
     <dependencies>
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>metric-api</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
-            <artifactId>rule-executor</artifactId>
+            <artifactId>services</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.hdrhistogram</groupId>
-            <artifactId>HdrHistogram</artifactId>
-        </dependency>
-
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -45,6 +40,18 @@
             <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
-    </dependencies>
+        <dependency>
+            <groupId>io.skalogs.skaetl</groupId>
+            <artifactId>kafka-unit</artifactId>
+            <version>${project.version}</version>
+            <scope>test</scope>
+        </dependency>
 
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+    </dependencies>
 </project>

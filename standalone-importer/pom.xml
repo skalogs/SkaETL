@@ -29,7 +29,7 @@
         </dependency>
         <dependency>
             <groupId>io.skalogs.skaetl</groupId>
-            <artifactId>metric-api</artifactId>
+            <artifactId>metric-impl</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

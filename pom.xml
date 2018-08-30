@@ -411,6 +411,7 @@
         <module>process-importer-simulator</module>
         <module>kafka-unit</module>
         <module>metric-api</module>
+        <module>metric-impl</module>
         <module>metric-importer</module>
         <module>referential-importer-impl</module>
         <module>referential-importer</module>
