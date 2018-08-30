@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class AggFunctionDescriptionRepository extends AbstractKafkaRepository<AggFunctionDescription> {
     public AggFunctionDescriptionRepository(KafkaAdminService kafkaAdminService, KafkaConfiguration kafkaConfiguration) {
-        super("parser-description",
+        super("agg-function-description",
                 Serdes.serdeFrom(new GenericSerializer<>(), new GenericDeserializer<>(AggFunctionDescription.class)),
                 aggFunctionDescription -> aggFunctionDescription.getName(),
                 kafkaAdminService,

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TransformatorDescriptionRepository extends AbstractKafkaRepository<TransformatorDescription> {
     public TransformatorDescriptionRepository(KafkaAdminService kafkaAdminService, KafkaConfiguration kafkaConfiguration) {
-        super("validator-description",
+        super("transformator-description",
                 Serdes.serdeFrom(new GenericSerializer<>(), new GenericDeserializer<>(TransformatorDescription.class)),
                 transformatorDescription -> transformatorDescription.getName(),
                 kafkaAdminService,

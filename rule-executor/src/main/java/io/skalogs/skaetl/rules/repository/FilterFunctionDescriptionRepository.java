@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FilterFunctionDescriptionRepository extends AbstractKafkaRepository<FilterFunctionDescription> {
     public FilterFunctionDescriptionRepository(KafkaAdminService kafkaAdminService, KafkaConfiguration kafkaConfiguration) {
-        super("parser-description",
+        super("filter-function-description",
                 Serdes.serdeFrom(new GenericSerializer<>(), new GenericDeserializer<>(FilterFunctionDescription.class)),
                 filterFunctionDescription -> filterFunctionDescription.getName(),
                 kafkaAdminService,
