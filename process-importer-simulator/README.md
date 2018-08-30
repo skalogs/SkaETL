@@ -1,6 +1,6 @@
 # Simulate Importer
 
-This service read into topic process from kafka and send data to ES in index. The index are calculated on the attribute "type" from the message. 
+This service reads in topic process from kafka and sends data to ES in index. The indexes are calculated on the attribute "type" from the message. 
 
 ## Install & Run
 ```
@@ -15,17 +15,17 @@ java -jar target/process-importer*
 src/main/ressources/application
 ```
 
-You can override all variable via ENV SYSTEM (doc https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
+You can override all variables via ENV SYSTEM (doc https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
 
 ### Config Validator
 
-The message send into Kafka MUST BE a JSON.
+The message sent into Kafka MUST BE a JSON.
 
-* validator.maxFields: max field allow
+* validator.maxFields: max fields allowed
 * validator.maxSize: max size message
 * validator.maximumInThePastAllowed: number of days
 * validator.maximumInTheFutureAllowed: number of days
-* validator.mandatoryFields: list of mandatory field into message
+* validator.mandatoryFields: list of mandatory fields in messages
 ```
 example
 - "@timestamp"
@@ -41,7 +41,7 @@ example
 * elasticsearch.serviceElasticsearchPassword: changeme
 * elasticsearch.socketTimeout: 10
 * elasticsearch.clientNodesSamplerInterval: 10
-* elasticsearch.customIndexPrefix: All index create by Importer are prefixed via this parameter
+* elasticsearch.customIndexPrefix: All indexes created by Importer are prefixed via this parameter
 
 ### Config kafka
 

@@ -1,6 +1,6 @@
 # Error Importer
 
-This service read into topic error from kafka and send data to ES in specific index. 
+This service reads in topic error from kafka and sends data to ES in specific index. 
 
 ## Install & Run
 ```
@@ -15,17 +15,17 @@ java -jar target/error-importer*
 src/main/ressources/application
 ```
 
-You can override all variable via ENV SYSTEM (doc https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
+You can override all variables via ENV SYSTEM (doc https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html)
 
 ### Config Validator
 
-The message send into Kafka MUST BE a JSON.
+The message sent into Kafka MUST BE a JSON.
 
-* validator.maxFields: max field allow
+* validator.maxFields: max field allowed
 * validator.maxSize: max size message
 * validator.maximumInThePastAllowed: number of days
 * validator.maximumInTheFutureAllowed: number of days
-* validator.mandatoryFields: list of mandatory field into message
+* validator.mandatoryFields: list of mandatory fields in messages
 ```
 example
 - "@timestamp"
@@ -41,7 +41,7 @@ example
 * elasticsearch.serviceElasticsearchPassword: changeme
 * elasticsearch.socketTimeout: 10
 * elasticsearch.clientNodesSamplerInterval: 10
-* elasticsearch.customIndexPrefix: All index create by Importer are prefixed via this parameter
+* elasticsearch.customIndexPrefix: All indexes created by Importer are prefixed via this parameter
 
 ### Config kafka
 
@@ -54,7 +54,7 @@ example
 
 ## Active
 
-By default this project doesn't run. For active you must active by the api http://localhost:8080/swagger-ui.html
+By default this project doesn't run. To enable it, you must activate it via the api http://localhost:8080/swagger-ui.html
 ```
 http://localhost:808080/api/generator/errorImporter
 ```
