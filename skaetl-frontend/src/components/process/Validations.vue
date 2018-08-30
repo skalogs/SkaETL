@@ -211,7 +211,7 @@
       }
     },
     mounted() {
-      this.$http.get('/process/transformators', {}).then(response => {
+      this.$http.get('/process/validators', {}).then(response => {
         this.type = response.data.sort();
       }, response => {
         this.viewError = true;
