@@ -7,9 +7,20 @@ SkaLogs ETL is a unique real time ETL designed for and dedicated to Logs and Eve
 Core features :
 
  * Centralized Logstash Configuration
- * Ingestion Pipeline handling through guided workflow
+ * Consumer Processes: Ingestion Pipeline handling through guided workflow
+ ** Ingestion, Parsing, Transformation, Metrics, Notifications, Parsing Simulations
  * Build data referential on the fly based on events processed by SkaETL
- * Build metrics on the fly
+ * Build metrics on the fly (standard statistical & count functions): before storing in ES (avoids computations in ES, reduces ressources dedicated to ES cluster)
+ ** Create new mathematical functions to extend standard statistical metrics
+ ** Link complex python ML algorithms
+ * Create threshold and notifications
+ * Preview live data (before storing and indexing in ES)
+ ** At ingestion in Kafka
+ ** After Parsing
+ ** After Transforming
+ * Output: ES
+ ** Snapshot / Restore: (AWS or on-premise), GCP Cloud Storage, Azure
+ **  https://www.elastic.co/guide/en/elasticsearch/plugins/current/repository.htmlS3
  
  SkaETL parses and enhances data from Kafka topics to any output :
  
@@ -36,7 +47,6 @@ Detailed features :
  * Monitoring - Alerts: Real-time monitoring, alerts and notifications based on events and thresholds
  * Visualization: dashboard to monitor in real-time all your ingestion processes, metrics, referentials, kafka live stream
  * Output: Kafka, ES, email, Slack, more to come...
-
 
 ## Requirements
 
