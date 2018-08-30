@@ -92,7 +92,7 @@
       }
     },
     mounted() {
-      this.$http.get('/process/parsers', {}).then(response => {
+      this.$http.get('/dsl/parsers', {}).then(response => {
         this.typeParser = response.data;
       }, response => {
         this.viewError = true;

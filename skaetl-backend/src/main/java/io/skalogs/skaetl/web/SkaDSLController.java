@@ -20,6 +20,12 @@ package io.skalogs.skaetl.web;
  * #L%
  */
 
+import io.skalogs.skaetl.domain.ParserDescription;
+import io.skalogs.skaetl.domain.TransformatorDescription;
+import io.skalogs.skaetl.domain.ValidatorDescription;
+import io.skalogs.skaetl.repository.ParserDescriptionRepository;
+import io.skalogs.skaetl.repository.TransformatorDescriptionRepository;
+import io.skalogs.skaetl.repository.ValidatorDescriptionRepository;
 import io.skalogs.skaetl.rules.domain.FilterFunctionDescription;
 import io.skalogs.skaetl.rules.metrics.domain.AggFunctionDescription;
 import io.skalogs.skaetl.rules.metrics.repository.AggFunctionDescriptionRepository;
@@ -27,9 +33,12 @@ import io.skalogs.skaetl.rules.repository.FilterFunctionDescriptionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/dsl")
@@ -39,6 +48,11 @@ public class SkaDSLController {
     private final FilterFunctionDescriptionRepository filterFunctionDescriptionRepository;
     private final AggFunctionDescriptionRepository aggFunctionDescriptionRepository;
 
+    private final ParserDescriptionRepository parserDescriptionRepository;
+    private final TransformatorDescriptionRepository transformatorDescriptionRepository;
+    private final ValidatorDescriptionRepository validatorDescriptionRepository;
+
+
     @GetMapping("/filterFunctions")
     public List<FilterFunctionDescription> filterFunctions() {
         return filterFunctionDescriptionRepository.findAll();
@@ -47,5 +61,31 @@ public class SkaDSLController {
     @GetMapping("/aggFunctions")
     public List<AggFunctionDescription> aggFunctions() {
         return aggFunctionDescriptionRepository.findAll();
+    }
+
+
+    @GetMapping("parsers")
+    public List<ParserDescription> parsers() {
+        return parserDescriptionRepository.findAll();
+    }
+
+    @GetMapping("transformators")
+    public List<TransformatorDescription> transformators() {
+        return transformatorDescriptionRepository.findAll();
+    }
+
+    @GetMapping("validators")
+    public List<ValidatorDescription> validators() {
+        return validatorDescriptionRepository.findAll();
+    }
+
+    @GetMapping("clear-descriptions")
+    @ResponseStatus(OK)
+    public void clearExtentionPointDescritions() {
+        parserDescriptionRepository.deleteAll();
+        transformatorDescriptionRepository.deleteAll();
+        validatorDescriptionRepository.deleteAll();
+        filterFunctionDescriptionRepository.deleteAll();
+        aggFunctionDescriptionRepository.deleteAll();
     }
 }

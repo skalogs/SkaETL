@@ -222,7 +222,7 @@
       }
     },
     mounted() {
-      this.$http.get('/process/transformators', {}).then(response => {
+      this.$http.get('/dsl/transformators', {}).then(response => {
         this.type = response.data.sort();
       }, response => {
         this.viewError = true;
