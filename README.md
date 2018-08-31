@@ -10,13 +10,13 @@ Core features :
  * Log Parsing Simulations based on extensive list of common pre-set patterns
  * Consumer Processes: Ingestion Pipeline handling through guided workflow
    * Ingestion, Parsing, Transformation, Metrics, Notifications, Parsing Simulations
-   * Parsing: ability to handle multiple input formats: CEF (HP Arcsight/MicroFocus), Nitro (MacAfee), GROK, CSV, json as string
+   * Parsing: ability to handle multiple input formats: CEF (HP Arcsight/MicroFocus), Nitro (MacAfee), GROK, CSV, [json as string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
  * Build data referential on the fly based on events processed by SkaETL
  * Build metrics on the fly (standard statistical & count functions): before storing in ES (avoids computations in ES, reduces ressources dedicated to ES cluster)
    * Create new mathematical functions to extend standard statistical metrics
  * Create threshold and notifications
  * Preview live data (before storing and indexing in ES)
-   * At ingestion in Kafka
+   * At ingestion in [Kafka](https://kafka.apache.org)
    * After Parsing
    * After Transforming
  * Output: ES, Kafka
@@ -31,7 +31,7 @@ Core features :
 
 Detailed features :
 
- * Real Time: real-time streaming, transformation, analysis, standardization, calculations and visualization of all your        ingested and processed data
+ * Real Time: real-time streaming (Kafka, transformation, analysis, standardization, calculations and visualization of all ingested and processed data
  * Guided Workflows:
    * "consumer processes" (data ingestion pipelines) to guide you through transformation, normalization, analysis - avoiding      the tedious task of transforming different types of Logs via Logstash
    * Optional metrics computations via simple functions or complex customized functions via SkaLogs Language
@@ -41,9 +41,9 @@ Detailed features :
  * Parsing: grok, nitro, cef, with simulation tool
  * Error Retry Mechanism: automated mechanism for re-processing data ingestion errors
  * Referentials: create referentials for further reuse
- * CMDB: create IT inventory referential
+ * [CMDB](https://en.wikipedia.org/wiki/Configuration_management_database): create IT inventory referential
  * Computations (Metrics): precompute all your metrics before storing your results in ES (reduces the use of ES resources and    the # ES licenses),
- * SkaLogs Language: Complex queries, event correlations (SIEM) and calculations, with an easy-to-use SQL-like language
+ * SkaLogs Language: Complex queries, complex computations, event correlations ([SIEM](https://en.wikipedia.org/wiki/Security_information_and_event_management)) and calculations, with an easy-to-use SQL-like language
  * Monitoring - Alerts: Real-time monitoring, alerts and notifications based on events and thresholds
  * Visualization: dashboard to monitor in real-time all your ingestion processes, metrics, referentials, kafka live stream
  * Output: Kafka, ES, email, Slack, more to come...
