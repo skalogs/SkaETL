@@ -20,11 +20,14 @@ package io.skalogs.skaetl.serdes;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import io.skalogs.skaetl.utils.JSONUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serializer;
 
 import java.util.Map;
 
+@Slf4j
 public class GenericSerializer<T> implements Serializer<T> {
 
     @Override
@@ -35,11 +38,10 @@ public class GenericSerializer<T> implements Serializer<T> {
     @Override
     public byte[] serialize(String s, T objToSerialize) {
         byte[] retVal = null;
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            retVal = objectMapper.writeValueAsString(objToSerialize).getBytes();
-        } catch (Exception e) {
-            e.printStackTrace();
+            retVal = JSONUtils.getInstance().asJsonString(objToSerialize).getBytes();
+        } catch (JsonProcessingException e) {
+            log.error("Can't serialize source " + objToSerialize, e);
         }
         return retVal;
     }

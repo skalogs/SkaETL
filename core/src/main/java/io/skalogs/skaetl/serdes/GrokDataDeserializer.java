@@ -20,10 +20,8 @@ package io.skalogs.skaetl.serdes;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.skalogs.skaetl.domain.GrokData;
-import io.skalogs.skaetl.domain.ValidateData;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
 
@@ -40,11 +38,9 @@ public class GrokDataDeserializer implements Deserializer<GrokData> {
         if (bytes == null) {
             return new GrokData();
         }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         GrokData grokData = null;
         try {
-            grokData = mapper.readValue(bytes, GrokData.class);
+            grokData = JSONUtils.getInstance().parse(bytes, GrokData.class);
         } catch (Exception e) {
             log.error("GrokDataDeserializer message {}", e);
         }

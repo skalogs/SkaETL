@@ -20,9 +20,8 @@ package io.skalogs.skaetl.serdes;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.skalogs.skaetl.domain.GrokData;
-import io.skalogs.skaetl.domain.ValidateData;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serializer;
 
@@ -39,9 +38,8 @@ public class GrokDataSerializer implements Serializer<GrokData> {
     @Override
     public byte[] serialize(String s, GrokData grokData) {
         byte[] retVal = null;
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            retVal = objectMapper.writeValueAsString(grokData).getBytes();
+            retVal = JSONUtils.getInstance().asJsonString(grokData).getBytes();
         } catch (Exception e) {
             log.error("GrokDataSerializer source {} message {}", grokData, e);
         }

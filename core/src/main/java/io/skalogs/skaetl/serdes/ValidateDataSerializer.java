@@ -20,8 +20,8 @@ package io.skalogs.skaetl.serdes;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.skalogs.skaetl.domain.ValidateData;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serializer;
 
@@ -38,9 +38,8 @@ public class ValidateDataSerializer implements Serializer<ValidateData> {
     @Override
     public byte[] serialize(String s, ValidateData validateData) {
         byte[] retVal = null;
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            retVal = objectMapper.writeValueAsString(validateData).getBytes();
+            retVal = JSONUtils.getInstance().asJsonString(validateData).getBytes();
         } catch (Exception e) {
             log.error("ValidateDataSerializer source {} message {}", validateData, e);
         }

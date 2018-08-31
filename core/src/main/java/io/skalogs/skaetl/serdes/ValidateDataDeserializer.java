@@ -20,9 +20,8 @@ package io.skalogs.skaetl.serdes;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.skalogs.skaetl.domain.ValidateData;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Deserializer;
 
@@ -39,11 +38,9 @@ public class ValidateDataDeserializer implements Deserializer<ValidateData> {
         if (bytes == null) {
             return new ValidateData();
         }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         ValidateData validateData = null;
         try {
-            validateData = mapper.readValue(bytes, ValidateData.class);
+            validateData = JSONUtils.getInstance().parse(bytes, ValidateData.class);
         } catch (Exception e) {
             log.error("ValidateDataDeserializer message {}", e);
         }

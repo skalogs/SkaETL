@@ -20,8 +20,7 @@ package io.skalogs.skaetl.serdes;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import io.skalogs.skaetl.utils.JSONUtils;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.util.Map;
@@ -42,10 +41,9 @@ public class GenericDeserializer<T> implements Deserializer<T> {
         if (bytes == null) {
             return null;
         }
-        ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         T objToReturn = null;
         try {
-            objToReturn = mapper.readValue(bytes, clazz);
+            objToReturn = JSONUtils.getInstance().parse(bytes, clazz);
         } catch (Exception e) {
             e.printStackTrace();
         }

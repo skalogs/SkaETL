@@ -23,6 +23,7 @@ package io.skalogs.skaetl.utils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -41,6 +42,7 @@ public class JSONUtils {
 
     private JSONUtils() {
         objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         objectMapper.setDateFormat(new ISO8601DateFormat());
@@ -68,6 +70,14 @@ public class JSONUtils {
 
     public <T> String asJsonString(T object) throws JsonProcessingException {
         return objectMapper.writeValueAsString(object);
+    }
+
+    public <T> T parse(byte[] raw, Class<T> destClass) {
+        try {
+            return objectMapper.readValue(raw, destClass);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     public <T> T parse(String raw, Class<T> destClass) {

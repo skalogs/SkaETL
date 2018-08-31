@@ -20,8 +20,8 @@ package io.skalogs.skaetl.serdes;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.skalogs.skaetl.domain.SimulateData;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.serialization.Serializer;
 
@@ -38,10 +38,8 @@ public class SimulateDataSerializer implements Serializer<SimulateData> {
     @Override
     public byte[] serialize(String s, SimulateData simulateData) {
         byte[] retVal = null;
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String toto = objectMapper.writeValueAsString(simulateData);
-            retVal = toto.getBytes();
+            retVal = JSONUtils.getInstance().asJsonString(simulateData).getBytes();
         } catch (Exception e) {
             log.error("SimulateDataSerializer source {} message {}", simulateData, e);
         }

@@ -20,7 +20,6 @@ package io.skalogs.skaetl.service;
  * #L%
  */
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.krakens.grok.api.Grok;
 import io.krakens.grok.api.GrokCompiler;
 import io.krakens.grok.api.Match;
@@ -30,6 +29,7 @@ import io.skalogs.skaetl.domain.GrokDomain;
 import io.skalogs.skaetl.domain.GrokResult;
 import io.skalogs.skaetl.domain.GrokResultSimulate;
 import io.skalogs.skaetl.repository.GrokRepository;
+import io.skalogs.skaetl.utils.JSONUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -49,7 +49,6 @@ public class GrokService {
 
     private final GrokCompiler grokInstance = GrokCompiler.newInstance();
     private final GrokRepository grokRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public GrokService(GrokRepository grokRepository){
         this.grokRepository = grokRepository;
@@ -155,7 +154,7 @@ public class GrokService {
             Grok grok = grokInstance.compile(grokPattern);
             Match match = grok.match(value);
             Map<String, Object> capture = match.capture();
-            return GrokResult.builder().value(objectMapper.writeValueAsString(capture)).pattern(grokPattern).build();
+            return GrokResult.builder().value(JSONUtils.getInstance().asJsonString(capture)).pattern(grokPattern).build();
         } catch (GrokException e) {
             log.error("GrokException pattern {} message {}", grokPattern, e);
             return GrokResult.builder().messageError("GrokException pattern " + grokPattern + " message " + e.getMessage()).pattern(grokPattern).build();
