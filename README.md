@@ -7,8 +7,10 @@ SkaLogs ETL is a unique real time ETL designed for and dedicated to Logs and Eve
 Core features :
 
  * Centralized Logstash Configuration
+ * Log Parsing Simulations based on extensive list of common pre-set patterns
  * Consumer Processes: Ingestion Pipeline handling through guided workflow
    * Ingestion, Parsing, Transformation, Metrics, Notifications, Parsing Simulations
+   * Parsing: ability to handle multiple input formats: CEF (HP Arcsight/MicroFocus), Nitro (MacAfee), GROK, CSV, json as string
  * Build data referential on the fly based on events processed by SkaETL
  * Build metrics on the fly (standard statistical & count functions): before storing in ES (avoids computations in ES, reduces ressources dedicated to ES cluster)
    * Create new mathematical functions to extend standard statistical metrics
