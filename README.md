@@ -9,8 +9,23 @@ Core features :
  * Centralized Logstash Configuration
  * Log Parsing Simulations based on extensive list of common pre-set patterns
  * Consumer Processes: Ingestion Pipeline handling through guided workflow
-   * Ingestion, Parsing, Transformation, Metrics, Notifications, Parsing Simulations
-   * Parsing: ability to handle multiple input formats: CEF (HP Arcsight/MicroFocus), Nitro (MacAfee), GROK, CSV, [json as string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+   * Ingestion (from specific Kafka topic)
+   * Parsing: ability to handle multiple input formats:
+     * CEF (HP Arcsight/MicroFocus),
+     * Nitro (MacAfee),
+     * GROK,
+     * CSV,
+     * [json as string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify)
+   * Parsing Simulations (ability to simulate multiple preset grok patterns on a json log)
+   * Transformation: add csv lookup, add field, add geolocalization, capitalize, delete field, format boolean, format date, format double, format email, format geopoint, format ip, format long, hash, lookup external, lookup list, lower case, rename field, swap case, trim, uncapitalize, upper case.
+   * Metrics
+     * functions: count, count-distinct, sum, avg, min, max, stddev, mean,
+     * window types: tumbling, hopping, session,
+     * time units: seconds, minutes, hours, days,
+     * join types: none, inner, outer, left.
+   * Notifications
+     * email
+     * Slack
  * Build data referential on the fly based on events processed by SkaETL
  * Build metrics on the fly (standard statistical & count functions): before storing in ES (avoids computations in ES, reduces ressources dedicated to ES cluster)
    * Create new mathematical functions to extend standard statistical metrics
