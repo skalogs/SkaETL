@@ -270,7 +270,10 @@ public class RegistryService {
         List<RegistryWorker> workers = workerRepository.findAll();
         workers.stream()
                 .filter(registry -> registry.getStatus() == StatusWorker.OK)
-                .forEach(registry -> registry.setStatus(statusWorker(registry.getDateRefresh(), registry)));
+                .forEach(registry -> {
+                    registry.setStatus(statusWorker(registry.getDateRefresh(), registry));
+                    workerRepository.save(registry);
+                });
         rescheduleConsumerFromDeadWorkers();
         rescheduleConsumersInError();
         workerOK.set(
