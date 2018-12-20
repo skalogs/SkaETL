@@ -58,7 +58,7 @@ public class ReferentialController {
         return findAll();
     }
 
-    @GetMapping("initDefaults")
+    @GetMapping("init")
     public ProcessReferential init() {
         return referentialService.init();
     }
