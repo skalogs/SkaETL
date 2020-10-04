@@ -417,6 +417,7 @@
         <module>referential-importer</module>
         <module>skaetl-backend</module>
         <module>skaetl-frontend</module>
+        <module>skaetl-frontend2</module>
         <module>enduser-doc</module>
         <module>process-importer-api</module>
         <module>process-importer-impl</module>
